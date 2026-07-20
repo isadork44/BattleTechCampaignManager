@@ -150,7 +150,10 @@
     </div>
     <div class="tabgroup">
       <div class="tglabel">Mission</div>
-      <div class="tgbtns"><button data-tab="debrief">Debrief</button></div>
+      <div class="tgbtns">
+        <button data-tab="missions">Missions</button>
+        <button data-tab="debrief">Debrief</button>
+      </div>
     </div>
     <div class="tabgroup">
       <div class="tglabel">Market</div>
@@ -323,6 +326,11 @@
         <div class="log" id="timeline"></div>
       </div>
     </div>
+  </div>
+
+  <!-- ================= MISSIONS ================= -->
+  <div class="panel" id="panel-missions">
+    <div id="missionsArea"></div>
   </div>
 
   <!-- ================= DEBRIEF ================= -->
@@ -582,6 +590,34 @@ const MECH_CATALOG={
     ["Atlas AS7-D",100,9626000,1897],["Atlas AS7-RS",100,9714000,1849],["King Crab KGC-0000",100,9528000,1509],
     ["Annihilator ANH-1A",100,9312000,1866],["Marauder II MAD-4A",100,9911000,1969]]
 };
+const VEH_CATALOG={
+  Light:[
+    ["Savannah Master Hovercraft",5,156000,169],["Ferret Light Scout VTOL",5,98000,91],
+    ["Packrat LRPV PKR-T5",20,264000,302],["Skulker Wheeled Scout",21,312000,355],
+    ["Warrior Attack Helicopter H-7",21,450000,434],["Scorpion Light Tank",25,320000,351],
+    ["Harasser Missile Platform",25,448000,588],["J. Edgar Light Hover Tank",25,600000,468],
+    ["Galleon Light Tank GAL-100",30,425000,500],["Pegasus Scout Hover Tank",35,640000,611],
+    ["Saladin Assault Hover Tank",35,745000,643],["Saracen Medium Hover Tank",35,720000,578],
+    ["Scimitar Medium Hover Tank",35,731000,534],["Striker Light Tank",35,650000,620],
+    ["Hunter Light Support Tank",35,542000,542]],
+  Medium:[
+    ["Hetzer Wheeled Assault Gun",40,380000,490],["Zephyr Hover Tank",40,780000,620],
+    ["Gladius Medium Hover Tank",40,780000,690],["Goblin Medium Tank",45,630000,570],
+    ["Vedette Medium Tank",50,610000,475],["Condor Heavy Hover Tank",50,890000,611],
+    ["Drillson Heavy Hover Tank",50,950000,745],["Maxim Heavy Hover Transport",50,1105000,580]],
+  Heavy:[
+    ["Bulldog Medium Tank",60,720000,605],["Manticore Heavy Tank",60,850000,993],
+    ["Po Heavy Tank",60,705000,614],["Pike Support Vehicle",60,740000,690],
+    ["SRM Carrier",60,320000,551],["LRM Carrier",60,450000,616],
+    ["Tokugawa Heavy Tank",60,1005000,686],["Patton Tank",65,1030000,885],
+    ["Rommel Tank",65,1005000,904],["Brutus Assault Tank",75,1100000,890],
+    ["Von Luckner Heavy Tank VNL-K65N",75,1503000,971],["Burke Defense Tank",75,1198000,923]],
+  Assault:[
+    ["Demolisher Heavy Tank",80,700000,980],["Partisan Heavy Tank",80,650000,626],
+    ["Schrek PPC Carrier",80,920000,869],["Fury Command Tank",80,1204000,900],
+    ["Ontos Heavy Tank",95,950000,872],["Alacorn Heavy Tank Mk VI",95,2004000,1287],
+    ["Behemoth Heavy Tank",100,1400000,1206]]
+};
 const COMMON_PARTS=[
   ["Small Laser",11000],["Medium Laser",40000],["Large Laser",100000],["PPC",200000],
   ["Flamer",7500],["Machine Gun",5000],["AC/2",75000],["AC/5",125000],["AC/10",200000],["AC/20",300000],
@@ -721,9 +757,9 @@ function seedState(){
   return {
     name:"Barton's Bulldogs", month:1, day:1, treasury:500000, reputation:3, nextId:100,
     facility:"Bay", medCare:true, tasks:[], repairLog:[], battles:0, dmQueue:[],
-    market:{month:0,world:"Standard",mechs:[],rares:[],clsRolls:null,rolled:false},
+    market:{month:0,world:"Standard",mechs:[],vehs:[],rares:[],clsRolls:null,vehRolls:null,rolled:false},
     events:[{m:1,d:1,type:"found",text:"Company founded on the Galatean hiring circuit"}],
-    contractHistory:[], currentSystem:"Galatea",
+    contractHistory:[], currentSystem:"Galatea", missions:[], extraBattleMonth:0, extraBattleRoll:null,
     pilots:[
       {id:1,name:'Cmdr. Elias "Bulldog" Barton',gunnery:3,piloting:4,xp:5,wounds:0,abilities:["Edge"],improvedMonth:0,healProg:0},
       {id:2,name:'Maria "Havoc" Reyes',gunnery:4,piloting:5,xp:2,wounds:0,abilities:[],improvedMonth:0,healProg:0},
@@ -779,7 +815,7 @@ function contractPay(missionMult,employerMult){
 function renderAll(){
   $("companyName").value=S.name;
   renderTiles(); renderMechs(); renderPilots(); renderStaff();
-  renderContract(); renderFinances(); renderOverview(); renderRef(); renderRepair(); renderDebrief(); renderDM(); renderMarket(); renderTimelinePage(); renderGalaxy();
+  renderContract(); renderFinances(); renderOverview(); renderRef(); renderRepair(); renderDebrief(); renderDM(); renderMarket(); renderTimelinePage(); renderGalaxy(); renderMissions();
   renderSaveBtn();
 }
 
@@ -812,7 +848,7 @@ function renderMechs(){
     const techOpts=Object.keys(TECHCOST).map(t=>`<option ${m.tech===t?"selected":""}>${t}</option>`).join("");
     const stOpts=["Operational","Damaged","Hulk"].map(s=>`<option ${m.status===s?"selected":""}>${s}</option>`).join("");
     return `<tr>
-      <td><input value="${esc(m.name)}" onchange="setMech(${m.id},'name',this.value)" style="width:170px;font-weight:600" aria-label="Chassis / variant"></td>
+      <td><input value="${esc(m.name)}" onchange="setMech(${m.id},'name',this.value)" style="width:170px;font-weight:600" aria-label="Chassis / variant">${m.veh?'<div class="muted" style="font-size:10px;letter-spacing:.05em">COMBAT VEHICLE</div>':""}</td>
       <td class="num"><input type="number" value="${m.ton}" min="20" max="100" step="5" style="width:62px"
         onchange="setMech(${m.id},'ton',clamp(+this.value||20,20,100))"> t</td>
       <td class="num"><input type="number" value="${m.val}" step="10000" style="width:105px"
@@ -965,7 +1001,7 @@ function renderOverview(){
         :p.wounds>0?`<span style="color:${p.wounds>=4?"var(--critical)":"var(--warning)"}">▲ ${p.wounds} wound${p.wounds>1?"s":""}</span>`
         :'<span class="st-op">● fit</span>')
       :'<span class="muted">—</span>';
-    return `<tr><td><strong>${esc(m.name)}</strong> <span class="muted">${m.ton}t</span></td>
+    return `<tr><td><strong>${esc(m.name)}</strong> <span class="muted">${m.ton}t${m.veh?" · vehicle":""}</span></td>
       <td><span class="${stCls}">${stIcon} ${m.status}</span></td>
       <td><select onchange="setMech(${m.id},'pilotId',this.value?+this.value:null)" aria-label="Pilot of ${esc(m.name)}">${pilotOpts}</select></td>
       <td>${p?ratingBadge(pilotRating(p)):'<span class="muted">—</span>'}</td>
@@ -1119,6 +1155,177 @@ function rollRecruits(){
 function rollVetTechs(){
   const r=r2d6();
   $("recruitLog").innerHTML=`<div class="rolltxt">2d6 = ${r} → ${r>=9?"<strong>Yes</strong> — a Veteran or Elite tech team is available for hire.":"No senior tech teams on the market this month."}</div>`+($("recruitLog").innerHTML||"");
+}
+
+/* ============ MISSIONS (scenario generator) ============ */
+let dmUnlockMissions=false;
+const SCN_BY_MISSION={
+  "Garrison duty":["Base Defense","Hold the Line","Patrol Clash","Convoy Escort"],
+  "Security / escort duty":["Convoy Escort","Ambush Response","Patrol Clash"],
+  "Objective raid":["Base Assault","Breakthrough","Hit and Run"],
+  "Recon raid":["Recon-in-Force","Running Chase","Ambush Response"],
+  "Extraction / rescue raid":["Extraction","Breakthrough","Running Chase"],
+  "Guerrilla campaign":["Hit and Run","Supply Raid","Ambush Response"],
+  "Planetary assault":["Breakthrough","Base Assault","Standup Fight"],
+  "Pirate hunting":["Running Chase","Ambush Response","Base Assault"],
+  "Relief / defensive duty":["Hold the Line","Base Defense","Standup Fight"],
+  "Cadre (training) duty":["Training Skirmish","Patrol Clash","Live-Fire Exercise"],
+  "Covert / special op":["Sabotage Strike","Extraction","Ambush Response"]
+};
+const SCN_OBJECTIVES={
+  "Base Defense":"Hold the facility — no enemy unit inside the compound for 2 consecutive turns",
+  "Hold the Line":"Prevent enemy units exiting your home edge for 10 turns",
+  "Patrol Clash":"Meeting engagement — destroy or drive off the enemy patrol",
+  "Convoy Escort":"Get 3 of 5 cargo vehicles across the map; they move 4/6 and cannot fight",
+  "Ambush Response":"Survive the ambush and extract half your force off any friendly edge",
+  "Base Assault":"Destroy 2 of 3 objective buildings (CF 40) and withdraw",
+  "Breakthrough":"Exit half your force off the far map edge",
+  "Hit and Run":"Cripple or destroy one designated enemy unit, then exit any map edge",
+  "Recon-in-Force":"Have a unit end 3 different turns inside the enemy deployment zone, then exit",
+  "Running Chase":"Catch the fleeing target before it exits — it starts two moves ahead",
+  "Extraction":"Reach the objective hex, spend 1 stationary turn loading, exit your home edge",
+  "Supply Raid":"End a turn adjacent to 2 of 3 supply caches to loot them, then exit",
+  "Standup Fight":"Destroy or force the withdrawal of the enemy force",
+  "Training Skirmish":"Simulated fight — first side to score 3 marked 'kills' wins, no real damage rolls needed",
+  "Live-Fire Exercise":"Shepherd the trainee lance through 3 waypoints against light opposition",
+  "Sabotage Strike":"Plant charges on the objective (2 stationary turns adjacent), then exfiltrate every surviving unit"
+};
+const SCN_TERRAIN=["Open plains","Rolling hills","Dense forest","Urban sprawl","Badlands and mesas","River crossing","Mountain pass","Swamp and marsh","Industrial park","Desert flats"];
+const SCN_DEPLOY=["Standard — opposite map edges","Defender entrenched; attacker picks an edge","Meeting engagement — staggered arrival (roll per unit, 4+ turn 1)","Deep deployment — one friendly unit may flank from a side edge, turn 3","Defender hidden setup, attacker enters turn 1","Split forces — attacker must enter from two different edges"];
+const SCN_TWIST=["Enemy reinforcements (one lance) arrive turn 1d6+2","Hidden minefields — first unit through each map quarter rolls 8+ or takes 10 damage","Civilian presence — collateral building kills cost 1 XP from the battle's awards","Storm cell — +1 to-hit beyond medium range all battle","Time pressure — objectives must be complete by end of turn 8","A salvage cache sits mid-map: one stationary turn adjacent claims +50,000 C-bills","Comms blackout — no initiative re-rolls or coordinated withdrawal this battle","The employer's liaison insists on riding along in a Chameleon (protect it — losing it is a black mark)"];
+const OP_NAMES=["IRON VEIL","COLD ANVIL","SILENT LANCE","BROKEN SPUR","AMBER WOLF","LONG KNIFE","GREY HALO","RED LEDGER","HOLLOW CROWN","STATIC STORM","LAST FURROW","BRIGHT ABYSS","TIN CROWN","DUST HYMN","LOW THUNDER","PALE RIDER","GLASS JAW","DEEP FURNACE","QUIET GUEST","BLACK HARVEST","SHATTERED OATH","NORTH GATE","EMBER WATCH","FINAL INVOICE"];
+function msPick(a){return a[Math.floor(Math.random()*a.length)];}
+function lanceBVavg(){
+  const rated=S.mechs.filter(m=>m.status!=="Hulk"&&m.bv>0);
+  if(!rated.length)return 0;
+  const adj=m=>{const p=S.pilots.find(x=>x.id===m.pilotId);
+    return Math.round(m.bv*BVMULT[p?clamp(p.gunnery,0,8):4][p?clamp(p.piloting,0,8):5]);};
+  return Math.round(rated.reduce((a,m)=>a+adj(m),0)/rated.length)*4;
+}
+function genOpfor(){
+  const r=d6(); const pct=r===1?80:r<=3?100:r<=5?115:130;
+  const bv=lanceBVavg();
+  return `${pct}% of the company lance BV${bv?` (~${fmt(Math.round(bv*pct/100))} BV)`:""} — ${r===1?"a milk run":r<=3?"an even fight":r<=5?"a hard fight":"seriously outmatched; withdrawing may be wise"}`;
+}
+function genTwist(){return Math.random()<0.45?msPick(SCN_TWIST):"—";}
+function genMission(idx){
+  const c=S.contract; if(!c)return null;
+  const pool=SCN_BY_MISSION[c.mission]||["Standup Fight","Patrol Clash","Base Assault"];
+  const type=msPick(pool);
+  return {id:uid(),hid:c.histId,month:S.month,idx,
+    name:`Operation ${msPick(OP_NAMES)}`,type,
+    objective:SCN_OBJECTIVES[type]||"Defeat the enemy force",
+    terrain:msPick(SCN_TERRAIN),deploy:msPick(SCN_DEPLOY),
+    opfor:genOpfor(),twist:genTwist(),status:"pending"};
+}
+function generateMonthMissions(){
+  const c=S.contract; if(!c||c.monthsLeft<=0)return;
+  const count=c.tempo==="High"?3:c.tempo==="Medium"?2:1;
+  for(let i=1;i<=count;i++)S.missions.push(genMission(i));
+  rlog(`Mission orders cut for ${campDate(S.month)} — ${count} operation${count>1?"s":""} (${c.tempo} tempo).`);
+}
+function msPerm(field){
+  if(dmUnlockMissions)return true;
+  const c=S.contract; if(!c)return false;
+  const cmd=c.clauses.Command;
+  if(cmd==="House command")return false;
+  if(cmd==="Liaison")return field!=="type"&&field!=="objective";
+  return true; /* Independent */
+}
+function msReroll(id,field){
+  const ms=S.missions.find(x=>x.id===id); if(!ms||ms.status!=="pending"||!msPerm(field))return;
+  if(field==="type"){const c=S.contract;
+    const pool=(c?SCN_BY_MISSION[c.mission]:null)||["Standup Fight","Patrol Clash"];
+    ms.type=msPick(pool); ms.objective=SCN_OBJECTIVES[ms.type]||"Defeat the enemy force";}
+  if(field==="terrain")ms.terrain=msPick(SCN_TERRAIN);
+  if(field==="deploy")ms.deploy=msPick(SCN_DEPLOY);
+  if(field==="opfor")ms.opfor=genOpfor();
+  if(field==="twist")ms.twist=genTwist();
+  renderAll();
+}
+function msSetName(id,v){const ms=S.missions.find(x=>x.id===id);if(ms&&(msPerm("name")))ms.name=v;renderAll();}
+function msSkip(id){const ms=S.missions.find(x=>x.id===id);if(ms&&ms.status==="pending"){ms.status="skipped";
+  rlog(`${ms.name} skipped — the employer will remember.`);renderAll();}}
+function rollExtraBattle(){
+  const c=S.contract; if(!c||c.tempo!=="Low"||S.extraBattleMonth===S.month)return;
+  S.extraBattleMonth=S.month;
+  const r=r2d6(); const ok=r>=9;
+  S.extraBattleRoll={month:S.month,roll:r,ok};
+  if(ok){const cur=S.missions.filter(m=>m.month===S.month&&m.hid===c.histId).length;
+    S.missions.push(genMission(cur+1));
+    rlog(`Second battle roll: 2d6 = ${r} — the front heats up, extra operation ordered.`);}
+  else rlog(`Second battle roll: 2d6 = ${r} — a quiet month on the line.`);
+  renderAll();
+}
+function fightMission(id){
+  const ms=S.missions.find(x=>x.id===id); if(!ms)return;
+  newDebrief();
+  B.name=`${ms.name} — ${ms.type}`; B.missionId=id;
+  goTab('debrief'); renderAll();
+}
+function renderMissions(){
+  const area=$("missionsArea"); const c=S.contract;
+  if(!c){
+    area.innerHTML=`<div class="card"><h2>Mission board</h2>
+      <p class="muted" style="margin:4px 0">No active contract — sign one at the hiring hall and this board fills with the month's operations, generated to match the contract's tempo, clauses, and story.</p></div>`;
+    return;
+  }
+  const cmd=c.clauses.Command;
+  const cmdNote={"House command":"House command — the employer dictates every battle. Nothing may be rerolled or edited (DM unlock excepted). Refusing an operation risks breach.",
+    "Liaison":"Liaison — the employer sets each operation's type and objective (locked); how you fight is yours: terrain approach, deployment, opposition estimate and complications may be rerolled.",
+    "Independent":"Independent command — you choose your battles. Everything may be rerolled or renamed."}[cmd];
+  const cur=S.missions.filter(m=>m.month===S.month&&m.hid===c.histId);
+  const past=S.missions.filter(m=>m.hid===c.histId&&m.month<S.month);
+  const target=c.tempo==="High"?3:c.tempo==="Medium"?2:1;
+  let html=`<div class="card">
+    <h2>Mission board — ${esc(c.mission)} for ${esc(c.employer)}
+      <span class="spacer"></span>
+      <span class="badge"><span class="dot" style="background:var(--series1)"></span>${campDate(S.month)} · ${c.tempo} tempo · ${cur.filter(m=>m.status==="fought").length}/${cur.length} fought</span></h2>
+    <div style="border-left:3px solid ${cmd==="House command"?"var(--critical)":cmd==="Liaison"?"var(--warning)":"var(--good)"};background:var(--surface2);padding:8px 12px;border-radius:6px;font-size:13px;color:var(--ink2);margin-bottom:8px">${cmdNote}</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      ${c.tempo==="Low"&&S.extraBattleMonth!==S.month?'<button class="small" onclick="rollExtraBattle()">🎲 Roll for a second battle (2d6 ≥ 9)</button>':""}
+      ${c.tempo==="Low"&&S.extraBattleMonth===S.month&&S.extraBattleRoll&&S.extraBattleRoll.month===S.month?`<span class="rolltxt" style="margin:0;padding:4px 10px;display:inline-block">Second battle: 2d6 = <strong>${S.extraBattleRoll.roll}</strong> vs 9 → ${S.extraBattleRoll.ok?'<strong style="color:var(--good)">extra operation ordered</strong>':'<span class="muted">a quiet month on the line — no second battle</span>'}</span>`:""}
+      ${cur.length<target?`<button class="small" onclick="S.missions.push(genMission(${cur.length+1}));renderAll()">+ Cut missing orders</button>`:""}
+      <label style="display:flex;align-items:center;gap:6px;margin:0;font-size:12px;color:var(--serious)">
+        <input type="checkbox" ${dmUnlockMissions?"checked":""} onchange="dmUnlockMissions=this.checked;renderAll()">DM unlock (edit everything)</label>
+    </div>
+  </div>`;
+  const row=(ms,field,label,val)=>{
+    const can=ms.status==="pending"&&msPerm(field);
+    return `<tr><td style="width:110px" class="muted">${label}</td>
+      <td>${esc(val)}</td>
+      <td style="width:40px">${can?`<button class="small" onclick="msReroll(${ms.id},'${field}')" title="Reroll">🎲</button>`:'<span class="muted" title="Locked by the Command clause">🔒</span>'}</td></tr>`;
+  };
+  html+=cur.map(ms=>{
+    const stChip=ms.status==="fought"?'<span class="badge"><span class="dot" style="background:var(--good)"></span>Fought</span>'
+      :ms.status==="skipped"?'<span class="badge"><span class="dot" style="background:var(--warning)"></span>Skipped</span>'
+      :'<span class="badge"><span class="dot" style="background:var(--series1)"></span>Pending</span>';
+    const nameEdit=ms.status==="pending"&&msPerm("name");
+    return `<div class="card" style="border-left:3px solid ${ms.status==="fought"?"var(--good)":ms.status==="skipped"?"var(--warning)":"var(--series1)"}">
+      <h2 style="margin-bottom:8px">
+        ${nameEdit?`<input value="${esc(ms.name)}" onchange="msSetName(${ms.id},this.value)" style="font-size:15px;font-weight:700;width:280px">`:`${esc(ms.name)}`}
+        <span class="muted" style="font-weight:400;font-size:13px">· ${esc(ms.type)}</span>
+        <span class="spacer"></span>${stChip}</h2>
+      <table>
+        ${row(ms,"type","Scenario",ms.type)}
+        ${row(ms,"objective","Objective",ms.objective)}
+        ${row(ms,"terrain","Terrain",ms.terrain)}
+        ${row(ms,"deploy","Deployment",ms.deploy)}
+        ${row(ms,"opfor","Opposition",ms.opfor)}
+        ${row(ms,"twist","Complication",ms.twist)}
+      </table>
+      ${ms.status==="pending"?`<div style="display:flex;gap:8px;margin-top:10px">
+        <button class="primary" onclick="fightMission(${ms.id})">⚔ Fight it → Debrief</button>
+        <button class="small ghost" onclick="msSkip(${ms.id})">Skip / refuse</button>
+      </div>`:""}
+    </div>`;
+  }).join("");
+  if(!cur.length)html+=`<div class="card"><p class="muted" style="margin:4px 0">No orders cut for this month yet.</p></div>`;
+  if(past.length)html+=`<div class="card"><h2>Earlier operations this contract</h2>
+    <table><tr><th>Month</th><th>Operation</th><th>Scenario</th><th>Status</th></tr>
+    ${past.map(ms=>`<tr><td class="muted">${campDate(ms.month)}</td><td>${esc(ms.name)}</td><td>${esc(ms.type)}</td>
+      <td>${ms.status==="fought"?'<span class="st-op">fought</span>':ms.status==="skipped"?'<span class="st-dmg">skipped</span>':'<span class="muted">unfought</span>'}</td></tr>`).join("")}</table></div>`;
+  area.innerHTML=html;
 }
 
 /* ============ CONTRACT LORE (era-aware) ============ */
@@ -1429,6 +1636,7 @@ function signContract(i){
   S.treasury+=pay; S.ledger.unshift({m:S.month,d:`Signing advance — ${d.mission} for ${d.employer}`,a:pay});
   if(transport>0){S.treasury-=transport;S.ledger.unshift({m:S.month,d:`Transport (${d.jumps} jumps, our ${share*100}% share)`,a:-transport});}
   rlog(`Contract signed: ${d.mission} for ${d.employer} — ${d.months} months at ${fmt(pay)}/mo.`);
+  generateMonthMissions();
   drafts=[];offerRollTxt="";renderAll();
 }
 function recalcPay(){const c=S.contract;if(!c)return;
@@ -1496,6 +1704,7 @@ function endMonth(){
   S.history.push({m:S.month,t:S.treasury});
   S.month++; S.day=1; S.battles=0;
   rlog("New month — the clock resets to day 1.");
+  if(c&&c.monthsLeft>0)generateMonthMissions();
   if(c&&c.monthsLeft<=0){S.ledger.unshift({m:S.month,d:`Contract term complete — resolve it on the Contract tab (Success / Failure / …)`,a:0});}
   renderAll();
   quickSave(true);   /* keep the browser save current after each settled month */
@@ -1595,7 +1804,7 @@ function renderRef(){
 
   <h3>⑨ Marketplace & travel</h3>
   <p class="hint" style="margin:4px 0"><strong>'Mech market (monthly, per weight class):</strong> 2d6 + world modifier ≥ 8 → 1d6 ÷ 2 machines on the lot. Price 1d6: 1–2 = 110% · 3–4 = 100% · 5–6 = 90% of book. <strong>Rare equipment:</strong> 2d6 + world ≥ 8 per item, else broker at double list. Common parts always at list.
-  World modifiers: ${Object.entries(WORLD_MODS).map(([k,v])=>`${k} ${v>=0?"+":""}${v}`).join(" · ")} — set by the company's current system on the Galaxy Map.</p>
+  World modifiers: ${Object.entries(WORLD_MODS).map(([k,v])=>`${k} ${v>=0?"+":""}${v}`).join(" · ")} — combat vehicles use the same rolls but are available on 6+ with an extra unit per success — set by the company's current system on the Galaxy Map.</p>
   <p class="hint"><strong>Travel:</strong> 30 LY per jump, ~1 week per jump, 2,500 C-bills per 'Mech per jump. Months that end mid-transit run payday automatically.</p>
 
   <h3>⑩ Support staff specialists</h3>
@@ -1657,10 +1866,12 @@ function migrateState(o){
   o.tasks=o.tasks||[]; o.repairLog=o.repairLog||[]; o.battles=o.battles||0;
   o.dmQueue=o.dmQueue||[];
   o.market=o.market||{month:0,world:"Standard",mechs:[],rares:[],clsRolls:null,rolled:false};
+  o.market.vehs=o.market.vehs||[]; o.market.vehRolls=o.market.vehRolls||null;
   o.events=o.events||[{m:1,d:1,type:"found",text:"Company founded"}];
   o.contractHistory=o.contractHistory||[];
   o.currentSystem=o.currentSystem||"Galatea";
   o.stores=o.stores||[];
+  o.missions=o.missions||[]; o.extraBattleMonth=o.extraBattleMonth||0; o.extraBattleRoll=o.extraBattleRoll||null;
   if(o.contract){o.contract.startMechs=o.contract.startMechs||o.mechs.length;
     o.contract.mechsLost=o.contract.mechsLost||0;}
   if(o.contract&&o.contract.histId===undefined){
@@ -2025,6 +2236,8 @@ function applyDebrief(){
   const unresolved=B.items.filter(i=>!i.resolved).length;
   if(unresolved)rlog(`${unresolved} salvage item(s) left unresolved were abandoned on the field.`);
   S.battles=(S.battles||0)+1;
+  if(B.missionId){const ms=S.missions.find(x=>x.id===B.missionId);
+    if(ms){ms.status="fought";rlog(`${ms.name} logged as fought.`);}}
   tlEvent("battle",`Battle: ${battleName}${B.objective?" — objective achieved":""}`);
   B.applied=true;B=null;
   renderAll();
@@ -2409,9 +2622,24 @@ function rollMarket(){
       }
     }
   });
+  /* combat vehicles — more common than 'Mechs: available on 6+, and more of them */
+  const vehRolls={}; const vehs=[];
+  Object.keys(VEH_CATALOG).forEach(cls=>{
+    const r=r2d6()+mod; vehRolls[cls]=r;
+    if(r>=6){
+      const n=Math.ceil(d6()/2)+1;
+      const pool=[...VEH_CATALOG[cls]];
+      for(let i=0;i<n&&pool.length;i++){
+        const pick=pool.splice(Math.floor(Math.random()*pool.length),1)[0];
+        const pr=d6(); const pct=pr<=2?1.10:pr<=4?1.00:0.90;
+        vehs.push({id:uid(),cls,name:pick[0],ton:pick[1],val:pick[2],bv:pick[3],
+          pct,price:Math.round(pick[2]*pct/1000)*1000,sold:false});
+      }
+    }
+  });
   const rares=RARE_PARTS.map(([name,cost])=>{const r=r2d6()+mod;return {name,cost,roll:r,avail:r>=8};});
-  S.market={month:S.month,world,mechs,rares,clsRolls,rolled:true};
-  rlog(`Market rolled on a ${world} world — ${mechs.length} 'Mech${mechs.length===1?"":"s"} and ${rares.filter(x=>x.avail).length} rare item type${rares.filter(x=>x.avail).length===1?"":"s"} available.`);
+  S.market={month:S.month,world,mechs,vehs,rares,clsRolls,vehRolls,rolled:true};
+  rlog(`Market rolled on a ${world} world — ${mechs.length} 'Mech${mechs.length===1?"":"s"}, ${vehs.length} combat vehicle${vehs.length===1?"":"s"}, and ${rares.filter(x=>x.avail).length} rare item type${rares.filter(x=>x.avail).length===1?"":"s"} available.`);
   renderAll();
 }
 function buyMechFromMarket(id){
@@ -2420,6 +2648,14 @@ function buyMechFromMarket(id){
   S.ledger.unshift({m:S.month,d:`'Mech purchase — ${it.name} (${Math.round(it.pct*100)}% of book)`,a:-it.price});
   S.mechs.push({id:uid(),name:it.name,ton:it.ton,val:it.val,bv:it.bv,pilotId:null,tech:"Regular",status:"Operational"});
   rlog(`Purchased ${it.name} for ${fmt(it.price)} — added to the roster (needs a pilot and tech team).`);
+  it.sold=true;renderAll();
+}
+function buyVehFromMarket(id){
+  const it=S.market.vehs.find(x=>x.id===id);if(!it||it.sold)return;
+  S.treasury-=it.price;
+  S.ledger.unshift({m:S.month,d:`Vehicle purchase — ${it.name} (${Math.round(it.pct*100)}% of book)`,a:-it.price});
+  S.mechs.push({id:uid(),name:it.name,ton:it.ton,val:it.val,bv:it.bv,pilotId:null,tech:"Regular",status:"Operational",veh:true});
+  rlog(`Purchased ${it.name} for ${fmt(it.price)} — added to the roster (crew and motor-pool upkeep applies).`);
   it.sold=true;renderAll();
 }
 function buyPart(name,cost,double){
@@ -2514,6 +2750,22 @@ function renderMarket(){
       :'<p class="muted" style="margin:6px 0">Nothing on the lot this month — the dealers shrug.</p>'}
     <div class="hint">Bought 'Mechs join the roster as Operational with a Regular tech team and no pilot — remember the monthly upkeep. The exact model is the market's choice, not yours.</div>
   </div>`;
+  /* vehicles card */
+  const vClsLine=M.vehRolls?Object.entries(M.vehRolls).map(([c,r])=>
+    `${c}: 2d6 = ${r} ${r>=6?"✓":"✗"}`).join(" · "):"";
+  const vrows=(M.vehs||[]).map(it=>`<tr ${it.sold?'style="opacity:.4"':""}>
+    <td><strong>${esc(it.name)}</strong></td><td>${it.cls}</td><td class="num">${it.ton} t</td>
+    <td class="num">${fmt(it.bv)}</td><td class="num">${fmt(it.val)}</td>
+    <td class="num">${Math.round(it.pct*100)}%</td>
+    <td class="num"><strong>${fmt(it.price)}</strong></td>
+    <td>${it.sold?'<span class="muted">sold</span>':`<button class="small primary" onclick="buyVehFromMarket(${it.id})">Buy</button>`}</td></tr>`).join("");
+  const vehCard=`<div class="card">
+    <h2>Combat vehicles for sale <span class="spacer"></span><span class="muted">${(M.vehs||[]).filter(x=>!x.sold).length} on the lot</span></h2>
+    ${vClsLine?`<div class="rolltxt">${vClsLine} <span class="muted">(vehicles are common — available on 6+)</span></div>`:""}
+    ${(M.vehs||[]).length?`<table><tr><th>Vehicle</th><th>Class</th><th class="num">Tons</th><th class="num">BV (4/5)</th><th class="num">Book value</th><th class="num">Price roll</th><th class="num">Asking</th><th></th></tr>${vrows}`
+      :'<p class="muted" style="margin:6px 0">No armor on the lot this month.</p>'}${(M.vehs||[]).length?'</table>':''}
+    <div class="hint">Bought vehicles join the roster flagged as combat vehicles — same upkeep formula (call it crew wages and motor pool). Cheap, expendable, and they hold ground while the 'Mechs earn the headlines.</div>
+  </div>`;
   /* equipment card */
   const rrows=M.rares.map(r=>`<tr ${r.avail?"":'style="opacity:.55"'}>
     <td>${esc(r.name)}</td><td class="num">${fmt(r.cost)}</td>
@@ -2539,7 +2791,7 @@ function renderMarket(){
     <p class="hint" style="margin-top:0">Everything the company owns but hasn't bolted on. Replacement jobs in the Repair Bay consume from here; selling recovers 50% of list. Log battlefield-salvaged parts with "Add free".</p>
     ${storesTableHTML(true)}
   </div>`;
-  area.innerHTML=head+mechCard+eqCard+storesCard;
+  area.innerHTML=head+mechCard+vehCard+eqCard+storesCard;
 }
 
 /* ============ DM TOOLS ============ */
