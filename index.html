@@ -474,6 +474,33 @@
       <button onclick="document.getElementById('saveOverlay').classList.remove('on')">Close</button>
     </div>
     <div class="hint" id="saveMsg"></div>
+    <h3 style="margin-top:16px">☁️ Cloud sync (share one campaign across machines)</h3>
+    <p class="hint" style="margin:4px 0 8px">Everything above lives only in this browser. This copy of the dashboard already has a shared database wired in — anyone who opens this same file/URL and enters the same <strong>Campaign code</strong> below can save/load the same company. No setup needed unless you want to point it at a different Firebase project instead.</p>
+    <details id="cloudSetupDetails">
+      <summary class="small" style="cursor:pointer">⚙️ Cloud config (only if you want a different database)</summary>
+      <div style="margin-top:8px">
+        <ol class="hint" style="margin:0 0 8px;padding-left:18px">
+          <li>Go to <a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a> and create a free project (no credit card needed).</li>
+          <li>In the project, open <strong>Firestore</strong> in the left sidebar → <strong>Create database</strong> (any region).</li>
+          <li>In <strong>Rules</strong>, paste the rule shown in this package's README, then Publish.</li>
+          <li>From the project overview, click the <strong>&lt;/&gt;</strong> web icon (or <strong>Project settings → General → Your apps → Add app → Web</strong>) and copy the <code>firebaseConfig</code> object it shows.</li>
+          <li>Paste that whole object below and click Save config — then send the same block of text to the rest of your group so everyone points at the same database.</li>
+        </ol>
+        <textarea id="cloudConfigText" spellcheck="false" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' style="height:90px"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="btnSaveCloudConfig" onclick="saveCloudConfig()">Save config</button>
+          <button id="btnClearCloudConfig" class="ghost" onclick="clearCloudConfig()">Revert to built-in database</button>
+        </div>
+      </div>
+    </details>
+    <div class="hint" id="cloudConfigStatus" style="margin:8px 0"></div>
+    <label for="cloudCode" class="small">Campaign code <span class="muted">— everyone sharing this company uses the same code</span></label>
+    <input id="cloudCode" autocomplete="off" spellcheck="false" placeholder="e.g. wolfnet-49th-2026" style="width:100%;margin:4px 0 8px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="cloudSaveCampaign()" class="primary">☁️ Save to cloud</button>
+      <button onclick="cloudLoadCampaign()">☁️ Load from cloud</button>
+    </div>
+    <div class="hint" id="cloudMsg" style="margin-top:8px"></div>
     <h3 style="margin-top:16px">Monthly backups (this session)</h3>
     <p class="hint" style="margin:4px 0 8px">Every press of <strong>End Month</strong> automatically captures the company as it was <em>before</em> payday and stores it in this browser (last 12 kept, refresh-proof). Load one to rewind to that month, or Download a copy to keep off-site.</p>
     <div id="backupList"></div>
@@ -1930,7 +1957,125 @@ function renderBackupList(){
   :'<p class="muted" style="margin:4px 0;font-size:13px">No backups yet — press End Month and one appears here.</p>';
 }
 $("btnSave").onclick=()=>{ $("saveText").value=JSON.stringify(S); $("saveMsg").textContent="";
-  renderBackupList(); renderLsStatus(); $("saveOverlay").classList.add("on"); };
+  renderBackupList(); renderLsStatus();
+  try{
+    if($("cloudCode"))$("cloudCode").value=localStorage.getItem(LS_CAMPCODE)||"";
+    const cfg=getFbConfig(); if(cfg&&$("cloudConfigText"))$("cloudConfigText").value=JSON.stringify(cfg,null,1);
+  }catch(e){}
+  renderCloudConfigStatus(); $("cloudMsg").textContent="";
+  $("saveOverlay").classList.add("on"); };
+
+/* ============ CLOUD SYNC (optional Firebase/Firestore backend for sharing one
+   campaign across different players' machines — additive, never required) ============ */
+/* Built-in project for this copy of the dashboard — everyone who opens this file/URL
+   already shares this database, no per-browser paste-in required. A player can still
+   override it below (Cloud setup) to point at a different Firebase project instead. */
+const DEFAULT_FB_CONFIG={
+  apiKey:"AIzaSyBv4UMi4ACC-vli1FP3SKeU0wXKHVO-XeE",
+  authDomain:"battletechcampaign-22591.firebaseapp.com",
+  projectId:"battletechcampaign-22591",
+  storageBucket:"battletechcampaign-22591.firebasestorage.app",
+  messagingSenderId:"246530177859",
+  appId:"1:246530177859:web:32b7a483fbf13f3ae78df6"
+};
+const LS_FBCONFIG="mercFieldManualFirebaseConfig";
+const LS_CAMPCODE="mercFieldManualCampaignCode";
+let fbApp=null, fbDb=null, fbSdkPromise=null;
+function loadFirebaseSDK(){
+  if(fbSdkPromise)return fbSdkPromise;
+  fbSdkPromise=new Promise((resolve,reject)=>{
+    if(window.firebase&&window.firebase.firestore){resolve();return;}
+    const s1=document.createElement("script");
+    s1.src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
+    s1.onload=()=>{
+      const s2=document.createElement("script");
+      s2.src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js";
+      s2.onload=()=>resolve();
+      s2.onerror=()=>reject(new Error("could not load the Firestore library — check your internet connection"));
+      document.head.appendChild(s2);
+    };
+    s1.onerror=()=>reject(new Error("could not load the Firebase library — check your internet connection"));
+    document.head.appendChild(s1);
+  });
+  return fbSdkPromise;
+}
+function getFbConfig(){
+  try{const raw=localStorage.getItem(LS_FBCONFIG);if(raw)return JSON.parse(raw);}catch(e){}
+  return DEFAULT_FB_CONFIG&&DEFAULT_FB_CONFIG.apiKey?DEFAULT_FB_CONFIG:null;
+}
+function usingCustomFbConfig(){
+  try{return !!localStorage.getItem(LS_FBCONFIG);}catch(e){return false;}
+}
+function saveCloudConfig(){
+  const el=$("cloudConfigText");
+  try{
+    const obj=JSON.parse(el.value);
+    if(!obj.projectId||!obj.apiKey)throw new Error("that doesn't look like a Firebase config object (missing apiKey/projectId)");
+    localStorage.setItem(LS_FBCONFIG,JSON.stringify(obj));
+    fbApp=null;fbDb=null;fbSdkPromise=null;
+    $("cloudMsg").textContent="Cloud config saved in this browser.";
+    renderCloudConfigStatus();
+  }catch(e){$("cloudMsg").textContent="Could not save that config: "+e.message;}
+}
+function clearCloudConfig(){
+  try{localStorage.removeItem(LS_FBCONFIG);}catch(e){}
+  fbApp=null;fbDb=null;fbSdkPromise=null;
+  const cfg=getFbConfig();
+  if($("cloudConfigText"))$("cloudConfigText").value=cfg?JSON.stringify(cfg,null,1):"";
+  $("cloudMsg").textContent=DEFAULT_FB_CONFIG&&DEFAULT_FB_CONFIG.apiKey
+    ?"Reverted to this dashboard's built-in cloud project.":"Cloud config cleared from this browser.";
+  renderCloudConfigStatus();
+}
+function renderCloudConfigStatus(){
+  const el=$("cloudConfigStatus");if(!el)return;
+  const cfg=getFbConfig();
+  if(!cfg){el.innerHTML=`<span class="muted">No cloud config yet — open "⚙️ Cloud setup" above to connect a shared database.</span>`;return;}
+  el.innerHTML=usingCustomFbConfig()
+    ?`<span class="st-op">●</span> Cloud configured — project <strong>${esc(cfg.projectId||"?")}</strong> (custom, saved only in this browser).`
+    :`<span class="st-op">●</span> Cloud configured — project <strong>${esc(cfg.projectId||"?")}</strong> (this dashboard's built-in database — already shared with anyone else using this same file/URL).`;
+}
+async function ensureFirebaseDb(){
+  const cfg=getFbConfig();
+  if(!cfg)throw new Error('no cloud config saved yet — open "Cloud setup" above and paste your Firebase config first');
+  await loadFirebaseSDK();
+  if(!fbApp){
+    fbApp=(firebase.apps&&firebase.apps.length)?firebase.app():firebase.initializeApp(cfg);
+    fbDb=firebase.firestore();
+  }
+  return fbDb;
+}
+function campaignCode(){ return ($("cloudCode")?$("cloudCode").value:"").trim(); }
+async function cloudSaveCampaign(){
+  const code=campaignCode(); const msg=$("cloudMsg");
+  if(!code){msg.textContent="Enter a campaign code first — everyone using the same code shares the same save.";return;}
+  try{localStorage.setItem(LS_CAMPCODE,code);}catch(e){}
+  msg.textContent="Saving to cloud…";
+  try{
+    const db=await ensureFirebaseDb();
+    await db.collection("campaigns").doc(code).set({
+      state:JSON.stringify(S),
+      name:S.name||"", month:S.month, day:S.day, treasury:S.treasury,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    msg.textContent=`Saved to cloud as "${code}" — anyone with this code and the same cloud config can now load it.`;
+  }catch(e){msg.textContent="Cloud save failed: "+e.message;}
+}
+async function cloudLoadCampaign(){
+  const code=campaignCode(); const msg=$("cloudMsg");
+  if(!code){msg.textContent="Enter the campaign code to load.";return;}
+  try{localStorage.setItem(LS_CAMPCODE,code);}catch(e){}
+  msg.textContent="Loading from cloud…";
+  try{
+    const db=await ensureFirebaseDb();
+    const snap=await db.collection("campaigns").doc(code).get();
+    if(!snap.exists){msg.textContent=`No cloud save found for code "${code}" yet — press "Save to cloud" to create one.`;return;}
+    const data=snap.data();
+    applyState(JSON.parse(data.state));
+    quickSave(true);
+    renderBackupList();renderLsStatus();
+    msg.textContent=`Loaded "${code}" from cloud — ${S.name}, ${campDate(S.month)} (M${S.month}), Day ${S.day}.`;
+  }catch(e){msg.textContent="Cloud load failed: "+e.message;}
+}
 function renderLsStatus(){
   const el=$("lsStatus"); if(!el)return;
   if(!lsAvailable()){el.innerHTML=`<span style="color:var(--warning)">▲ Browser storage is blocked in this environment</span> — the 💾 button falls back to this dialog. Use Copy or Download.`;return;}
