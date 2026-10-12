@@ -4,186 +4,326 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Merc Company Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
+  /* Layout: command console. Fixed left rail (company, nav by job, danger zone) + main column
+     (page head with primary actions, status strip, panels). Single dark look by design. */
   :root{
-    --page:#0d0d0d; --surface:#1a1a19; --surface2:#232322; --surface3:#2c2c2a;
-    --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
-    --grid:#2c2c2a; --baseline:#383835; --ring:rgba(255,255,255,0.10);
-    --series1:#3987e5;
-    --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
-    --accent:#d03b3b; --accent-soft:rgba(208,59,59,0.14);
+    /* surfaces: gunmetal with a slight blue-green bias */
+    --page:#0d1012; --surface:#151a1d; --surface2:#1b2125; --surface3:#232a2f; --rail:#101417;
+    /* text */
+    --ink:#f1f0ea; --ink2:#cdd2cd; --muted:#a2aba7;
+    /* lines */
+    --grid:#222a2e; --baseline:#323c41; --ring:rgba(236,235,228,0.11); --line:#2b3439;
+    /* brand: cockpit amber */
+    --accent:#e9a92f; --accent-ink:#191306; --accent-soft:rgba(233,169,47,0.13);
+    /* data + semantic states */
+    --series1:#5aa2dc; --good:#4dbb6d; --warning:#e6cf4f; --serious:#e8803a; --critical:#e15353;
+    --crit-soft:rgba(225,83,83,0.12);
+    /* type */
+    --f-display:"Atkinson Hyperlegible",Verdana,"Segoe UI",system-ui,sans-serif;
+    --f-body:"Atkinson Hyperlegible",Verdana,"Segoe UI",system-ui,sans-serif;
+    --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
     color-scheme:dark;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--page);color:var(--ink);
-    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.45}
-  h1,h2,h3{margin:0;font-weight:700}
-  button{font:inherit;cursor:pointer;border:1px solid var(--ring);background:var(--surface3);
-    color:var(--ink);border-radius:6px;padding:5px 10px}
-  button:hover{background:#3a3a37}
-  button:disabled{opacity:.38;cursor:not-allowed}
-  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-  button.primary:hover{background:#b83434}
-  button.ghost{background:transparent}
-  button.small{padding:2px 7px;font-size:12px;border-radius:5px}
-  input,select,textarea{font:inherit;background:var(--surface3);color:var(--ink);
-    border:1px solid var(--ring);border-radius:6px;padding:5px 8px}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--series1);outline-offset:0}
-  input[type=number]{width:80px}
-  label{color:var(--ink2);font-size:12px;display:block;margin-bottom:2px}
-  .app{max-width:1180px;margin:0 auto;padding:16px 18px 60px}
+  html,body{background:var(--page)}
+  body{margin:0;color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.55;
+    font-variant-numeric:tabular-nums}
+  h1,h2,h3{margin:0;font-family:var(--f-display);font-weight:700;letter-spacing:.02em;text-wrap:balance}
+  a{color:var(--series1)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 
-  /* header */
-  .hdr{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
-    border-bottom:2px solid var(--accent);padding-bottom:12px;margin-bottom:14px}
-  .hdr .brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-  .hdr input.cname{font-size:22px;font-weight:700;background:transparent;border:1px dashed transparent;
-    padding:2px 6px;min-width:200px;max-width:380px}
-  .hdr input.cname:hover,.hdr input.cname:focus{border-color:var(--ring);background:var(--surface)}
-  .hdr .sub{color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-  .hdr-actions{display:flex;gap:8px;align-items:center}
+  /* ---------- controls ---------- */
+  button{font:inherit;font-weight:600;cursor:pointer;border:1px solid var(--baseline);background:var(--surface3);
+    color:var(--ink);border-radius:6px;padding:6px 12px;transition:background .12s,border-color .12s}
+  button:hover{background:#2d363c;border-color:#46525a}
+  button:disabled{opacity:.35;cursor:not-allowed}
+  button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  button.primary:hover{background:#f4bb4a;border-color:#f4bb4a}
+  button.ghost{background:transparent;border-color:transparent;color:var(--ink2)}
+  button.ghost:hover{background:var(--surface3);border-color:var(--baseline);color:var(--ink)}
+  button.small{padding:4px 10px;font-size:13.5px;border-radius:5px}
+  input,select,textarea{font:inherit;background:var(--surface2);color:var(--ink);
+    border:1px solid var(--baseline);border-radius:6px;padding:6px 9px}
+  input:hover,select:hover,textarea:hover{border-color:#46525a}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+  input[type=number]{width:84px}
+  label{color:var(--ink2);font-size:12.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:3px}
 
-  /* stat tiles */
-  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:14px}
-  .tile{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:12px 14px}
-  .tile .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-  .tile .v{font-size:24px;font-weight:700;line-height:1.15}
-  .tile .s{color:var(--ink2);font-size:12px;margin-top:3px}
-  .pos{color:var(--good)} .neg{color:#e66767}
+  /* ---------- shell ---------- */
+  .shell{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
+  .side{background:var(--rail);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;
+    display:flex;flex-direction:column;overflow-y:auto}
+  .side .brand{padding:18px 16px 14px;border-bottom:1px solid var(--line)}
+  .side .unitmark{font-family:var(--f-display);font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .side input.cname{width:100%;margin-top:4px;font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.1;
+    background:transparent;border:1px solid transparent;padding:2px 4px;margin-left:-5px}
+  .side input.cname:hover{border-color:var(--baseline)}
+  .side .sub{color:var(--muted);font-size:13px;margin-top:2px}
+  .side .clock{margin-top:12px;display:flex;flex-direction:column;gap:1px;font-family:var(--f-display)}
+  .side .clock .d{font-size:19px;font-weight:700;white-space:nowrap}
+  .side .clock .m{color:var(--muted);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+  .daybar{height:5px;background:var(--surface3);border-radius:3px;margin-top:6px;overflow:hidden}
+  .daybar span{display:block;height:100%;background:var(--accent)}
 
-  /* tabs — grouped by usage */
-  .tabs{display:flex;gap:0;flex-wrap:wrap;margin-bottom:14px;border-bottom:1px solid var(--baseline);align-items:stretch}
-  .tabgroup{padding:0 12px 0 10px;border-left:1px solid var(--baseline)}
-  .tabgroup:first-child{border-left:none;padding-left:0}
-  .tglabel{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);
-    margin:2px 0 1px 4px;white-space:nowrap}
-  .tgbtns{display:flex;gap:2px;flex-wrap:wrap}
-  .tabs button{background:transparent;border:none;border-bottom:3px solid transparent;border-radius:0;
-    padding:6px 12px 8px;color:var(--ink2);font-weight:600}
-  .tabs button.on{color:var(--ink);border-bottom-color:var(--accent)}
+  .tabs{padding:8px 8px 12px;flex:1}
+  .tabgroup{margin-top:10px}
+  .tglabel{font-family:var(--f-display);font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);padding:4px 10px}
+  .tgbtns{display:flex;flex-direction:column;gap:1px}
+  .tabs button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:transparent;border:0;
+    border-left:3px solid transparent;border-radius:0 6px 6px 0;padding:7px 10px;color:var(--ink2);font-weight:400;font-size:15.5px}
+  .tabs button:hover{background:var(--surface2);color:var(--ink)}
+  .tabs button.on{background:var(--accent-soft);color:var(--ink);border-left-color:var(--accent);font-weight:700}
+  .tabs button .nb{margin-left:auto;font-size:12.5px;font-weight:700;min-width:20px;text-align:center;border-radius:10px;padding:1px 6px;
+    background:var(--surface3);color:var(--ink2)}
+  .tabs button .nb.hot{background:var(--accent);color:var(--accent-ink)}
+  .tabs button .nb.bad{background:var(--critical);color:#fff}
+  .side .danger{padding:12px 16px 18px;border-top:1px solid var(--line)}
+  .side .danger button{width:100%;background:transparent;border-color:rgba(225,83,83,.45);color:#f08b8b;font-size:13px}
+  .side .danger button:hover{background:var(--crit-soft)}
+
+  .main{min-width:0;padding:0 28px 64px}
+  .app{} /* the debt warning is inserted at the top of .app */
+  .topbar{position:sticky;top:0;z-index:10;background:linear-gradient(var(--page) 80%,rgba(13,16,18,0));
+    display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:18px 0 14px}
+  .pagehead h1{font-size:28px;line-height:1.1;text-transform:uppercase;letter-spacing:.03em}
+  .pagehead p{margin:3px 0 0;color:var(--ink2);font-size:15px;max-width:70ch}
+  .hdr-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .hdr-actions #btnEndMonth{padding:8px 16px;font-size:15px}
+
+  /* ---------- status strip ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;background:var(--surface);
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:18px}
+  .tile{background:var(--surface);padding:11px 14px;min-width:0;box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
+  .tile .k{color:var(--muted);font-family:var(--f-display);font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+  .tile .v{font-family:var(--f-display);font-size:25px;font-weight:700;line-height:1.1;overflow-wrap:anywhere}
+  .tile .s{color:var(--ink2);font-size:13px;margin-top:2px}
+  .pos{color:var(--good)} .neg{color:#f07a7a}
+
+  /* ---------- panels & cards ---------- */
   .panel{display:none}.panel.on{display:block}
-
-  .card{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:14px 16px;margin-bottom:14px;overflow-x:auto;min-width:0}
-  tr.sect td{background:var(--surface2);color:var(--ink2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:6px 8px}
-  #mechTable td{white-space:nowrap}
-  .kindtag{font-size:10px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
-  .spec{display:inline-block;font-size:10px;color:var(--ink2);border:1px solid var(--ring);border-radius:4px;padding:0 5px;margin:2px 3px 0 0}
-  .bsp{display:inline-block;font-size:10px;font-weight:700;color:var(--series1);border:1px solid var(--series1);border-radius:4px;padding:0 5px;margin-left:4px}
-  .subhead{font-size:12px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px}
-  .card h2{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px;
+    overflow-x:auto;min-width:0}
+  .card h2{font-size:16px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card h2::before{content:"";width:3px;height:14px;background:var(--accent);border-radius:1px;flex:none}
   .card h2 .spacer{flex:1}
-  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:860px){.cols2{grid-template-columns:1fr}}
-  @media(max-width:520px){.app{padding:12px 16px 48px}.hdr input.cname{min-width:0;width:100%}}
+  .card h2 .muted,.card h2 .badge{font-family:var(--f-body);text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:500}
+  .card h2 button{font-family:var(--f-body);text-transform:none;letter-spacing:0}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .cols2>.card{margin-bottom:16px}
 
+  /* ---------- tables: values read as text, become fields on hover/focus ---------- */
   table{width:100%;border-collapse:collapse}
-  th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;text-align:left;
-    padding:6px 8px;border-bottom:1px solid var(--baseline)}
+  th{color:var(--ink2);font-family:var(--f-display);font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+    text-align:left;padding:7px 8px;border-bottom:1px solid var(--baseline);white-space:nowrap}
   td{padding:7px 8px;border-bottom:1px solid var(--grid);vertical-align:middle}
   td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-  tr:hover td{background:rgba(255,255,255,0.02)}
+  tr:hover td{background:rgba(236,235,228,0.025)}
+  td input,td select{background:transparent;border-color:transparent;padding:4px 6px}
+  tr:hover td input,tr:hover td select{border-color:var(--baseline);background:var(--surface2)}
+  td input:focus,td select:focus{background:var(--surface2)}
+  td.num input{text-align:right}
+  tr.sect td{background:var(--surface2);color:var(--ink2);font-family:var(--f-display);font-size:12px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.06em;padding:6px 8px}
+  #mechTable td{white-space:nowrap}
+  #mechTable{font-size:14.5px}
+  #mechTable td{padding:6px 6px}
+  #mechTable td:first-child>input{width:205px!important}
 
-  .badge{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;
-    font-size:11px;font-weight:600;border:1px solid var(--ring);color:var(--ink2)}
+  /* ---------- small parts ---------- */
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;
+    font-size:13px;font-weight:600;border:1px solid var(--baseline);color:var(--ink2);background:var(--surface2)}
   .badge .dot{width:8px;height:8px;border-radius:50%}
   .b-green .dot{background:var(--warning)} .b-reg .dot{background:var(--series1)}
   .b-vet .dot{background:var(--good)} .b-elite .dot{background:var(--critical)}
   .st-op{color:var(--good)} .st-dmg{color:var(--warning)} .st-hulk{color:var(--serious)}
-
-  .formrow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:10px;
-    background:var(--surface2);border:1px dashed var(--ring);border-radius:8px;padding:10px}
-  .field{display:flex;flex-direction:column}
-  .hint{color:var(--muted);font-size:12px;margin-top:6px}
-  .pillbtns{display:flex;gap:6px;flex-wrap:wrap}
-
-  .abil{display:inline-block;font-size:11px;color:var(--ink2);border:1px solid var(--ring);
-    border-radius:4px;padding:1px 5px;margin:1px 2px 1px 0}
-
-  /* chart */
-  .chartwrap{position:relative}
-  .tooltip{position:absolute;pointer-events:none;background:#000;color:#fff;border:1px solid var(--ring);
-    border-radius:6px;padding:5px 9px;font-size:12px;display:none;white-space:nowrap;z-index:5}
-
-  /* modal */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20}
-  .overlay.on{display:flex}
-  .modal{background:var(--surface);border:1px solid var(--ring);border-radius:12px;max-width:640px;width:92%;
-    max-height:85vh;overflow:auto;padding:18px}
-  .modal h3{margin-bottom:10px}
-  .modal textarea{width:100%;height:220px;font-family:ui-monospace,monospace;font-size:12px}
-
-  .log{max-height:340px;overflow:auto}
-  .rolltxt{background:var(--surface2);border-left:3px solid var(--series1);border-radius:6px;
-    padding:8px 10px;margin:8px 0;font-size:13px;color:var(--ink2)}
-  .clausegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:10px}
-  .clause{background:var(--surface2);border:1px solid var(--ring);border-radius:8px;padding:10px}
-  .clause .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
-  .clause .v{font-size:15px;font-weight:700;margin:4px 0}
-  .ref h3{font-size:13px;margin:14px 0 6px;color:var(--ink2)}
-  .warnbar{background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;
-    padding:8px 12px;margin-bottom:12px;font-size:13px}
+  .spec{display:inline-block;font-size:12px;color:var(--ink2);border:1px solid var(--baseline);border-radius:4px;padding:0 6px;margin:3px 4px 0 0}
+  .bsp{display:inline-block;font-size:12px;font-weight:700;color:var(--series1);border:1px solid rgba(90,162,220,.5);border-radius:4px;padding:0 6px;margin-left:5px}
+  .abil{display:inline-block;font-size:12.5px;color:var(--ink2);border:1px solid var(--baseline);border-radius:4px;padding:1px 6px;margin:3px 3px 0 0}
+  .subhead{font-family:var(--f-display);font-size:12.5px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 6px}
+  .hint{color:var(--muted);font-size:13.5px;margin-top:8px;max-width:110ch}
+  .hint strong{color:var(--ink2)}
   .muted{color:var(--muted)}
+  .pillbtns{display:flex;gap:6px;flex-wrap:wrap}
+  .formrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:10px;
+    background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:12px}
+  .field{display:flex;flex-direction:column}
+  details.adder{margin-top:12px}
+  details.adder>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--ink2);
+    border:1px dashed var(--baseline);border-radius:6px;padding:6px 12px}
+  details.adder>summary::-webkit-details-marker{display:none}
+  details.adder>summary:hover{color:var(--ink);border-color:var(--accent)}
+  details.adder[open]>summary{color:var(--accent);border-style:solid}
+  details.adder>.formrow{margin-top:10px}
+  .rolltxt{background:var(--surface2);border-left:3px solid var(--series1);border-radius:6px;
+    padding:8px 12px;margin:8px 0;color:var(--ink);font-size:14px}
+  .clausegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:10px}
+  .clause{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+  .clause .k{color:var(--muted);font-family:var(--f-display);font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+  .clause .v{font-family:var(--f-display);font-size:17px;font-weight:700;margin:3px 0}
+  .ref h3{font-size:16px;text-transform:uppercase;letter-spacing:.08em;margin:22px 0 8px;color:var(--accent)}
+  .ref table{margin-bottom:6px}
+  .warnbar{background:var(--accent-soft);border:1px solid rgba(233,169,47,.55);border-radius:8px;padding:9px 13px;margin-bottom:12px;font-size:13.5px}
+  .warnbar.debtwarn{background:var(--crit-soft);border-color:rgba(225,83,83,.6);margin-top:16px}
+  .log{max-height:360px;overflow:auto}
+
+  /* ---------- this month: guided steps ---------- */
+  .steps{padding:0;overflow:hidden}
+  .steps .stephead{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid var(--line)}
+  .steps .stephead h2{margin:0}
+  .step{display:grid;grid-template-columns:34px 104px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--grid)}
+  .step:last-child{border-bottom:0}
+  .step .n{font-family:var(--f-display);font-size:20px;font-weight:700;color:var(--muted);text-align:center}
+  .step .t{font-weight:600}
+  .step .d{color:var(--ink2);font-size:14.5px}
+  .chip{display:inline-block;white-space:nowrap;font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    border-radius:4px;padding:2px 8px;text-align:center}
+  .chip.todo{background:var(--accent);color:var(--accent-ink)}
+  .chip.done{background:rgba(77,187,109,.14);color:var(--good)}
+  .chip.wait{background:var(--surface3);color:var(--ink2)}
+  .chip.bad{background:var(--crit-soft);color:#f08b8b}
+  .step.focus{background:var(--accent-soft)}
+  .step.focus .n{color:var(--accent)}
+
+  /* ---------- chart / modal ---------- */
+  .chartwrap{position:relative}
+  .tooltip{position:absolute;pointer-events:none;background:#05070a;color:#fff;border:1px solid var(--baseline);
+    border-radius:6px;padding:5px 9px;font-size:12px;display:none;white-space:nowrap;z-index:5}
+  .overlay{position:fixed;inset:0;background:rgba(3,5,7,.72);display:none;align-items:center;justify-content:center;z-index:30}
+  .overlay.on{display:flex}
+  .modal{background:var(--surface);border:1px solid var(--baseline);border-radius:12px;max-width:680px;width:92%;
+    max-height:86vh;overflow:auto;padding:20px 22px}
+  .modal h3{margin-bottom:10px;font-size:19px;text-transform:uppercase;letter-spacing:.06em}
+  .modal textarea{width:100%;height:200px;font-family:var(--f-mono);font-size:12px}
+
+
+  /* checkbox / radio labels read as normal text, not as field captions */
+  label:has(> input[type=checkbox]),label:has(> input[type=radio]){display:inline-flex;align-items:center;gap:6px;
+    text-transform:none;letter-spacing:0;font-weight:500;font-size:14px;color:var(--ink);margin:0;cursor:pointer}
+  input[type=checkbox],input[type=radio]{width:16px;height:16px;accent-color:var(--accent)}
+  /* stat tiles inside cards size to their count */
+  .card .tiles{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  /* pilots */
+  #pilotTable{font-size:14.5px}
+  #pilotTable td{padding:7px 6px}
+  #pilotTable td:first-child>input{width:245px!important}
+  #pilotTable td.num,#pilotTable td button{white-space:nowrap}
+  #pilotTable td:not(.num) button.small{display:block;margin:2px 0}
+  .abil{cursor:pointer;opacity:.55;border-style:dashed}
+  .abil:hover{opacity:.9}
+  .abil.has{opacity:1;border-style:solid;border-color:var(--accent);color:var(--ink);background:var(--accent-soft)}
+  /* segmented switch (Marketplace sections) */
+  .seg{display:inline-flex;gap:0;border:1px solid var(--baseline);border-radius:8px;overflow:hidden;margin-bottom:16px;flex-wrap:wrap}
+  .seg button{border:0;border-radius:0;background:var(--surface);color:var(--ink2);padding:9px 16px;font-size:15px;border-right:1px solid var(--baseline)}
+  .seg button:last-child{border-right:0}
+  .seg button.on{background:var(--accent);color:var(--accent-ink)}
+  .seg button .cnt{font-weight:400;opacity:.8;margin-left:6px}
+  /* page section spacing */
+  .stack{display:flex;flex-direction:column;gap:16px}
+  .stack>.card{margin-bottom:0}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media(max-width:1180px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:980px){
+    .shell{grid-template-columns:1fr}
+    .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+    .tabs{display:flex;flex-wrap:wrap;gap:4px 14px;padding:6px 12px 10px}
+    .tabgroup{margin-top:4px}
+    .tgbtns{flex-direction:row;flex-wrap:wrap}
+    .tabs button{width:auto;border-left:0;border-bottom:3px solid transparent;border-radius:6px 6px 0 0}
+    .tabs button.on{border-bottom-color:var(--accent)}
+    .main{padding:0 16px 48px}
+    .topbar{position:static}
+    .cols2{grid-template-columns:1fr}
+    .step{grid-template-columns:28px minmax(0,1fr);}
+    .step .chip{justify-self:start}
+  }
+  @media(max-width:560px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.pagehead h1{font-size:24px}}
 </style>
 </head>
 <body>
-<div class="app">
-
-  <div class="hdr">
-    <div class="brand">
-      <input class="cname" id="companyName" value="Barton's Bulldogs" aria-label="Company name">
-      <span class="sub">Mercenary Command Dashboard · Field Manual Rules</span>
-    </div>
-    <div class="hdr-actions">
-      <button id="btnQuickSave" title="Save the campaign in this browser — does not advance the clock">💾 Save</button>
-      <button id="btnEndMonth" class="primary">▶ End Month (Payday)</button>
-      <button id="btnSave">Save / Load</button>
-      <button id="btnReset" title="Wipe the campaign back to defaults" style="border-color:var(--critical);color:var(--serious)">Reset</button>
-    </div>
+<div class="shell">
+<aside class="side" aria-label="Company navigation">
+  <div class="brand">
+    <div class="unitmark">Mercenary command</div>
+    <input class="cname" id="companyName" value="Barton's Bulldogs" aria-label="Company name">
+    <div class="sub">Field Manual rules · BattleTech</div>
+    <div id="sideClock"></div>
   </div>
-
-  <div class="tiles" id="tiles"></div>
-
-  <div class="tabs" id="tabs">
+  <nav class="tabs" id="tabs">
     <div class="tabgroup">
-      <div class="tglabel">Company</div>
+      <div class="tglabel">Command</div>
       <div class="tgbtns">
-        <button data-tab="overview" class="on">Overview</button>
-        <button data-tab="mechs">Forces</button>
-        <button data-tab="pilots">Pilots</button>
-        <button data-tab="personnel">Personnel</button>
-        <button data-tab="repair">Repair Bay</button>
-        <button data-tab="finances">Finances</button>
-        <button data-tab="timeline">Timeline</button>
+        <button data-tab="overview" class="on">Command Center</button>
       </div>
     </div>
     <div class="tabgroup">
-      <div class="tglabel">Mission</div>
+      <div class="tglabel">Forces</div>
       <div class="tgbtns">
+        <button data-tab="mechs">Roster</button>
+        <button data-tab="pilots">Pilots</button>
+        <button data-tab="personnel">Personnel</button>
+      </div>
+    </div>
+    <div class="tabgroup">
+      <div class="tglabel">Operations</div>
+      <div class="tgbtns">
+        <button data-tab="contract">Contract</button>
         <button data-tab="missions">Missions</button>
         <button data-tab="debrief">Debrief</button>
       </div>
     </div>
     <div class="tabgroup">
-      <div class="tglabel">Market</div>
+      <div class="tglabel">Logistics</div>
       <div class="tgbtns">
-        <button data-tab="contract">Contract</button>
+        <button data-tab="repair">Repair Bay</button>
         <button data-tab="market">Marketplace</button>
-        <button data-tab="galaxy">Galaxy Map</button>
+        <button data-tab="finances">Finances</button>
       </div>
     </div>
     <div class="tabgroup">
-      <div class="tglabel">Game Master</div>
-      <div class="tgbtns"><button data-tab="dm">DM Tools</button></div>
+      <div class="tglabel">Intel</div>
+      <div class="tgbtns">
+        <button data-tab="galaxy">Galaxy Map</button>
+        <button data-tab="timeline">Timeline</button>
+      </div>
     </div>
     <div class="tabgroup">
-      <div class="tglabel">Reference</div>
-      <div class="tgbtns"><button data-tab="reference">Rules Ref</button></div>
+      <div class="tglabel">Game master</div>
+      <div class="tgbtns">
+        <button data-tab="dm">GM Tools</button>
+        <button data-tab="reference">Field Manual</button>
+      </div>
     </div>
+  </nav>
+  <div class="danger">
+    <button id="btnReset" title="Wipe the campaign back to defaults">Reset campaign…</button>
   </div>
+</aside>
+<main class="main app">
+  <header class="topbar">
+    <div class="pagehead"><h1 id="pageTitle">Command Center</h1><p id="pageDesc"></p></div>
+    <div class="hdr-actions">
+      <button id="btnQuickSave" title="Save the campaign in this browser — does not advance the clock">💾 Save</button>
+      <button id="btnSave">Save / Load</button>
+      <button id="btnEndMonth" class="primary">▶ End Month (Payday)</button>
+    </div>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
 
   <!-- ================= OVERVIEW ================= -->
   <div class="panel on" id="panel-overview">
+    <div class="card steps" id="ovSteps"></div>
     <div id="ovSituation" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px"></div>
+    <div class="card">
+      <h2>Force readiness <span class="spacer"></span><button class="small" onclick="goTab('mechs')">Roster ▸</button></h2>
+      <div id="readiness"></div>
+    </div>
+
     <div class="cols2">
       <div class="card">
         <h2>Treasury over time <span class="spacer"></span><span class="muted" id="chartNote"></span></h2>
@@ -193,31 +333,27 @@
         </div>
       </div>
       <div class="card">
-        <h2>Monthly expense breakdown</h2>
+        <h2>Monthly expense breakdown <span class="spacer"></span><button class="small" onclick="goTab('finances')">Finances ▸</button></h2>
         <div id="expenseBars"></div>
         <div class="hint">Expenses = pilot salaries + tech teams + spares (50 × tonnage; fighters 75 × tonnage; infantry, battle armor and emplacements a flat rate) + support-unit crew wages + staff, plus 10% overhead rounded up to 500.</div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Reputation <span class="spacer"></span><span id="repBadge"></span></h2>
-      <div id="repView"></div>
-      <div class="hint" id="repHint"></div>
-    </div>
-
-    <div class="card">
-      <h2>Force readiness</h2>
-      <div id="readiness"></div>
-    </div>
-
     <div class="cols2">
-      <div class="card">
-        <h2>Ready to advance <span class="spacer"></span><button class="small" onclick="goTab('pilots')">Pilots ▸</button></h2>
-        <div id="ovAdvance"></div>
-      </div>
       <div class="card">
         <h2>Latest from the log <span class="spacer"></span><button class="small" onclick="goTab('timeline')">Timeline ▸</button></h2>
         <div id="ovEvents"></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2>Reputation <span class="spacer"></span><span id="repBadge"></span></h2>
+          <div id="repView"></div>
+          <div class="hint" id="repHint"></div>
+        </div>
+        <div class="card">
+          <h2>Ready to advance <span class="spacer"></span><button class="small" onclick="goTab('pilots')">Pilots ▸</button></h2>
+          <div id="ovAdvance"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -227,7 +363,8 @@
     <div class="card">
       <h2>Company roster <span class="spacer"></span><span class="muted" id="mechCount"></span></h2>
       <table id="mechTable"></table>
-      <div class="formrow" id="mechForm">
+      <details class="adder"><summary>+ Add a unit by hand</summary>
+      <div class="formrow">
         <div class="field"><label for="mKind">Unit type</label><select id="mKind" onchange="mKindChanged()"></select></div>
         <div class="field"><label>Chassis / variant</label><input id="mName" placeholder="Shadow Hawk SHD-2H" style="width:180px"></div>
         <div class="field" id="mTonWrap"><label>Tonnage</label><input id="mTon" type="number" value="55" min="5" max="200" step="5"></div>
@@ -240,6 +377,7 @@
         <div class="field" id="mUpkWrap" style="display:none"><label for="mUpk">Spares/mo</label><input id="mUpk" type="number" value="500" step="100" style="width:90px"></div>
         <button class="primary" onclick="addMech()">+ Add unit</button>
       </div>
+      </details>
       <div class="hint">Use this form for salvage or units bought off the books; the Marketplace adds purchases here automatically. 'Mechs, vehicles and fighters each carry one tech team (Green 1,500 · Regular 2,000 · Veteran 3,000 · Elite 4,500 /mo) plus spares (50 × tonnage; fighters 75 × tonnage for fuel and ordnance). Support units pay crew wages instead of a pilot salary; infantry and emplacements need no tech team. Hulks pay no spares until restored. Tech team quality is also the repair-roll modifier (−1/+0/+1/+2).</div>
     </div>
   </div>
@@ -249,6 +387,7 @@
     <div class="card">
       <h2>Pilots <span class="spacer"></span><span class="muted" id="pilotCount"></span></h2>
       <table id="pilotTable"></table>
+      <details class="adder"><summary>+ Hire or add a pilot</summary>
       <div class="formrow">
         <div class="field"><label>Name / callsign</label><input id="pName" placeholder='Maria "Havoc" Reyes' style="width:180px"></div>
         <div class="field"><label for="pRole">Role</label><select id="pRole"><option>MechWarrior</option><option>Aerospace pilot</option></select></div>
@@ -257,6 +396,7 @@
         <button class="primary" onclick="addPilot()">+ Add pilot</button>
         <span class="hint" style="align-self:center">Hiring bonus = 2 months' salary — log it in Finances.</span>
       </div>
+      </details>
       <div class="hint">MechWarriors crew 'Mechs and combat vehicles; aerospace pilots fly fighters. Both use the same ratings, salaries and XP. XP awards: battle 1 · kill 1 (max 2) · objective 1 · standout 1 · contract complete 1. One skill improvement per pilot per month; wounds heal 4/month at payday (medical care assumed). 6 wounds = KIA.</div>
     </div>
   </div>
@@ -265,8 +405,9 @@
   <div class="panel" id="panel-personnel">
     <div class="card">
       <h2>Support staff</h2>
-      <p class="hint" style="margin-bottom:8px">Tech teams are managed on the 'Mech roster (one per 'Mech). Basic admin, food and medical are covered by the 10% overhead — list only extra hires here. Two roles are wired straight into the rules: a <strong style="color:var(--ink2)">Negotiator</strong> automatically adds +1 to every contract negotiation, and a <strong style="color:var(--ink2)">Surgeon or Medic</strong> automatically provides medical care in the Repair Bay (1 wound per 7 days instead of 14).</p>
+      <p class="hint" style="margin-bottom:8px">Tech teams are managed on the Roster page (one per unit that needs one). Basic admin, food and medical are covered by the 10% overhead — list only extra hires here. Two roles are wired straight into the rules: a <strong style="color:var(--ink2)">Negotiator</strong> automatically adds +1 to every contract negotiation, and a <strong style="color:var(--ink2)">Surgeon or Medic</strong> automatically provides medical care in the Repair Bay (1 wound per 7 days instead of 14).</p>
       <table id="staffTable"></table>
+      <details class="adder"><summary>+ Add support staff</summary>
       <div class="formrow">
         <div class="field"><label>Name</label><input id="sName" placeholder="Doc Silvers" style="width:160px"></div>
         <div class="field"><label>Role</label><select id="sRole" onchange="sRoleChanged()"></select></div>
@@ -274,6 +415,7 @@
         <div class="field"><label>Monthly cost</label><input id="sCost" type="number" value="1000" step="100" style="width:100px"></div>
         <button class="primary" onclick="addStaff()">+ Add staff</button>
       </div>
+      </details>
       <div class="hint" id="sRoleHint"></div>
     </div>
     <div class="card">
@@ -305,7 +447,12 @@
     </div>
 
     <div class="card">
-      <h2>Schedule repair work</h2>
+      <h2>Work in progress <span class="spacer"></span><span class="muted" id="wipCount"></span></h2>
+      <div id="wipArea"></div>
+    </div>
+
+    <div class="card">
+      <h2>Queue a repair job</h2>
       <div class="formrow" style="margin-top:0">
         <div class="field"><label for="rMech">Unit</label><select id="rMech" style="min-width:170px"></select></div>
         <div class="field"><label>Task</label><select id="rType" onchange="rRecalc(true)" style="min-width:200px"></select></div>
@@ -319,25 +466,20 @@
       <div class="hint">Days and cost pre-fill from the Field Manual — edit them for odd jobs. Each 'Mech's tech team works one job at a time; the tech roll (2d6 + team + facility vs TN) happens when the team picks the job up. Fail = double time · snake eyes = botch. Rush shifts work 2 days per day at +1 TN. <strong>Replacing a destroyed component consumes a part from company stores</strong> — no part, no job.</div>
     </div>
 
-    <div class="card">
-      <h2>Company stores <span class="spacer"></span><span class="muted" id="storesCount"></span></h2>
-      <div id="storesRepair"></div>
-    </div>
-
-    <div class="card">
-      <h2>Work in progress <span class="spacer"></span><span class="muted" id="wipCount"></span></h2>
-      <div id="wipArea"></div>
-    </div>
-
     <div class="cols2">
       <div class="card">
         <h2>Infirmary</h2>
         <div id="infirmary"></div>
       </div>
       <div class="card">
-        <h2>Timeline</h2>
+        <h2>Bay log</h2>
         <div class="log" id="timeline"></div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Company stores <span class="spacer"></span><span class="muted" id="storesCount"></span></h2>
+      <div id="storesRepair"></div>
     </div>
   </div>
 
@@ -390,10 +532,11 @@
         <div class="formrow" style="margin-top:0">
           <div class="field"><label>Description</label><input id="txDesc" placeholder="Salvage sale — Panther hulk" style="width:220px"></div>
           <div class="field"><label>Amount (C-bills)</label><input id="txAmt" type="number" value="10000" step="500" style="width:110px"></div>
-          <button onclick="logTx(1)" class="primary">+ Income</button>
-          <button onclick="logTx(-1)">− Expense</button>
+          <div style="display:flex;gap:8px"><button onclick="logTx(1)" class="primary">+ Income</button>
+          <button onclick="logTx(-1)">− Expense</button></div>
         </div>
-        <div class="pillbtns" style="margin-top:10px">
+        <div class="hint" style="margin-top:12px">Quick labels:</div>
+        <div class="pillbtns" style="margin-top:6px">
           <button class="small" onclick="preset('Repair bill')">Repair bill</button>
           <button class="small" onclick="preset('Parts purchase')">Parts</button>
           <button class="small" onclick="preset('Ammo reload')">Ammo</button>
@@ -460,7 +603,7 @@
         <button class="small" onclick="repChange(2,'DM adjustment')">+2</button>
         <button class="small" onclick="repChange(-2,'DM adjustment')">−2</button>
         <span class="spacer" style="flex:1"></span>
-        <span class="muted" style="font-size:12px">Every change is logged to the ledger.</span>
+        <span class="muted" style="font-size:13px">Every change is logged to the ledger.</span>
       </div>
     </div>
   </div>
@@ -469,6 +612,7 @@
   <div class="panel" id="panel-reference">
     <div class="card ref" id="refCard"></div>
   </div>
+</main>
 </div>
 
 <!-- save/load modal -->
@@ -489,7 +633,7 @@
     <div class="hint" id="saveMsg"></div>
     <h3 style="margin-top:16px">☁️ Cloud sync (share one campaign across machines)</h3>
     <p class="hint" style="margin:4px 0 8px">Everything above lives only in this browser. This copy of the dashboard already has a shared database wired in — anyone who opens this same file/URL and enters the same <strong>Campaign code</strong> below can save/load the same company. No setup needed unless you want to point it at a different Firebase project instead.</p>
-    <details id="cloudSetupDetails">
+    <details>
       <summary class="small" style="cursor:pointer">⚙️ Cloud config (only if you want a different database)</summary>
       <div style="margin-top:8px">
         <ol class="hint" style="margin:0 0 8px;padding-left:18px">
@@ -501,8 +645,8 @@
         </ol>
         <textarea id="cloudConfigText" spellcheck="false" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' style="height:90px"></textarea>
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button id="btnSaveCloudConfig" onclick="saveCloudConfig()">Save config</button>
-          <button id="btnClearCloudConfig" class="ghost" onclick="clearCloudConfig()">Revert to built-in database</button>
+          <button onclick="saveCloudConfig()">Save config</button>
+          <button class="ghost" onclick="clearCloudConfig()">Revert to built-in database</button>
         </div>
       </div>
     </details>
@@ -514,7 +658,7 @@
       <button onclick="cloudLoadCampaign()">☁️ Load from cloud</button>
     </div>
     <div class="hint" id="cloudMsg" style="margin-top:8px"></div>
-    <h3 style="margin-top:16px">Monthly backups (this session)</h3>
+    <h3 style="margin-top:16px">Monthly backups</h3>
     <p class="hint" style="margin:4px 0 8px">Every press of <strong>End Month</strong> automatically captures the company as it was <em>before</em> payday and stores it in this browser (last 12 kept, refresh-proof). Load one to rewind to that month, or Download a copy to keep off-site.</p>
     <div id="backupList"></div>
   </div>
@@ -704,6 +848,8 @@ const AERO_CLAN=[
    n name · t tons (0 = not tracked) · c C-bills · bv (BSP × 20 where the book gives a BSP) · crew wage/mo ·
    upk flat spares/mo (crew kinds without tonnage) · sp BFS Specials · fx campaign effect · y intro year · clan */
 const SUPPORT_GROUPS=[
+  {kind:"veh",tn:6,extra:2,label:"Combat vehicles",note:"Armor is common: 2d6 + world ≥ 6, and combat vehicles keep a MechWarrior crew chief like before.",
+    items:Object.entries(VEH_CATALOG).flatMap(([cls,a])=>a.map(x=>({n:x[0],t:x[1],c:x[2],bv:x[3],cls})))},
   {kind:"inf",tn:5,extra:1,label:"Conventional infantry",note:"Hiring halls always have riflemen: 2d6 + world ≥ 5.",items:[
     {n:"Foot rifle platoon (28)",t:0,c:150000,bv:140,crew:2800,upk:500,sp:"Foot"},
     {n:"Foot laser platoon (28)",t:0,c:240000,bv:160,crew:2800,upk:700,sp:"Foot"},
@@ -910,8 +1056,8 @@ let offerRollTxt = "";  // how many offers the market gave us
 function seedState(){
   return {
     name:"Barton's Bulldogs", month:1, day:1, treasury:500000, reputation:3, nextId:100,
-    facility:"Bay", medCare:true, tasks:[], repairLog:[], battles:0, dmQueue:[],
-    market:{month:0,world:"Standard",mechs:[],vehs:[],rares:[],clsRolls:null,vehRolls:null,rolled:false},
+    facility:"Bay", tasks:[], repairLog:[], battles:0, dmQueue:[],
+    market:{month:0,world:"Standard",mechs:[],rares:[],clsRolls:null,rolled:false},
     events:[{m:1,d:1,type:"found",text:"Company founded on the Galatean hiring circuit"}],
     contractHistory:[], currentSystem:"Galatea", missions:[], extraBattleMonth:0, extraBattleRoll:null, strikes:[],
     pilots:[
@@ -951,7 +1097,7 @@ function pilotSalary(p){return SAL[pilotRating(p)];}
 function ratingBadge(r){const cls={Green:"b-green",Regular:"b-reg",Veteran:"b-vet",Elite:"b-elite"}[r];
   return `<span class="badge ${cls}"><span class="dot"></span>${r}</span>`;}
 function roundUp500(n){return Math.ceil(n/500)*500;}
-function kindOf(m){return KINDS[m.kind]?m.kind:(m.veh?"veh":"mech");}
+function kindOf(m){return KINDS[m.kind]?m.kind:"mech";}
 function K(m){return KINDS[kindOf(m)];}
 function campYear(){return 3049+Math.floor((S.month-1)/12);}
 function unitTech(m){return K(m).tech?TECHCOST[m.tech]||0:0;}
@@ -961,7 +1107,6 @@ function unitUpkeep(m){return unitTech(m)+unitSpares(m)+unitCrew(m);}
 function unitBSP(m){return m.bv>0?Math.round(m.bv/BV_PER_BSP):0;}
 function pilotRole(p){return p.role||"MechWarrior";}
 function pilotFits(p,m){const k=K(m);return !k.crew&&pilotRole(p)===k.pilot;}
-function hasFx(fx){return S.mechs.some(m=>m.fx===fx&&m.status==="Operational");}
 function mfbUnit(){return S.mechs.find(m=>m.fx==="mfb"&&m.status==="Operational");}
 function facMod(){const f=FACMOD[S.facility];return (S.facility==="Field"&&mfbUnit())?0:f;}
 function specTags(m){return m.sp?String(m.sp).split(",").map(x=>x.trim()).filter(Boolean).map(x=>`<span class="spec">${esc(x)}</span>`).join(""):"";}
@@ -986,6 +1131,98 @@ function renderAll(){
   renderTiles(); renderMechs(); renderPilots(); renderStaff();
   renderContract(); renderFinances(); renderOverview(); renderRef(); renderRepair(); renderDebrief(); renderDM(); renderMarket(); renderTimelinePage(); renderGalaxy(); renderMissions();
   renderSaveBtn();
+  renderShell(); renderSteps();
+}
+
+/* ============ SHELL: page heads, nav badges, clock, guided month ============ */
+const PAGE_INFO={
+  overview:["Command Center","Where the company stands and what to do next this month."],
+  mechs:["Roster","Every 'Mech, vehicle, fighter and support unit, with pilots, tech teams and monthly upkeep."],
+  pilots:["Pilots","MechWarriors and aerospace pilots: skills, XP, wounds and pay."],
+  personnel:["Personnel","Support staff and recruiting rolls."],
+  contract:["Contract","Find work, negotiate the terms and resolve the contract when it ends."],
+  missions:["Missions","This month's operations under the current contract."],
+  debrief:["Debrief","Record damage, wounds, XP and salvage after each battle."],
+  repair:["Repair Bay","Queue repairs, move the clock forward and look after the wounded."],
+  market:["Marketplace","Buy 'Mechs, fighters, support units, parts and one-battle Strikes."],
+  finances:["Finances","The ledger, manual transactions and this month's projection."],
+  galaxy:["Galaxy Map","Where the company is and where it can travel."],
+  timeline:["Timeline","The company's history, month by month."],
+  dm:["GM Tools","Battle Value, hand-built contracts and reputation overrides."],
+  reference:["Field Manual","Every rule this dashboard runs on."]
+};
+function activeTab(){const b=document.querySelector("#tabs button.on");return b?b.dataset.tab:"overview";}
+function pilotCanAdvance(p){
+  if(p.wounds>=6||p.improvedMonth===S.month)return false;
+  const g=GUNCOST[p.gunnery-1], pc=PILCOST[p.piloting-1];
+  return (g!==undefined&&p.xp>=g)||(pc!==undefined&&p.xp>=pc);
+}
+function monthFacts(){
+  const c=S.contract;
+  const ms=c?S.missions.filter(m=>m.month===S.month&&m.hid===c.histId):[];
+  const pending=ms.filter(m=>m.status==="pending").length;
+  const open=S.tasks.filter(t=>t.status!=="done");
+  const unattended=S.mechs.filter(m=>m.status==="Damaged"&&!open.some(t=>t.mechId===m.id));
+  const hulks=S.mechs.filter(m=>m.status==="Hulk").length;
+  const hurt=S.pilots.filter(p=>p.wounds>0&&p.wounds<6).length;
+  const adv=S.pilots.filter(pilotCanAdvance);
+  const mkt=S.market.rolled&&S.market.month===S.month;
+  return {c,ms,pending,open,unattended,hulks,hurt,adv,mkt};
+}
+function renderShell(){
+  const f=monthFacts(), t=activeTab(), info=PAGE_INFO[t]||["",""];
+  $("pageTitle").textContent=info[0]; $("pageDesc").textContent=info[1];
+  $("sideClock").innerHTML=`<div class="clock"><span class="d">Day ${Math.min(S.day,30)} / 30</span><span class="m">${campDate(S.month)} · M${S.month}</span></div>
+    <div class="daybar" aria-hidden="true"><span style="width:${Math.min(100,Math.round(Math.min(S.day,30)/30*100))}%"></span></div>`;
+  const badge={
+    contract:!f.c?["!","hot"]:f.c.monthsLeft<=0?["!","hot"]:null,
+    missions:f.pending?[f.pending,"hot"]:null,
+    debrief:(typeof B!=="undefined"&&B)?["•","hot"]:null,
+    repair:f.unattended.length?[f.unattended.length,"hot"]:f.open.length?[f.open.length,""]:null,
+    pilots:f.adv.length?[f.adv.length,""]:null,
+    finances:S.treasury<0?["−","bad"]:null
+  };
+  document.querySelectorAll("#tabs button").forEach(b=>{
+    let nb=b.querySelector(".nb"); const v=badge[b.dataset.tab];
+    if(!v){if(nb)nb.remove();return;}
+    if(!nb){nb=document.createElement("span");nb.className="nb";b.appendChild(nb);}
+    nb.textContent=v[0]; nb.className="nb"+(v[1]?" "+v[1]:"");
+  });
+}
+function renderSteps(){
+  const el=$("ovSteps"); if(!el)return;
+  const f=monthFacts(), c=f.c, e=expenses();
+  const st=[];
+  /* 1 contract */
+  if(!c)st.push({t:"Contract",chip:"todo",d:"Unemployed. Roll offers at the hiring hall and sign one.",go:"contract",btn:"Find work"});
+  else if(c.monthsLeft<=0)st.push({t:"Contract",chip:"todo",d:`The ${esc(c.mission)} term is complete. Resolve it to apply pay and Reputation.`,go:"contract",btn:"Resolve"});
+  else st.push({t:"Contract",chip:"done",d:`${esc(c.mission)} for ${esc(c.employer)} · ${c.monthsLeft} month${c.monthsLeft===1?"":"s"} left · ${fmt(c.monthlyPay)}/mo`,go:"contract",btn:"View"});
+  /* 2 missions */
+  if(!c)st.push({t:"Missions",chip:"wait",d:"No orders without a contract.",go:"missions",btn:"Open"});
+  else if(f.pending)st.push({t:"Missions",chip:"todo",d:`${f.pending} of ${f.ms.length} operation${f.ms.length===1?"":"s"} still to fight this month. Run a debrief after each battle.`,go:"missions",btn:"Fight"});
+  else st.push({t:"Missions",chip:f.ms.length?"done":"wait",d:f.ms.length?`All ${f.ms.length} operation${f.ms.length===1?"":"s"} handled this month.`:"No operations ordered this month.",go:"missions",btn:"Open"});
+  /* 3 debrief */
+  if(typeof B!=="undefined"&&B)st.push({t:"Debrief",chip:"todo",d:"A debrief is open. Apply it to record damage, wounds, XP and salvage.",go:"debrief",btn:"Finish"});
+  else st.push({t:"Debrief",chip:"wait",d:`Run one after every battle. ${S.battles||0} logged this month${(S.strikes||[]).length?` · ${S.strikes.length} Strike${S.strikes.length===1?"":"s"} hired for the next one`:""}.`,go:"debrief",btn:"Open"});
+  /* 4 repair & refit */
+  if(f.unattended.length)st.push({t:"Repair & refit",chip:"todo",d:`${f.unattended.map(m=>esc(m.name)).slice(0,3).join(", ")}${f.unattended.length>3?` and ${f.unattended.length-3} more`:""} ${f.unattended.length===1?"is":"are"} damaged with no work queued.`,go:"repair",btn:"Queue work"});
+  else if(f.open.length)st.push({t:"Repair & refit",chip:"wait",d:`${f.open.length} job${f.open.length===1?"":"s"} in the bay${f.hurt?` · ${f.hurt} pilot${f.hurt===1?"":"s"} healing`:""}. Days pass with the clock.`,go:"repair",btn:"Open bay"});
+  else st.push({t:"Repair & refit",chip:"done",d:`No repairs waiting${f.hulks?` (${f.hulks} hulk${f.hulks===1?"":"s"} in storage)`:""}${f.hurt?` · ${f.hurt} pilot${f.hurt===1?"":"s"} healing`:""}.`,go:"repair",btn:"Open bay"});
+  /* 5 market & advancement */
+  const advTxt=f.adv.length?`${f.adv.length} pilot${f.adv.length===1?"":"s"} can spend XP.`:"";
+  st.push({t:"Market & training",chip:(f.mkt&&!f.adv.length)?"done":"wait",
+    d:`${f.mkt?"Market rolled this month.":"Market not rolled yet (optional)."} ${advTxt}`,go:f.adv.length&&f.mkt?"pilots":"market",btn:f.adv.length&&f.mkt?"Pilots":"Marketplace"});
+  /* 6 payday */
+  const net=(c&&c.monthsLeft>0?(c.advancePaid&&c.monthsLeft===1?0:c.monthlyPay):0)-e.total;
+  st.push({t:"Payday",chip:S.day>=30?"todo":"wait",d:`Day ${Math.min(S.day,30)} of 30. End Month runs the clock to day 30, pays ${fmt(e.total)} in expenses${c&&c.monthsLeft>0?" and collects contract pay":""} · projected net ${net>=0?"+":""}${fmt(net)}.`,end:true});
+  const focus=st.findIndex(x=>x.chip==="todo");
+  el.innerHTML=`<div class="stephead"><h2>This month · ${campDate(S.month)}</h2><span class="muted" style="font-size:12.5px">${focus<0?"Everything is in order — end the month when you're ready.":"Next up: "+st[focus].t}</span></div>`+
+    st.map((x,i)=>`<div class="step${i===focus?" focus":""}">
+      <div class="n">${i+1}</div>
+      <span class="chip ${x.chip}">${{todo:"To do",done:"Done",wait:"Waiting",bad:"Problem"}[x.chip]}</span>
+      <div><div class="t">${x.t}</div><div class="d">${x.d}</div></div>
+      <div>${x.end?'<button class="primary small" onclick="endMonth()">End Month</button>':`<button class="small" onclick="goTab('${x.go}')">${x.btn}</button>`}</div>
+    </div>`).join("");
 }
 
 function renderTiles(){
@@ -1015,7 +1252,7 @@ function unitRow(m){
     const stOpts=["Operational","Damaged","Hulk"].map(s=>`<option ${m.status===s?"selected":""}>${s}</option>`).join("");
     let who;
     if(k.crew){
-      who=`<span class="muted" style="font-size:11px">Crew</span> <input type="number" value="${m.crew||0}" step="100" min="0" style="width:84px" aria-label="Crew wages per month for ${esc(m.name)}"
+      who=`<span class="muted" style="font-size:12.5px">Crew</span> <input type="number" value="${m.crew||0}" step="100" min="0" style="width:84px" aria-label="Crew wages per month for ${esc(m.name)}"
         onchange="setMech(${m.id},'crew',Math.max(0,+this.value||0))">`;
     } else {
       const fits=S.pilots.filter(p=>pilotFits(p,m)||p.id===m.pilotId);
@@ -1028,8 +1265,8 @@ function unitRow(m){
       :`<span class="muted">—</span>`;
     const techCell=k.tech
       ?`<select onchange="setMech(${m.id},'tech',this.value)" aria-label="Tech team">${techOpts}</select>
-          <span class="muted" style="font-size:11px">${TECHMOD[m.tech]>=0?"+":""}${TECHMOD[m.tech]}</span>`
-      :`<span class="muted" style="font-size:11px">none needed</span>`;
+          <span class="muted" style="font-size:12.5px">${TECHMOD[m.tech]>=0?"+":""}${TECHMOD[m.tech]}</span>`
+      :`<span class="muted" style="font-size:12.5px">none needed</span>`;
     const bsp=(kind!=="mech"&&m.bv>0)?`<span class="bsp" title="Battlefield Support Points: BV ÷ 20 (Core Rulebook p. 157)">${unitBSP(m)} BSP</span>`:"";
     const upkTitle=`tech ${fmt(unitTech(m))} + spares ${fmt(unitSpares(m))}${k.crew?" + crew "+fmt(unitCrew(m)):""}`;
     return `<tr>
@@ -1088,8 +1325,8 @@ function renderPilots(){
     const gOk=gNew>=1&&p.xp>=gCost&&!already, pOk=pNew>=1&&p.xp>=pCost&&!already;
     const abil=ABILITIES.map(a=>{
       const has=p.abilities.includes(a);
-      return `<span class="abil" style="${has?'border-color:var(--series1);color:var(--ink)':''};cursor:pointer"
-        onclick="toggleAbility(${p.id},'${a}')" title="Click to toggle">${a}${has?" ✓":""}</span>`;}).join("");
+      return `<span class="abil${has?" has":""}" role="button" tabindex="0"
+        onclick="toggleAbility(${p.id},'${a}')" title="${has?"Has this ability — click to remove":"Click to grant this ability"}">${a}${has?" ✓":""}</span>`;}).join("");
     const ratingSel=`<select onchange="setRating(${p.id},this.value)"
         title="Selecting a rating sets skills to its typical values (5/6 · 4/5 · 3/4 · 2/3)">
         ${["Green","Regular","Veteran","Elite"].map(x=>`<option ${x===r?"selected":""}>${x}</option>`).join("")}</select>`;
@@ -1110,7 +1347,7 @@ function renderPilots(){
           title="${already?"Already improved this month":gNew<1?"Skill floor is 1":"Costs "+gCost+" XP"}">Gun → ${gNew<1?"—":gNew} (${gNew<1?"—":gCost} XP)</button>
         <button class="small" ${pOk?"":"disabled"} onclick="improve(${p.id},'piloting')"
           title="${already?"Already improved this month":pNew<1?"Skill floor is 1":"Costs "+pCost+" XP"}">Pil → ${pNew<1?"—":pNew} (${pNew<1?"—":pCost} XP)</button>
-        ${already?'<div class="muted" style="font-size:11px">improved this month</div>':""}</td>
+        ${already?'<div class="muted" style="font-size:12.5px">improved this month</div>':""}</td>
       <td class="num">${p.wounds>0?`<span style="color:${p.wounds>=4?"var(--critical)":"var(--warning)"}">${"♥".repeat(Math.min(p.wounds,6))}</span> ${p.wounds}`:"—"}
         <button class="small" onclick="wound(${p.id},1)">+</button><button class="small" onclick="wound(${p.id},-1)">−</button></td>
       <td class="num">${fmt(pilotSalary(p))}</td>
@@ -1129,7 +1366,7 @@ function renderStaff(){
   }
   const fx=s=>/negotiat/i.test(s.role)?'<span class="badge"><span class="dot" style="background:var(--series1)"></span>+1 negotiation</span>'
     :/surgeon|medic|doctor/i.test(s.role)?'<span class="badge"><span class="dot" style="background:var(--good)"></span>7-day healing</span>'
-    :'<span class="muted" style="font-size:11px">—</span>';
+    :'<span class="muted" style="font-size:12.5px">—</span>';
   const rows=S.staff.map(s=>`<tr><td><strong>${esc(s.name)}</strong></td><td>${esc(s.role)}</td>
     <td>${fx(s)}</td>
     <td class="num">${fmt(s.cost)}</td><td><button class="small ghost" onclick="delStaff(${s.id})">✕</button></td></tr>`).join("");
@@ -1148,28 +1385,28 @@ function renderOverview(){
   const locCard=`<div class="card" style="margin-bottom:0">
     <h2 style="margin-bottom:6px">Location <span class="spacer"></span><button class="small" onclick="goTab('galaxy')">Galaxy Map ▸</button></h2>
     <div style="font-size:19px;font-weight:700">◈ ${esc(sys.name)}</div>
-    <div class="muted" style="font-size:12px;margin:2px 0 8px">${FACTIONS[sys.fac].name} · ${sys.type} world</div>
+    <div class="muted" style="font-size:13px;margin:2px 0 8px">${FACTIONS[sys.fac].name} · ${sys.type} world</div>
     <div style="font-size:13px;color:var(--ink2)">Market modifier ${WORLD_MODS[sys.type]>=0?"+":""}${WORLD_MODS[sys.type]} ·
       ${mktFresh?`<span class="st-op">market rolled for ${campDate(S.month)}</span>`
         :S.market.rolled?`<span style="color:var(--warning)">market listings stale — reroll</span>`
         :`<span class="muted">market not rolled this month</span>`}
       <button class="small" onclick="goTab('market')" style="margin-left:4px">Shop ▸</button></div>
-    <div class="muted" style="font-size:12px;margin-top:6px">${campDate(S.month,true)} — Day ${S.day} · ${Math.max(0,30-S.day)} days to payday</div>
+    <div class="muted" style="font-size:13px;margin-top:6px">${campDate(S.month,true)} — Day ${S.day} · ${Math.max(0,30-S.day)} days to payday</div>
   </div>`;
   const clause1=c?`${c.clauses.Command} · ${c.clauses.Salvage} salvage · ${c.clauses.Support} support · ${c.clauses.Transport} transport`:"";
   const conCard=c?`<div class="card" style="margin-bottom:0;border-left:3px solid var(--series1)">
     <h2 style="margin-bottom:6px">Contract <span class="spacer"></span><button class="small" onclick="goTab('contract')">Details ▸</button></h2>
     <div style="font-size:16px;font-weight:700">${esc(c.mission)}</div>
-    <div class="muted" style="font-size:12px;margin:2px 0 8px">for ${esc(c.employer)} · ${c.monthsLeft} of ${c.monthsTotal} months left</div>
+    <div class="muted" style="font-size:13px;margin:2px 0 8px">for ${esc(c.employer)} · ${c.monthsLeft} of ${c.monthsTotal} months left</div>
     <div style="font-size:13px;color:var(--ink2)">${fmt(c.monthlyPay)}/mo${c.advancePaid&&c.monthsLeft===1?" (final month — already advanced)":""}<br>
       ${c.tempo} tempo: ${TEMPO_BATTLES[c.tempo]} — <strong>${S.battles||0} fought</strong> this month
       ${(S.battles||0)<(c.tempo==="High"?3:c.tempo==="Medium"?2:1)?`<button class="small" onclick="goTab('debrief')" style="margin-left:4px">Debrief ▸</button>`:""}</div>
-    <div class="muted" style="font-size:11px;margin-top:6px">${clause1}</div>
+    <div class="muted" style="font-size:12.5px;margin-top:6px">${clause1}</div>
   </div>`
   :`<div class="card" style="margin-bottom:0;border-left:3px solid var(--warning)">
     <h2 style="margin-bottom:6px">Contract <span class="spacer"></span><button class="small" onclick="goTab('contract')">Hiring hall ▸</button></h2>
     <div style="font-size:16px;font-weight:700;color:var(--warning)">Unemployed</div>
-    <div class="muted" style="font-size:12px;margin:2px 0 8px">${drafts.length?`${drafts.length} offer${drafts.length>1?"s":""} on the table — compare and sign`:"no offers on the table — roll the hiring hall"}</div>
+    <div class="muted" style="font-size:13px;margin:2px 0 8px">${drafts.length?`${drafts.length} offer${drafts.length>1?"s":""} on the table — compare and sign`:"no offers on the table — roll the hiring hall"}</div>
     <div style="font-size:13px;color:var(--ink2)">Burn rate ${fmt(expenses().total)}/mo · ${S.treasury>0?`~${Math.floor(S.treasury/Math.max(1,expenses().total))} months of treasury left`:'<span class="neg">in debt</span>'}</div>
   </div>`;
   const bayCard=`<div class="card" style="margin-bottom:0">
@@ -1190,8 +1427,8 @@ function renderOverview(){
     return {p,opts};
   }).filter(x=>x.opts.length);
   $("ovAdvance").innerHTML=adv.length?`<table><tr><th>Pilot</th><th class="num">XP</th><th>Can buy</th></tr>${
-    adv.map(({p,opts})=>`<tr><td>${esc(p.name)} ${p.improvedMonth===S.month?'<span class="muted" style="font-size:11px">(already improved this month)</span>':""}</td>
-      <td class="num">${p.xp}</td><td style="font-size:12px">${opts.join(" · ")}</td></tr>`).join("")}</table>`
+    adv.map(({p,opts})=>`<tr><td>${esc(p.name)} ${p.improvedMonth===S.month?'<span class="muted" style="font-size:12.5px">(already improved this month)</span>':""}</td>
+      <td class="num">${p.xp}</td><td style="font-size:13px">${opts.join(" · ")}</td></tr>`).join("")}</table>`
     :'<p class="muted" style="margin:4px 0">Nobody can afford an improvement yet — go earn some XP.</p>';
   /* ---- latest log ---- */
   $("ovEvents").innerHTML=S.repairLog.length?S.repairLog.slice(0,7).map(e=>
@@ -1227,7 +1464,7 @@ function renderOverview(){
     :"";
   $("readiness").innerHTML=`<table><tr><th>Unit</th><th>Status</th><th>Pilot</th><th>Rating</th><th>Condition</th></tr>${rd}</table>`
     +bench
-    +`<div class="hint">Reassign pilots here — picking a pilot marked ⇄ pulls them out of their current unit (it becomes unassigned). MechWarriors crew 'Mechs and combat vehicles; aerospace pilots fly fighters. Support units fight at their Asset card's Skill. Models and status are edited on the Forces tab; pilot wounds on the Pilots tab or in the Repair Bay.</div>`;
+    +`<div class="hint">Reassign pilots here — picking a pilot marked ⇄ pulls them out of their current unit (it becomes unassigned). MechWarriors crew 'Mechs and combat vehicles; aerospace pilots fly fighters. Support units fight at their Asset card's Skill. Models and status are edited on the Roster page; pilot wounds on the Pilots tab or in the Repair Bay.</div>`;
   const rep=repInfo();
   $("repBadge").innerHTML=`<span class="badge"><span class="dot" style="background:var(--series1)"></span>${rep.name} (${S.reputation}/10)</span>`;
   const repEvents=S.ledger.filter(l=>/^Reputation/.test(l.d)).slice(0,4);
@@ -1239,8 +1476,8 @@ function renderOverview(){
       </div>
       <span style="font-size:13px;color:var(--ink2)">Negotiation ${rep.mod>=0?"+":""}${rep.mod}${negotiator()?" (+1 negotiator)":""}</span>
     </div>
-    ${c2?`<div class="muted" style="font-size:12px;margin-bottom:4px">Current contract losses: ${c2.mechsLost||0} of ${c2.startMechs||S.mechs.length} 'Mechs${(c2.mechsLost||0)*2>(c2.startMechs||1)?' — <span style="color:var(--warning)">heavy-losses penalty will apply at resolution</span>':""}</div>`:""}
-    ${repEvents.length?repEvents.map(l=>`<div style="font-size:12px;color:var(--ink2);padding:1px 0"><span class="muted">M${l.m}</span> ${esc(l.d)}</div>`).join(""):'<div class="muted" style="font-size:12px">No reputation changes yet.</div>'}`;
+    ${c2?`<div class="muted" style="font-size:13px;margin-bottom:4px">Current contract losses: ${c2.mechsLost||0} of ${c2.startMechs||S.mechs.length} 'Mechs${(c2.mechsLost||0)*2>(c2.startMechs||1)?' — <span style="color:var(--warning)">heavy-losses penalty will apply at resolution</span>':""}</div>`:""}
+    ${repEvents.length?repEvents.map(l=>`<div style="font-size:13px;color:var(--ink2);padding:1px 0"><span class="muted">M${l.m}</span> ${esc(l.d)}</div>`).join(""):'<div class="muted" style="font-size:13px">No reputation changes yet.</div>'}`;
   $("repHint").textContent=`Adjusts automatically from contract resolutions and heavy losses. ${rep.note||""} DM overrides live in DM Tools.`;
   drawChart(); drawExpenseBars();
 }
@@ -1252,7 +1489,7 @@ function drawExpenseBars(){
   const max=Math.max(...items.map(i=>i[1]),1);
   $("expenseBars").innerHTML=items.map(([k,v])=>`
     <div style="margin:8px 0">
-      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink2)">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink2)">
         <span>${k}</span><span style="font-variant-numeric:tabular-nums;color:var(--ink)">${fmt(v)}</span></div>
       <div style="background:var(--surface3);border-radius:4px;height:14px;margin-top:3px">
         <div style="width:${Math.max(2,v/max*100)}%;height:100%;background:var(--series1);border-radius:4px"></div></div>
@@ -1306,13 +1543,11 @@ function drawChart(){
 /* ============ MUTATIONS ============ */
 function setMech(id,k,v){const m=S.mechs.find(x=>x.id===id);if(!m)return;
   if(k==="pilotId"&&v!==null){S.mechs.forEach(o=>{if(o.id!==id&&o.pilotId===v)o.pilotId=null;});}
-  if(k==="kind")m.veh=(v==="veh");
   m[k]=v;renderAll();}
 function addMech(){const n=$("mName").value.trim();if(!n)return;
   const kind=$("mKind").value||"mech", k=KINDS[kind];
   const u={id:uid(),kind,name:n,ton:k.perTon?clamp(+$("mTon").value||k.minT,k.minT,k.maxT):0,
     val:+$("mVal").value||3000000,bv:0,pilotId:null,tech:$("mTech").value,status:$("mStatus").value};
-  if(kind==="veh")u.veh=true;
   if(k.crew)u.crew=Math.max(0,+$("mCrew").value||0);
   if(!k.perTon)u.upk=Math.max(0,+$("mUpk").value||0);
   S.mechs.push(u);
@@ -1516,7 +1751,7 @@ function renderMissions(){
       ${c.tempo==="Low"&&S.extraBattleMonth!==S.month?'<button class="small" onclick="rollExtraBattle()">🎲 Roll for a second battle (2d6 ≥ 9)</button>':""}
       ${c.tempo==="Low"&&S.extraBattleMonth===S.month&&S.extraBattleRoll&&S.extraBattleRoll.month===S.month?`<span class="rolltxt" style="margin:0;padding:4px 10px;display:inline-block">Second battle: 2d6 = <strong>${S.extraBattleRoll.roll}</strong> vs 9 → ${S.extraBattleRoll.ok?'<strong style="color:var(--good)">extra operation ordered</strong>':'<span class="muted">a quiet month on the line — no second battle</span>'}</span>`:""}
       ${cur.length<target?`<button class="small" onclick="S.missions.push(genMission(${cur.length+1}));renderAll()">+ Cut missing orders</button>`:""}
-      <label style="display:flex;align-items:center;gap:6px;margin:0;font-size:12px;color:var(--serious)">
+      <label style="display:flex;align-items:center;gap:6px;margin:0;font-size:13px;color:var(--serious)">
         <input type="checkbox" ${dmUnlockMissions?"checked":""} onchange="dmUnlockMissions=this.checked;renderAll()">DM unlock (edit everything)</label>
     </div>
   </div>`;
@@ -1698,7 +1933,7 @@ function renderContract(){
 function activeContractHTML(){
   const c=S.contract;
   const clause=(k)=>`<div class="clause"><div class="k">${k}</div><div class="v">${c.clauses[k]}</div>
-    <div class="muted" style="font-size:11px">${clauseNote(k,c.clauses[k])}</div></div>`;
+    <div class="muted" style="font-size:12.5px">${clauseNote(k,c.clauses[k])}</div></div>`;
   return `<div class="card">
     <h2>Active contract — ${esc(c.mission)} for ${esc(c.employer)}
       <span class="spacer"></span>${c.monthsLeft<=0
@@ -1762,7 +1997,7 @@ function offerCardHTML(d,i){
       <button class="small" ${idx>=arr.length-1?"disabled":""} onclick="stepClause(${i},'${k}',1)" title="Improve one step">▶</button></div>`;
   };
   const clause=k=>`<div class="clause"><div class="k">${k}</div><div class="v">${d.clauses[k]}</div>
-      <div class="muted" style="font-size:11px">${clauseNote(k,d.clauses[k])}</div>${stepBtns(k)}</div>`;
+      <div class="muted" style="font-size:12.5px">${clauseNote(k,d.clauses[k])}</div>${stepBtns(k)}</div>`;
   const rollLine=d.dm
     ?`<span style="color:var(--warning)">◆ Private arrangement</span> — ${esc(d.quirk)}<br>Pay ×${d.employerMult} employer · ×${d.missionMult} mission (${TEMPO_BATTLES[d.tempo]}) · world is <strong>${d.jumps} jumps</strong> away`
     :`Employer roll <strong>${d.eRoll}</strong> (pay ×${d.employerMult}) — ${esc(d.quirk)}<br>
@@ -1904,6 +2139,7 @@ function renderFinances(){
     <tr><td>Pilot salaries</td><td class="num">−${fmt(e.sal)}</td></tr>
     <tr><td>Tech teams</td><td class="num">−${fmt(e.tech)}</td></tr>
     <tr><td>Spares & maintenance</td><td class="num">−${fmt(e.spares)}</td></tr>
+    ${e.crew?`<tr><td>Crew wages (support units)</td><td class="num">−${fmt(e.crew)}</td></tr>`:""}
     <tr><td>Support staff</td><td class="num">−${fmt(e.staff)}</td></tr>
     <tr><td>Overhead</td><td class="num">−${fmt(e.oh)}</td></tr>
     <tr><td><strong>Net at payday</strong></td><td class="num"><strong class="${payThis-e.total>=0?"pos":"neg"}">${payThis-e.total>=0?"+":""}${fmt(payThis-e.total)}</strong></td></tr>
@@ -1935,7 +2171,7 @@ function endMonth(){
   S.month++; S.day=1; S.battles=0;
   rlog("New month — the clock resets to day 1.");
   if(c&&c.monthsLeft>0)generateMonthMissions();
-  if(c&&c.monthsLeft<=0){S.ledger.unshift({m:S.month,d:`Contract term complete — resolve it on the Contract tab (Success / Failure / …)`,a:0});}
+  if(c&&c.monthsLeft<=0){S.ledger.unshift({m:S.month,d:`Contract term complete — resolve it on the Contract page (Success / Failure / …)`,a:0});}
   renderAll();
   quickSave(true);   /* keep the browser save current after each settled month */
   document.querySelectorAll(".warnbar.debtwarn").forEach(el=>el.remove());
@@ -2035,7 +2271,7 @@ function renderRef(){
 
   <h3>⑨ Marketplace & travel</h3>
   <p class="hint" style="margin:4px 0"><strong>'Mech market (monthly, per weight class):</strong> 2d6 + world modifier ≥ 8 → 1d6 ÷ 2 machines on the lot. Price 1d6: 1–2 = 110% · 3–4 = 100% · 5–6 = 90% of book. <strong>Rare equipment:</strong> 2d6 + world ≥ 8 per item, else broker at double list. Common parts always at list.
-  World modifiers: ${Object.entries(WORLD_MODS).map(([k,v])=>`${k} ${v>=0?"+":""}${v}`).join(" · ")} — fighters use the 'Mech rolls; combat vehicles use the same rolls but are available on 6+ with an extra unit per success; support units roll per group (see ⑫) — set by the company's current system on the Galaxy Map.</p>
+  World modifiers: ${Object.entries(WORLD_MODS).map(([k,v])=>`${k} ${v>=0?"+":""}${v}`).join(" · ")} — fighters use the 'Mech rolls; combat vehicles and other support units roll per group on the Support units list (see ⑫) — set by the company's current system on the Galaxy Map.</p>
   <p class="hint"><strong>Travel:</strong> 30 LY per jump, ~1 week per jump, 2,500 C-bills per 'Mech per jump. Months that end mid-transit run payday automatically.</p>
 
   <h3>⑩ Support staff specialists</h3>
@@ -2055,7 +2291,7 @@ function renderRef(){
   <tr><td>Destroyed 'Mech wreck</td><td>1d6</td><td>4+ recoverable hulk, else 5% scrap</td></tr>
   <tr><td>Second battle (Low tempo)</td><td>2d6</td><td>9+</td></tr>
   <tr><td>Fighter market (per class)</td><td>2d6 + world</td><td>8+; Clan captured stock 11+ at 200%</td></tr>
-  <tr><td>Support units (per group)</td><td>2d6 + world</td><td>Infantry 5+ · Emplacements 6+ · VTOLs / support vehicles 7+ · Battle armor 9+</td></tr></table>
+  <tr><td>Support units (per group)</td><td>2d6 + world</td><td>Infantry 5+ · Combat vehicles 6+ · Emplacements 6+ · VTOLs / support vehicles 7+ · Battle armor 9+</td></tr></table>
 
   <h3>⑫ Combined arms — fighters, support units & Strikes (Core Rulebook CAT37101)</h3>
   <p class="hint" style="margin:4px 0">The core rules field non-'Mech units through <strong>Battlefield Support</strong> (pp. 138–159) and <strong>BFS: Aerospace</strong> (pp. 160–177). Each Asset has a Battlefield Support Point (BSP) cost, and with Battle Value Integration 1 BSP = 20 BV (p. 157). This dashboard lists BV for every unit and shows BSP beside it.</p>
@@ -2070,7 +2306,7 @@ function renderRef(){
 }
 
 /* ============ SAVE / LOAD / BACKUPS ============ */
-let backups=[];   // pre-payday snapshots, newest first (session only)
+let backups=[];   // pre-payday snapshots, newest first (kept in this browser, last 12)
 /* --- browser-storage quick save (per browser; every access is try/catch'd because
    private windows and previews can block storage) --- */
 const LS_KEY="mercFieldManualCampaign";
@@ -2106,11 +2342,10 @@ function deleteBrowserSave(){
 function migrateState(o){
   if(!o.pilots||!o.mechs)throw new Error("not a campaign save");
   o.day=o.day||1; o.facility=o.facility||"Bay";
-  o.medCare=(o.medCare===undefined)?true:o.medCare;
+  delete o.medCare;
   o.tasks=o.tasks||[]; o.repairLog=o.repairLog||[]; o.battles=o.battles||0;
   o.dmQueue=o.dmQueue||[];
   o.market=o.market||{month:0,world:"Standard",mechs:[],rares:[],clsRolls:null,rolled:false};
-  o.market.vehs=o.market.vehs||[]; o.market.vehRolls=o.market.vehRolls||null;
   o.events=o.events||[{m:1,d:1,type:"found",text:"Company founded"}];
   o.contractHistory=o.contractHistory||[];
   o.currentSystem=o.currentSystem||"Galatea";
@@ -2125,8 +2360,9 @@ function migrateState(o){
     o.contract.histId=o.contractHistory[o.contractHistory.length-1].hid;
   }
   o.pilots.forEach(p=>{p.healProg=p.healProg||0;p.role=p.role||"MechWarrior";});
-  o.mechs.forEach(m=>{m.bv=m.bv||0;m.kind=KINDS[m.kind]?m.kind:(m.veh?"veh":"mech");m.tech=m.tech||"Regular";});
+  o.mechs.forEach(m=>{m.bv=m.bv||0;m.kind=KINDS[m.kind]?m.kind:(m.veh?"veh":"mech");delete m.veh;m.tech=m.tech||"Regular";});
   o.strikes=o.strikes||[];
+  delete o.market.vehs; delete o.market.vehRolls;
   o.market.aero=o.market.aero||[]; o.market.aeroRolls=o.market.aeroRolls||null; o.market.clanRoll=o.market.clanRoll||null;
   o.market.sup=o.market.sup||[]; o.market.supRolls=o.market.supRolls||null;
   return o;
@@ -2326,7 +2562,6 @@ function loadSave(){
 
 /* ============ REPAIR BAY ============ */
 function rlog(text){S.repairLog.unshift({m:S.month,d:S.day,t:text});if(S.repairLog.length>250)S.repairLog.length=250;}
-function mechTasks(mid){return S.tasks.filter(t=>t.mechId===mid&&t.status!=="done");}
 function rRecalc(resetQty){
   const key=$("rType").value; const ty=RTYPES[key]; if(!ty)return;
   const isReplace=key==="replace";
@@ -2483,7 +2718,7 @@ function renderRepair(){
     const byMech=S.mechs.filter(m=>open.some(t=>t.mechId===m.id));
     $("wipArea").innerHTML=byMech.map(m=>{
       const rows=open.filter(t=>t.mechId===m.id).map(t=>`
-        <tr><td>${esc(t.label)}${t.note?`<div class="muted" style="font-size:11px">${esc(t.note)}</div>`:""}</td>
+        <tr><td>${esc(t.label)}${t.note?`<div class="muted" style="font-size:12.5px">${esc(t.note)}</div>`:""}</td>
         <td class="num">${t.tn??"—"}</td>
         <td>${t.status==="active"?esc(t.roll):'<span class="muted">queued</span>'}</td>
         <td class="num">${t.status==="active"?`<strong>${t.remaining}</strong>`:t.days}</td>
@@ -2492,8 +2727,8 @@ function renderRepair(){
       return `<div style="margin-bottom:12px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap">
           <strong>${esc(m.name)}</strong>
-          <span class="muted" style="font-size:12px">tech ${m.tech} (${TECHMOD[m.tech]>=0?"+":""}${TECHMOD[m.tech]})</span>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink2);margin:0">
+          <span class="muted" style="font-size:13px">tech ${m.tech} (${TECHMOD[m.tech]>=0?"+":""}${TECHMOD[m.tech]})</span>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink2);margin:0">
             <input type="checkbox" ${m.rush?"checked":""} onchange="toggleRush(${m.id})">Rush (2 days/day, +1 TN on new rolls)</label>
         </div>
         <table><tr><th>Job</th><th class="num">TN</th><th>Tech roll</th><th class="num">Days left</th><th class="num">Cost</th><th></th></tr>${rows}</table>
@@ -2639,17 +2874,17 @@ function renderDebrief(){
     const outSel=["None","Damaged","Hulk","Destroyed"].map(o=>
       `<option value="${o}" ${r.outcome===o?"selected":""}>${o==="None"?"No new damage":o==="Hulk"?"Crippled → Hulk":o==="Destroyed"?"Destroyed…":o}</option>`).join("");
     const wreckBtn=r.outcome==="Destroyed"?`<button class="small" onclick="bWreckRoll(${i})">Roll wreck 1d6</button>`:
-      (r.wreck&&(r.outcome==="Hulk"||r.outcome==="Lost")?`<div class="muted" style="font-size:11px">${esc(r.wreck)}</div>`:"");
+      (r.wreck&&(r.outcome==="Hulk"||r.outcome==="Lost")?`<div class="muted" style="font-size:12.5px">${esc(r.wreck)}</div>`:"");
     return `<tr>
-      <td><strong>${esc(m.name)}</strong><div class="muted" style="font-size:11px">${p?esc(p.name):"unassigned"}</div></td>
+      <td><strong>${esc(m.name)}</strong><div class="muted" style="font-size:12.5px">${p?esc(p.name):"unassigned"}</div></td>
       <td><select onchange="bSet(${i},'outcome',this.value)">${outSel}</select>${wreckBtn}</td>
       <td class="num">${p?`<input type="number" value="${r.wounds}" min="0" max="5" style="width:56px" onchange="bSet(${i},'wounds',clamp(+this.value||0,0,5))">`:"—"}</td>
-      <td>${p?`<button class="small" onclick="bEjectRoll(${i})">Eject 2d6</button>${r.ejectRes?`<div class="muted" style="font-size:11px">${esc(r.ejectRes)}</div>`:""}`:"—"}</td>
-      <td>${p?`<label style="display:inline;font-size:12px"><input type="checkbox" ${r.part?"checked":""} onchange="bSet(${i},'part',this.checked)"> fought</label>
+      <td>${p?`<button class="small" onclick="bEjectRoll(${i})">Eject 2d6</button>${r.ejectRes?`<div class="muted" style="font-size:12.5px">${esc(r.ejectRes)}</div>`:""}`:"—"}</td>
+      <td>${p?`<label style="display:inline;font-size:13px"><input type="checkbox" ${r.part?"checked":""} onchange="bSet(${i},'part',this.checked)"> fought</label>
         · kills <select onchange="bSet(${i},'kills',+this.value)">${[0,1,2].map(k=>`<option ${r.kills===k?"selected":""}>${k}</option>`).join("")}</select>
-        · <label style="display:inline;font-size:12px"><input type="checkbox" ${r.obj?"checked":""} onchange="bSet(${i},'obj',this.checked)"> objective</label>
-        · <label style="display:inline;font-size:12px"><input type="checkbox" ${r.standout?"checked":""} onchange="bSet(${i},'standout',this.checked)"> standout</label>
-        <div class="muted" style="font-size:11px">= ${(r.part?1:0)+Math.min(2,r.kills)+(r.obj?1:0)+(r.standout?1:0)} XP</div>`:"—"}</td></tr>`;
+        · <label style="display:inline;font-size:13px"><input type="checkbox" ${r.obj?"checked":""} onchange="bSet(${i},'obj',this.checked)"> objective</label>
+        · <label style="display:inline;font-size:13px"><input type="checkbox" ${r.standout?"checked":""} onchange="bSet(${i},'standout',this.checked)"> standout</label>
+        <div class="muted" style="font-size:12.5px">= ${(r.part?1:0)+Math.min(2,r.kills)+(r.obj?1:0)+(r.standout?1:0)} XP</div>`:"—"}</td></tr>`;
   }).join("");
   /* salvage items */
   const itemRows=B.items.map(it=>{
@@ -2668,7 +2903,7 @@ function renderDebrief(){
       }
       actions=btns.join(" ");
     }
-    return `<tr><td><strong>${esc(it.name)}</strong>${it.recRoll?`<div class="muted" style="font-size:11px">${esc(it.recRoll)}</div>`:""}</td>
+    return `<tr><td><strong>${esc(it.name)}</strong>${it.recRoll?`<div class="muted" style="font-size:12.5px">${esc(it.recRoll)}</div>`:""}</td>
       <td>${it.type==="intact"?"Intact 'Mech":it.type==="destroyed"?"Destroyed 'Mech":"Parts & equipment"}</td>
       <td class="num">${it.type==="parts"?"—":it.ton+" t"}</td><td class="num">${fmt(it.val)}</td><td>${actions}</td></tr>`;
   }).join("");
@@ -2677,16 +2912,21 @@ function renderDebrief(){
     <h2>Debrief in progress <span class="spacer"></span><span class="muted">${tempoTxt}</span></h2>
     <div class="formrow" style="margin-top:0">
       <div class="field"><label>Battle / scenario name</label>
-        <input value="${esc(B.name)}" onchange="B.name=this.value" placeholder="Raid on the Hessen depot" style="width:260px"></div>
+        <input value="${esc(B.name)}" onchange="B.name=this.value" placeholder="Raid on the Hessen depot" style="width:440px;max-width:100%"></div>
       <label style="display:flex;align-items:center;gap:6px;margin:0;font-size:13px;color:var(--ink2)">
         <input type="checkbox" ${B.objective?"checked":""} onchange="B.objective=this.checked"> Mission objective achieved</label>
     </div>
   </div>
   <div class="card">
     <h2>Force results — damage, wounds & XP</h2>
-    <table><tr><th>'Mech / pilot</th><th>'Mech outcome</th><th class="num">Wounds taken</th><th>Ejection</th><th>XP awards</th></tr>${rows}</table>
+    <table><tr><th>Unit / pilot</th><th>Outcome</th><th class="num">Wounds taken</th><th>Ejection</th><th>XP awards</th></tr>${rows}</table>
     <div class="hint">Destroyed = CT gone, engine death, or ammo catastrophe — roll 1d6: 4+ the wreck survives as a hulk, otherwise it's a total loss (scrap pays 5%). Standout is meant for one pilot per battle. XP, wounds and status changes are committed when you apply the debrief.</div>
   </div>
+  ${(S.strikes||[]).length?`<div class="card">
+    <h2>Battlefield Support for this battle <span class="spacer"></span><button class="small" onclick="goTab('market');setMktView('strikes')">Strikes ▸</button></h2>
+    ${hiredStrikesHTML(false)}
+    <div class="hint">These Strikes are used up when you apply this debrief, whether or not they were played.</div>
+  </div>`:""}
   <div class="card">
     <h2>Salvage <span class="spacer"></span><span class="badge"><span class="dot" style="background:var(--series1)"></span>${cl} salvage</span></h2>
     <p class="hint" style="margin-top:0">${clNote}.</p>
@@ -2851,15 +3091,15 @@ function renderGalaxy(){
       <button class="small" onclick="gxZoomBtn(1/1.5)" title="Zoom out" style="width:30px">−</button>
       <button class="small" onclick="gxReset()" title="Reset view" style="width:30px">⟲</button>
     </div>
-    <div style="position:absolute;bottom:8px;left:10px;font-size:11px;color:var(--muted)">zoom ×${sc.toFixed(1)} · scroll to zoom, drag to pan${showAll?"":" · zoom in for all labels"}</div>
+    <div style="position:absolute;bottom:8px;left:10px;font-size:12.5px;color:var(--muted)">zoom ×${sc.toFixed(1)} · scroll to zoom, drag to pan${showAll?"":" · zoom in for all labels"}</div>
   </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px">${Object.values(FACTIONS).map(f=>
-      `<span style="font-size:11px;color:var(--ink2)"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${f.color};margin-right:4px"></span>${f.name}</span>`).join("")}
-      <span style="font-size:11px;color:var(--muted)">◎ ring = major industrial · hollow = Periphery</span></div>`;
+      `<span style="font-size:12.5px;color:var(--ink2)"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${f.color};margin-right:4px"></span>${f.name}</span>`).join("")}
+      <span style="font-size:12.5px;color:var(--muted)">◎ ring = major industrial · hollow = Periphery</span></div>`;
   /* info panel */
   let info=`<div class="clause" style="margin-bottom:10px">
     <div class="k">Current system</div><div class="v">◈ ${esc(cur.name)}</div>
-    <div class="muted" style="font-size:12px">${FACTIONS[cur.fac].name} · ${cur.type} world<br>
+    <div class="muted" style="font-size:13px">${FACTIONS[cur.fac].name} · ${cur.type} world<br>
     Market modifier ${WORLD_MODS[cur.type]>=0?"+":""}${WORLD_MODS[cur.type]}</div></div>`;
   if(sel){
     const tc=travelCalc(sel);
@@ -2867,7 +3107,7 @@ function renderGalaxy(){
       <div class="k" style="display:flex;justify-content:space-between;align-items:center">Selected destination
         <button class="small ghost" onclick="gxSel=null;renderGalaxy()" title="Clear selection">✕ clear</button></div>
       <div class="v">${esc(sel.name)}</div>
-      <div class="muted" style="font-size:12px">${FACTIONS[sel.fac].name} · ${sel.type} world · market ${WORLD_MODS[sel.type]>=0?"+":""}${WORLD_MODS[sel.type]}</div>
+      <div class="muted" style="font-size:13px">${FACTIONS[sel.fac].name} · ${sel.type} world · market ${WORLD_MODS[sel.type]>=0?"+":""}${WORLD_MODS[sel.type]}</div>
       <table style="margin-top:8px"><tr><td>Distance</td><td class="num">${fmt(tc.ly)} LY</td></tr>
       <tr><td>Jumps (30 LY, ~1 wk each)</td><td class="num">${tc.jumps}</td></tr>
       <tr><td>Transit time</td><td class="num">${tc.days} days ≈ ${tc.months} month${tc.months>1?"s":""}</td></tr>
@@ -2936,7 +3176,7 @@ function renderTimelinePage(){
     grid+=`<div style="display:grid;grid-template-columns:46px repeat(12,1fr);gap:3px;margin-bottom:4px">${cells}</div>`;
   }
   grid=`<div style="margin:4px 0 6px">${grid}
-    <div class="muted" style="font-size:11px;margin-top:2px">⚔ battle · ✒ signed · ⚑ resolved · ★ founded · bottom bar = month-end net (green/red) · click a month to jump to its detail</div>
+    <div class="muted" style="font-size:12.5px;margin-top:2px">⚔ battle · ✒ signed · ⚑ resolved · ★ founded · bottom bar = month-end net (green/red) · click a month to jump to its detail</div>
   </div>`;
   let rows="";
   for(let m=1;m<=maxM;m++){
@@ -2949,31 +3189,31 @@ function renderTimelinePage(){
     const band=inSpans.map(s=>{
       const first=m===s.startM, last=m===s.end;
       const proj=s.ongoing&&m>=S.month;
-      return `<div style="background:${s.color}${proj?"55":""};border-radius:${first?"6px":"0"} ${last?"6px 6px":"0 0"} ${first?"0 6px":"0 0"};margin:1px 0;padding:2px 8px;font-size:11px;font-weight:600;color:#0d0d0d;${proj?"color:#e8e8e8;border:1px dashed "+s.color+";background:transparent;":""}white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+      return `<div style="background:${s.color}${proj?"55":""};border-radius:${first?"6px":"0"} ${last?"6px 6px":"0 0"} ${first?"0 6px":"0 0"};margin:1px 0;padding:2px 8px;font-size:12.5px;font-weight:600;color:#0d0d0d;${proj?"color:#e8e8e8;border:1px dashed "+s.color+";background:transparent;":""}white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         ${first?`${esc(s.mission)} — ${esc(s.employer)}`:(proj?"▸ projected":"▸")}</div>`;
-    }).join("")||`<div class="muted" style="font-size:11px;padding:2px 0">${isFuture?"":"— unemployed —"}</div>`;
+    }).join("")||`<div class="muted" style="font-size:12.5px;padding:2px 0">${isFuture?"":"— unemployed —"}</div>`;
     /* events */
     const icon={found:"★",sign:"✒",resolve:"⚑",battle:"⚔",travel:"➤"};
-    let lines=evts.map(e=>`<div style="font-size:12px;color:var(--ink2);padding:1px 0">
+    let lines=evts.map(e=>`<div style="font-size:13px;color:var(--ink2);padding:1px 0">
       <span style="color:${e.type==="battle"?"var(--warning)":e.type==="resolve"?"var(--good)":"var(--series1)"}">${icon[e.type]||"•"}</span>
       <span class="muted" style="font-variant-numeric:tabular-nums">D${e.d}</span> ${esc(e.text)}</div>`).join("");
     if(h){const net=h.t-(hPrev?hPrev.t:h.t);
-      lines+=`<div style="font-size:12px;padding:1px 0"><span style="color:var(--muted)">◧ D30</span>
+      lines+=`<div style="font-size:13px;padding:1px 0"><span style="color:var(--muted)">◧ D30</span>
         <span style="color:var(--ink2)">Month end — treasury ${fmt(h.t)}</span>
         <span class="${net>=0?"pos":"neg"}" style="font-variant-numeric:tabular-nums">(${net>=0?"+":""}${fmt(net)})</span></div>`;}
-    if(isFuture&&!lines&&inSpans.length)lines=`<div class="muted" style="font-size:12px">contract month ${m-inSpans[0].startM+1} of ${inSpans[0].monthsTotal} (projected)</div>`;
-    if(isNow&&!h)lines+=`<div class="muted" style="font-size:12px">… in progress (Day ${S.day})</div>`;
+    if(isFuture&&!lines&&inSpans.length)lines=`<div class="muted" style="font-size:13px">contract month ${m-inSpans[0].startM+1} of ${inSpans[0].monthsTotal} (projected)</div>`;
+    if(isNow&&!h)lines+=`<div class="muted" style="font-size:13px">… in progress (Day ${S.day})</div>`;
     rows+=`<div id="tlrow-${m}" style="display:grid;grid-template-columns:86px 200px 1fr;gap:12px;align-items:start;
       padding:7px 8px;border-bottom:1px solid var(--grid);${isNow?"background:rgba(57,135,229,0.07);border-left:3px solid var(--series1);":"border-left:3px solid transparent;"}${isFuture?"opacity:.55;":""}">
       <div><div style="font-weight:700;font-variant-numeric:tabular-nums">${campDate(m)}</div>
-        <div class="muted" style="font-size:11px">M${m}${isNow?" · now":""}</div></div>
+        <div class="muted" style="font-size:12.5px">M${m}${isNow?" · now":""}</div></div>
       <div>${band}</div>
-      <div>${lines||'<span class="muted" style="font-size:12px">—</span>'}</div>
+      <div>${lines||'<span class="muted" style="font-size:13px">—</span>'}</div>
     </div>`;
   }
   /* legend for contracts */
   const legend=spans.length?`<div style="display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 4px">${
-    spans.map(s=>`<span style="font-size:12px;color:var(--ink2)"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${s.color};margin-right:5px"></span>${esc(s.mission)} (${campDate(s.startM)}–${campDate(s.end)}${s.ongoing?", ongoing":""})${s.result?" — "+s.result:""}</span>`).join("")}</div>`:"";
+    spans.map(s=>`<span style="font-size:13px;color:var(--ink2)"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${s.color};margin-right:5px"></span>${esc(s.mission)} (${campDate(s.startM)}–${campDate(s.end)}${s.ongoing?", ongoing":""})${s.result?" — "+s.result:""}</span>`).join("")}</div>`:"";
   $("timelineArea").innerHTML=grid+legend+`<div style="border-top:1px solid var(--baseline)">${rows}</div>`;
 }
 
@@ -2991,21 +3231,6 @@ function rollMarket(){
         const pick=pool.splice(Math.floor(Math.random()*pool.length),1)[0];
         const pr=d6(); const pct=pr<=2?1.10:pr<=4?1.00:0.90;
         mechs.push({id:uid(),cls,name:pick[0],ton:pick[1],val:pick[2],bv:pick[3],
-          pct,price:Math.round(pick[2]*pct/1000)*1000,sold:false});
-      }
-    }
-  });
-  /* combat vehicles — more common than 'Mechs: available on 6+, and more of them */
-  const vehRolls={}; const vehs=[];
-  Object.keys(VEH_CATALOG).forEach(cls=>{
-    const r=r2d6()+mod; vehRolls[cls]=r;
-    if(r>=6){
-      const n=Math.ceil(d6()/2)+1;
-      const pool=[...VEH_CATALOG[cls]];
-      for(let i=0;i<n&&pool.length;i++){
-        const pick=pool.splice(Math.floor(Math.random()*pool.length),1)[0];
-        const pr=d6(); const pct=pr<=2?1.10:pr<=4?1.00:0.90;
-        vehs.push({id:uid(),cls,name:pick[0],ton:pick[1],val:pick[2],bv:pick[3],
           pct,price:Math.round(pick[2]*pct/1000)*1000,sold:false});
       }
     }
@@ -3043,7 +3268,7 @@ function rollMarket(){
       for(let i=0;i<n&&pool.length;i++){
         const it=pool.splice(Math.floor(Math.random()*pool.length),1)[0];
         const pr=d6(); const pct=pr<=2?1.10:pr<=4?1.00:0.90;
-        sup.push({id:uid(),kind:g.kind,name:it.n,ton:it.t,val:it.c,bv:it.bv,crew:it.crew,upk:it.upk||0,sp:it.sp||"",fx:it.fx||"",
+        sup.push({id:uid(),kind:g.kind,cls:it.cls||"",name:it.n,ton:it.t,val:it.c,bv:it.bv,crew:it.crew||0,upk:it.upk||0,sp:it.sp||"",fx:it.fx||"",
           pct,price:Math.round(it.c*pct/1000)*1000,sold:false});
       }
     }
@@ -3054,8 +3279,8 @@ function rollMarket(){
     });
   });
   const rares=RARE_PARTS.map(([name,cost])=>{const r=r2d6()+mod;return {name,cost,roll:r,avail:r>=8};});
-  S.market={month:S.month,world,mechs,vehs,rares,clsRolls,vehRolls,aero,aeroRolls,clanRoll,sup,supRolls,rolled:true};
-  rlog(`Market rolled on a ${world} world — ${mechs.length} 'Mech${mechs.length===1?"":"s"}, ${vehs.length} combat vehicle${vehs.length===1?"":"s"}, ${aero.length} fighter${aero.length===1?"":"s"}, ${sup.length} support unit${sup.length===1?"":"s"}, and ${rares.filter(x=>x.avail).length} rare item type${rares.filter(x=>x.avail).length===1?"":"s"} available.`);
+  S.market={month:S.month,world,mechs,rares,clsRolls,aero,aeroRolls,clanRoll,sup,supRolls,rolled:true};
+  rlog(`Market rolled on a ${world} world — ${mechs.length} 'Mech${mechs.length===1?"":"s"}, ${aero.length} fighter${aero.length===1?"":"s"}, ${sup.length} support unit${sup.length===1?"":"s"}, and ${rares.filter(x=>x.avail).length} rare item type${rares.filter(x=>x.avail).length===1?"":"s"} available.`);
   renderAll();
 }
 function buyMechFromMarket(id){
@@ -3064,14 +3289,6 @@ function buyMechFromMarket(id){
   S.ledger.unshift({m:S.month,d:`'Mech purchase — ${it.name} (${Math.round(it.pct*100)}% of book)`,a:-it.price});
   S.mechs.push({id:uid(),kind:"mech",name:it.name,ton:it.ton,val:it.val,bv:it.bv,pilotId:null,tech:"Regular",status:"Operational"});
   rlog(`Purchased ${it.name} for ${fmt(it.price)} — added to the roster (needs a pilot and tech team).`);
-  it.sold=true;renderAll();
-}
-function buyVehFromMarket(id){
-  const it=S.market.vehs.find(x=>x.id===id);if(!it||it.sold)return;
-  S.treasury-=it.price;
-  S.ledger.unshift({m:S.month,d:`Vehicle purchase — ${it.name} (${Math.round(it.pct*100)}% of book)`,a:-it.price});
-  S.mechs.push({id:uid(),kind:"veh",name:it.name,ton:it.ton,val:it.val,bv:it.bv,pilotId:null,tech:"Regular",status:"Operational",veh:true});
-  rlog(`Purchased ${it.name} for ${fmt(it.price)} — added to the roster (crew and motor-pool upkeep applies).`);
   it.sold=true;renderAll();
 }
 function buyAeroFromMarket(id){
@@ -3087,9 +3304,12 @@ function buySupFromMarket(id){
   const k=KINDS[it.kind];
   S.treasury-=it.price;
   S.ledger.unshift({m:S.month,d:`${k.one} purchase — ${it.name} (${Math.round(it.pct*100)}% of book)`,a:-it.price});
-  S.mechs.push({id:uid(),kind:it.kind,name:it.name,ton:it.ton,val:it.val,bv:it.bv,crew:it.crew,upk:it.upk,sp:it.sp,fx:it.fx,
-    pilotId:null,tech:"Regular",status:"Operational"});
-  rlog(`Acquired ${it.name} for ${fmt(it.price)} — on the roster with crew wages of ${fmt(it.crew)}/mo.`);
+  const u={id:uid(),kind:it.kind,name:it.name,ton:it.ton,val:it.val,bv:it.bv,crew:it.crew,upk:it.upk,sp:it.sp,fx:it.fx,
+    pilotId:null,tech:"Regular",status:"Operational"};
+  if(it.kind==="veh"){delete u.crew;delete u.upk;}
+  S.mechs.push(u);
+  rlog(it.kind==="veh"?`Purchased ${it.name} for ${fmt(it.price)} — added to the roster (needs a MechWarrior and a tech team).`
+    :`Acquired ${it.name} for ${fmt(it.price)} — on the roster with crew wages of ${fmt(it.crew)}/mo.`);
   it.sold=true;renderAll();
 }
 /* ---- Battlefield Support Strikes: hired for the next battle, spent at its debrief ---- */
@@ -3178,6 +3398,18 @@ function refreshPartSelect(){
     ?S.stores.map(s=>`<option value="${s.id}" ${String(s.id)===prev?"selected":""}>${esc(s.name)} ×${s.qty} — ${fmt(s.value)}</option>`).join("")
     :'<option value="">— stores empty — buy parts first —</option>';
 }
+let mktView="units";   /* which Marketplace section is showing (not saved) */
+function setMktView(v){mktView=v;renderMarket();window.scrollTo(0,0);}
+function mktTabs(){
+  const M=S.market, fresh=M.rolled&&M.month===S.month;
+  const avail=fresh?(M.mechs||[]).filter(x=>!x.sold).length+(M.aero||[]).filter(x=>!x.sold).length+(M.sup||[]).filter(x=>!x.sold).length:0;
+  const parts=S.stores.reduce((a,x)=>a+x.qty,0);
+  const b=(v,label,cnt)=>`<button class="${mktView===v?"on":""}" onclick="setMktView('${v}')">${label}<span class="cnt">${cnt}</span></button>`;
+  return `<div class="seg" role="tablist" aria-label="Marketplace sections">
+    ${b("units","Units for sale",fresh?avail+" listed":"not rolled")}
+    ${b("strikes","Strikes",(S.strikes||[]).length+" hired")}
+    ${b("parts","Parts & stores",parts+" in stores")}</div>`;
+}
 function renderMarket(){
   const M=S.market; const area=$("marketArea");
   const stale=M.rolled&&M.month!==S.month;
@@ -3189,7 +3421,7 @@ function renderMarket(){
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <div class="clause" style="padding:8px 12px"><div class="k">Shopping from</div>
         <div class="v" style="font-size:14px">◈ ${esc(sys.name)}</div>
-        <div class="muted" style="font-size:11px">${sys.type} world · market modifier ${mod>=0?"+":""}${mod} — relocate via the Galaxy Map</div></div>
+        <div class="muted" style="font-size:12.5px">${sys.type} world · market modifier ${mod>=0?"+":""}${mod} — relocate via the Galaxy Map</div></div>
       <button class="primary" onclick="rollMarket()">🎲 ${M.rolled?"Reroll":"Roll"} this month's market</button>
     </div>
     <div class="hint">'Mechs and fighters, per weight class: 2d6 + world modifier ≥ 8 → 1d6÷2 machines surface for sale (price 1d6: 1–2 = 110% · 3–4 = 100% · 5–6 = 90% of book). Rare equipment: 2d6 + world modifier ≥ 8 per item, else only a broker has it — at double list. Common parts are always at list price on any inhabited world.</div>
@@ -3198,7 +3430,7 @@ function renderMarket(){
   let lastG="";
   const strikeRows=STRIKES.map((x,i)=>{
     const g=x.g!==lastG?`<tr class="sect"><td colspan="6">${esc(x.g)}</td></tr>`:"";lastG=x.g;
-    return g+`<tr><td><strong>${esc(x.n)}</strong>${x.note?`<div class="muted" style="font-size:11px">${esc(x.note)}</div>`:""}</td>
+    return g+`<tr><td><strong>${esc(x.n)}</strong>${x.note?`<div class="muted" style="font-size:12.5px">${esc(x.note)}</div>`:""}</td>
       <td class="num">${esc(x.tn)}</td><td>${esc(x.dmg)}</td><td class="num">${x.bsp}</td><td class="num">${fmt(strikePrice(x))}</td>
       <td><button class="small" onclick="hireStrike(${i})">Hire</button></td></tr>`;}).join("");
   const strikeCard=`<div class="card">
@@ -3211,7 +3443,10 @@ function renderMarket(){
     <div class="hint">BFS allotments if a mission doesn't set one (p. 157): ${BFS_ALLOT.map(a=>`${a[0]} ${a[1]} BSP (${a[2]})`).join(" · ")}. With Battle Value Integration each BSP counts as ${BV_PER_BSP} BV.</div>
   </div>`;
   if(!M.rolled){
-    area.innerHTML=head+`<div class="card"><p class="muted" style="margin:4px 0">No listings yet — roll the market to see what the dealers have this month.</p></div>`+strikeCard;
+    const empty=`<div class="card"><p class="muted" style="margin:4px 0">No listings yet — roll the market to see what the dealers have this month.</p></div>`;
+    area.innerHTML=mktTabs()+(mktView==="strikes"?strikeCard
+      :mktView==="parts"?head+empty+`<div class="card"><h2>Company stores</h2>${storesTableHTML(true)}</div>`
+      :head+empty);
     return;
   }
   /* mechs card */
@@ -3229,22 +3464,6 @@ function renderMarket(){
     ${M.mechs.length?`<table><tr><th>Model</th><th>Class</th><th class="num">Tons</th><th class="num">BV (4/5)</th><th class="num">Book value</th><th class="num">Price roll</th><th class="num">Asking</th><th></th></tr>${mrows}</table>`
       :'<p class="muted" style="margin:6px 0">Nothing on the lot this month — the dealers shrug.</p>'}
     <div class="hint">Bought 'Mechs join the roster as Operational with a Regular tech team and no pilot — remember the monthly upkeep. The exact model is the market's choice, not yours.</div>
-  </div>`;
-  /* vehicles card */
-  const vClsLine=M.vehRolls?Object.entries(M.vehRolls).map(([c,r])=>
-    `${c}: 2d6 = ${r} ${r>=6?"✓":"✗"}`).join(" · "):"";
-  const vrows=(M.vehs||[]).map(it=>`<tr ${it.sold?'style="opacity:.4"':""}>
-    <td><strong>${esc(it.name)}</strong></td><td>${it.cls}</td><td class="num">${it.ton} t</td>
-    <td class="num">${fmt(it.bv)}</td><td class="num">${fmt(it.val)}</td>
-    <td class="num">${Math.round(it.pct*100)}%</td>
-    <td class="num"><strong>${fmt(it.price)}</strong></td>
-    <td>${it.sold?'<span class="muted">sold</span>':`<button class="small primary" onclick="buyVehFromMarket(${it.id})">Buy</button>`}</td></tr>`).join("");
-  const vehCard=`<div class="card">
-    <h2>Combat vehicles for sale <span class="spacer"></span><span class="muted">${(M.vehs||[]).filter(x=>!x.sold).length} on the lot</span></h2>
-    ${vClsLine?`<div class="rolltxt">${vClsLine} <span class="muted">(vehicles are common — available on 6+)</span></div>`:""}
-    ${(M.vehs||[]).length?`<table><tr><th>Vehicle</th><th>Class</th><th class="num">Tons</th><th class="num">BV (4/5)</th><th class="num">Book value</th><th class="num">Price roll</th><th class="num">Asking</th><th></th></tr>${vrows}`
-      :'<p class="muted" style="margin:6px 0">No armor on the lot this month.</p>'}${(M.vehs||[]).length?'</table>':''}
-    <div class="hint">Bought vehicles join the roster flagged as combat vehicles — same upkeep formula (call it crew wages and motor pool). Cheap, expendable, and they hold ground while the 'Mechs earn the headlines.</div>
   </div>`;
   /* fighters card */
   const aList=M.aero||[];
@@ -3271,10 +3490,10 @@ function renderMarket(){
     const items=sList.filter(x=>x.kind===g.kind);
     if(!items.length)return;
     sRows+=`<tr class="sect"><td colspan="8">${esc(g.label)}</td></tr>`+items.map(it=>`<tr ${it.sold?'style="opacity:.4"':""}>
-      <td><strong>${esc(it.name)}</strong>${it.clan?' <span class="spec">Clan · captured</span>':""}<div>${it.sp?String(it.sp).split(",").map(x=>`<span class="spec">${esc(x.trim())}</span>`).join(""):""}${it.fx==="mfb"?'<span class="spec" style="border-color:var(--good);color:var(--good)">field repairs at +0</span>':""}${it.fx==="med"?'<span class="spec" style="border-color:var(--good);color:var(--good)">medical care</span>':""}</div></td>
+      <td><strong>${esc(it.name)}</strong>${it.clan?' <span class="spec">Clan · captured</span>':""}<div>${it.cls?`<span class="spec">${esc(it.cls)}</span>`:""}${it.sp?String(it.sp).split(",").map(x=>`<span class="spec">${esc(x.trim())}</span>`).join(""):""}${it.fx==="mfb"?'<span class="spec" style="border-color:var(--good);color:var(--good)">field repairs at +0</span>':""}${it.fx==="med"?'<span class="spec" style="border-color:var(--good);color:var(--good)">medical care</span>':""}</div></td>
       <td class="num">${it.ton?it.ton+" t":'<span class="muted">—</span>'}</td>
-      <td class="num">${fmt(it.bv)} <span class="bsp">${Math.round(it.bv/BV_PER_BSP)} BSP</span></td>
-      <td class="num">${fmt(it.crew)}</td>
+      <td class="num">${fmt(it.bv)}${it.kind==="veh"?"":` <span class="bsp">${Math.round(it.bv/BV_PER_BSP)} BSP</span>`}</td>
+      <td class="num">${it.kind==="veh"?'<span class="muted">pilot</span>':fmt(it.crew)}</td>
       <td class="num">${fmt(it.val)}</td><td class="num">${Math.round(it.pct*100)}%</td>
       <td class="num"><strong>${fmt(it.price)}</strong></td>
       <td>${it.sold?'<span class="muted">bought</span>':`<button class="small primary" onclick="buySupFromMarket(${it.id})">Buy</button>`}</td></tr>`).join("");
@@ -3284,7 +3503,7 @@ function renderMarket(){
     ${sLine?`<div class="rolltxt">2d6 + world: ${sLine}</div>`:'<div class="rolltxt">Reroll the market to add support units to this month\'s listings.</div>'}
     ${sList.length?`<table><tr><th>Unit</th><th class="num">Tons</th><th class="num">BV</th><th class="num">Crew/mo</th><th class="num">Book value</th><th class="num">Price roll</th><th class="num">Asking</th><th></th></tr>${sRows}</table>`
       :'<p class="muted" style="margin:6px 0">No support units on offer this month.</p>'}
-    <div class="hint">Ground Assets from the Battlefield Support rules (Core Rulebook pp. 140–151): infantry, battle armor, VTOLs, support vehicles and emplacements. They fight from Asset cards at the card's Skill, so they take crew wages instead of a named pilot. ${SUPPORT_GROUPS.map(g=>esc(g.note)).join(" ")} It is ${campYear()}: newer designs appear once they enter production.</div>
+    <div class="hint">Ground Assets from the Battlefield Support rules (Core Rulebook pp. 140–151): infantry, battle armor, VTOLs, support vehicles and emplacements. Combat vehicles take a MechWarrior and a tech team like 'Mechs; the others fight from Asset cards at the card's Skill, so they take crew wages instead of a named pilot. ${SUPPORT_GROUPS.map(g=>esc(g.note)).join(" ")} It is ${campYear()}: newer designs appear once they enter production.</div>
   </div>`;
   /* equipment card */
   const rrows=M.rares.map(r=>`<tr ${r.avail?"":'style="opacity:.55"'}>
@@ -3311,7 +3530,9 @@ function renderMarket(){
     <p class="hint" style="margin-top:0">Everything the company owns but hasn't bolted on. Replacement jobs in the Repair Bay consume from here; selling recovers 50% of list. Log battlefield-salvaged parts with "Add free".</p>
     ${storesTableHTML(true)}
   </div>`;
-  area.innerHTML=head+mechCard+vehCard+aeroCard+supCard+strikeCard+eqCard+storesCard;
+  area.innerHTML=mktTabs()+(mktView==="strikes"?strikeCard
+    :mktView==="parts"?head+eqCard+storesCard
+    :head+mechCard+aeroCard+supCard);
 }
 
 /* ============ DM TOOLS ============ */
@@ -3402,10 +3623,10 @@ function renderDM(){
   $("dmQueueList").innerHTML=S.dmQueue.length?`<table>
     <tr><th>Contract</th><th>Terms</th><th class="num">Pay ×</th><th>Clauses</th><th></th></tr>
     ${S.dmQueue.map((q,i)=>`<tr>
-      <td><strong>${esc(q.mission)}</strong><div class="muted" style="font-size:11px">for ${esc(q.employer)}</div></td>
-      <td>${q.months} mo · ${q.tempo} tempo · ${q.jumps} jumps<div class="muted" style="font-size:11px">${esc(q.quirk)}</div></td>
+      <td><strong>${esc(q.mission)}</strong><div class="muted" style="font-size:12.5px">for ${esc(q.employer)}</div></td>
+      <td>${q.months} mo · ${q.tempo} tempo · ${q.jumps} jumps<div class="muted" style="font-size:12.5px">${esc(q.quirk)}</div></td>
       <td class="num">×${(q.missionMult*q.employerMult).toFixed(2)}</td>
-      <td style="font-size:12px">${q.clauses.Command} · ${q.clauses.Salvage} · ${q.clauses.Support} · ${q.clauses.Transport}</td>
+      <td style="font-size:13px">${q.clauses.Command} · ${q.clauses.Salvage} · ${q.clauses.Support} · ${q.clauses.Transport}</td>
       <td><button class="small ghost" onclick="dmRemove(${i})">✕</button></td></tr>`).join("")}</table>`
     :'<p class="muted" style="margin:4px 0">Nothing queued — the next contract roll will be pure market luck.</p>';
 }
@@ -3432,10 +3653,11 @@ $("btnResetConfirm").onclick=()=>{
 
 /* ============ WIRING ============ */
 $("tabs").addEventListener("click",e=>{
-  const b=e.target.closest("button");if(!b)return;
+  const b=e.target.closest("button[data-tab]");if(!b)return;
   document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id==="panel-"+b.dataset.tab));
   if(b.dataset.tab==="overview")drawChart();
+  renderShell(); window.scrollTo(0,0);
 });
 $("companyName").addEventListener("change",e=>{S.name=e.target.value;renderSaveBtn();});
 $("btnEndMonth").onclick=endMonth;
@@ -3445,7 +3667,7 @@ window.addEventListener("keydown",e=>{
 });
 window.addEventListener("resize",()=>{if($("panel-overview").classList.contains("on"))drawChart();});
 
-/* auto-load the browser save + backup history on startup (refresh-proof on GitHub Pages etc.) */
+/* auto-load the browser save + backup history on startup */
 (function(){
   if(!lsAvailable())return;
   const raw=localStorage.getItem(LS_KEY);
