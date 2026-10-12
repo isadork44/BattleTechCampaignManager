@@ -132,7 +132,12 @@
   #mechTable td{white-space:nowrap}
   #mechTable{font-size:14.5px}
   #mechTable td{padding:6px 6px}
-  #mechTable td:first-child>input{width:205px!important}
+  #mechTable td:first-child>input{width:185px!important}
+  #mechTable td select{max-width:190px}
+  #mechTable .unitmeta{font-size:13px;color:var(--muted);margin-top:2px;white-space:nowrap}
+  #mechTable input.mini{width:58px!important;padding:1px 4px;font-size:13px;color:var(--ink2);text-align:right}
+  #mechTable input.mini.wide{width:96px!important}
+  #mechTable td input[aria-label^="Crew wages"]{width:76px!important}
 
   /* ---------- small parts ---------- */
   .badge{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;
@@ -226,6 +231,7 @@
   .stack{display:flex;flex-direction:column;gap:16px}
   .stack>.card{margin-bottom:0}
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media(max-width:1400px){.shell{grid-template-columns:210px minmax(0,1fr)}.main{padding:0 20px 64px}}
   @media(max-width:1180px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
   @media(max-width:980px){
     .shell{grid-template-columns:1fr}
@@ -265,6 +271,7 @@
       <div class="tgbtns">
         <button data-tab="mechs">Roster</button>
         <button data-tab="pilots">Pilots</button>
+        <button data-tab="infirmary">Infirmary</button>
         <button data-tab="personnel">Personnel</button>
       </div>
     </div>
@@ -369,8 +376,7 @@
         <div class="field"><label>Chassis / variant</label><input id="mName" placeholder="Shadow Hawk SHD-2H" style="width:180px"></div>
         <div class="field" id="mTonWrap"><label>Tonnage</label><input id="mTon" type="number" value="55" min="5" max="200" step="5"></div>
         <div class="field"><label>Book value (C-bills)</label><input id="mVal" type="number" value="4000000" step="10000" style="width:120px"></div>
-        <div class="field"><label>Tech team</label><select id="mTech">
-          <option>Green</option><option selected>Regular</option><option>Veteran</option><option>Elite</option></select></div>
+        <div class="field"><label for="mTech">Tech team</label><select id="mTech"></select></div>
         <div class="field"><label>Status</label><select id="mStatus">
           <option selected>Operational</option><option>Damaged</option><option>Hulk</option></select></div>
         <div class="field" id="mCrewWrap" style="display:none"><label for="mCrew">Crew wages/mo</label><input id="mCrew" type="number" value="1000" step="100" style="width:100px"></div>
@@ -378,7 +384,7 @@
         <button class="primary" onclick="addMech()">+ Add unit</button>
       </div>
       </details>
-      <div class="hint">Use this form for salvage or units bought off the books; the Marketplace adds purchases here automatically. 'Mechs, vehicles and fighters each carry one tech team (Green 1,500 · Regular 2,000 · Veteran 3,000 · Elite 4,500 /mo) plus spares (50 × tonnage; fighters 75 × tonnage for fuel and ordnance). Support units pay crew wages instead of a pilot salary; infantry and emplacements need no tech team. Hulks pay no spares until restored. Tech team quality is also the repair-roll modifier (−1/+0/+1/+2).</div>
+      <div class="hint">Use this form for salvage or units bought off the books; the Marketplace adds purchases here automatically. 'Mechs, vehicles, fighters, VTOLs, support vehicles and battle armor each need a tech team: hire teams on the <a href="#" onclick="goTab('personnel');return false">Personnel page</a>, then pick one in the Tech team column. A unit without a team can't start repairs. Each unit also pays spares (50 × tonnage; fighters 75 × tonnage for fuel and ordnance). Support vehicles take a MechWarrior; infantry, battle armor, VTOLs and emplacements pay crew wages instead of a pilot salary; infantry and emplacements need no tech team. Hulks pay no spares until restored. The team's level is its repair-roll modifier (Green −1 · Regular +0 · Veteran +1 · Elite +2).</div>
     </div>
   </div>
 
@@ -397,15 +403,42 @@
         <span class="hint" style="align-self:center">Hiring bonus = 2 months' salary — log it in Finances.</span>
       </div>
       </details>
-      <div class="hint">MechWarriors crew 'Mechs and combat vehicles; aerospace pilots fly fighters. Both use the same ratings, salaries and XP. XP awards: battle 1 · kill 1 (max 2) · objective 1 · standout 1 · contract complete 1. One skill improvement per pilot per month; wounds heal 4/month at payday (medical care assumed). 6 wounds = KIA.</div>
+      <div class="hint">MechWarriors crew 'Mechs, combat vehicles and support vehicles (Savior, MASH Truck, APCs, artillery carriers); aerospace pilots fly fighters. Both use the same ratings, salaries, XP and wounds. XP awards: battle 1 · kill 1 (max 2) · objective 1 · standout 1 · contract complete 1. One skill improvement per pilot per month; wounds heal day by day in the Infirmary (7 days each with an assigned carer, 14 without). 6 wounds = KIA.</div>
+    </div>
+  <div class="card">
+      <h2>Hiring hall <span class="spacer"></span><span class="muted">candidates this month</span></h2>
+      <div class="pillbtns">
+        <button onclick="rollRecruits()">Roll MechWarrior candidates (1d6 ÷ 2)</button>
+        <button onclick="rollRecruits('aero')">Roll aerospace pilot candidates (1d6 ÷ 3)</button>
+      </div>
+      <div id="recruitLog"></div>
+      <div class="hint">Quality 2d6: 2–6 Green · 7–9 Regular · 10–11 Veteran · 12 Elite. Signing bonus = 2 months' salary. Hire a candidate with "+ Hire or add a pilot" above, setting their role and skills.</div>
     </div>
   </div>
 
   <!-- ================= PERSONNEL ================= -->
   <div class="panel" id="panel-personnel">
     <div class="card">
+      <h2>Tech teams <span class="spacer"></span><span class="muted" id="teamCount"></span></h2>
+      <div id="teamWarn"></div>
+      <table id="teamTable"></table>
+      <details class="adder"><summary>+ Hire a tech team</summary>
+      <div class="formrow">
+        <div class="field"><label for="tName">Team name</label><input id="tName" placeholder="Team Alpha" style="width:180px"></div>
+        <div class="field"><label for="tLevel">Level</label><select id="tLevel"><option>Green</option><option selected>Regular</option><option>Veteran</option><option>Elite</option></select></div>
+        <div class="field"><label for="tAssign">Assign to</label><select id="tAssign" style="min-width:200px"></select></div>
+        <button class="primary" onclick="hireTeam()">+ Hire team</button>
+      </div>
+      </details>
+      <div class="pillbtns" style="margin-top:12px">
+        <button onclick="rollVetTechs()">Roll for Veteran / Elite tech teams this month (2d6 ≥ 9)</button>
+      </div>
+      <div id="teamRoll"></div>
+      <div class="hint">One team keeps one unit running and works one repair job at a time. Teams are paid every month whether or not they're assigned: Green 1,500 · Regular 2,000 · Veteran 3,000 · Elite 4,500. The level is the repair-roll modifier (−1 / +0 / +1 / +2). Veteran and Elite teams are only on the market when the 2d6 ≥ 9 roll succeeds.</div>
+    </div>
+    <div class="card">
       <h2>Support staff</h2>
-      <p class="hint" style="margin-bottom:8px">Tech teams are managed on the Roster page (one per unit that needs one). Basic admin, food and medical are covered by the 10% overhead — list only extra hires here. Two roles are wired straight into the rules: a <strong style="color:var(--ink2)">Negotiator</strong> automatically adds +1 to every contract negotiation, and a <strong style="color:var(--ink2)">Surgeon or Medic</strong> automatically provides medical care in the Repair Bay (1 wound per 7 days instead of 14).</p>
+      <p class="hint" style="margin-bottom:8px">Tech teams have their own list above. Basic admin, food and medical are covered by the 10% overhead — list only extra hires here. Two roles are wired straight into the rules: a <strong style="color:var(--ink2)">Negotiator</strong> automatically adds +1 to every contract negotiation, and each <strong style="color:var(--ink2)">Surgeon or Medic</strong> can care for one wounded pilot in the Infirmary (1 wound per 7 days instead of 14) — hire one for every pilot you expect to be hurt at once.</p>
       <table id="staffTable"></table>
       <details class="adder"><summary>+ Add support staff</summary>
       <div class="formrow">
@@ -417,15 +450,6 @@
       </div>
       </details>
       <div class="hint" id="sRoleHint"></div>
-    </div>
-    <div class="card">
-      <h2>Recruiting quick rolls</h2>
-      <div class="pillbtns">
-        <button onclick="rollRecruits()">Roll MechWarrior candidates (1d6 ÷ 2)</button>
-        <button onclick="rollRecruits('aero')">Roll aerospace pilot candidates (1d6 ÷ 3)</button>
-        <button onclick="rollVetTechs()">Veteran/Elite tech team available? (2d6 ≥ 9)</button>
-      </div>
-      <div id="recruitLog"></div>
     </div>
   </div>
 
@@ -466,20 +490,32 @@
       <div class="hint">Days and cost pre-fill from the Field Manual — edit them for odd jobs. Each 'Mech's tech team works one job at a time; the tech roll (2d6 + team + facility vs TN) happens when the team picks the job up. Fail = double time · snake eyes = botch. Rush shifts work 2 days per day at +1 TN. <strong>Replacing a destroyed component consumes a part from company stores</strong> — no part, no job.</div>
     </div>
 
-    <div class="cols2">
-      <div class="card">
-        <h2>Infirmary</h2>
-        <div id="infirmary"></div>
-      </div>
-      <div class="card">
-        <h2>Bay log</h2>
-        <div class="log" id="timeline"></div>
-      </div>
+    <div class="card">
+      <h2>Bay log</h2>
+      <div class="log" id="timeline"></div>
     </div>
 
     <div class="card">
       <h2>Company stores <span class="spacer"></span><span class="muted" id="storesCount"></span></h2>
       <div id="storesRepair"></div>
+    </div>
+  </div>
+
+  <!-- ================= INFIRMARY ================= -->
+  <div class="panel" id="panel-infirmary">
+    <div class="card">
+      <h2>Medical staff <span class="spacer"></span><span id="infClock"></span></h2>
+      <div id="infMed"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
+        <button class="primary" onclick="advanceDays(1)">+1 Day</button>
+        <button onclick="advanceDays(7)">+7 Days (week)</button>
+        <span class="muted" style="font-size:13px">Healing and repairs both tick as days pass. End Month runs the clock to day 30.</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Patients <span class="spacer"></span><span class="muted" id="infCount"></span></h2>
+      <div id="infirmary"></div>
+      <div class="hint">Wounded pilots can still deploy. A pilot heals 1 wound every 7 days while a carer is assigned to them, every 14 days without. Each surgeon or medic (hired on Personnel) treats one patient at a time; an operational MASH Truck treats up to four. Carers are released automatically when their patient is fully healed. Six wounds is fatal. Wounds from battle are recorded in the Debrief; use + and − here for anything else.</div>
     </div>
   </div>
 
@@ -811,7 +847,7 @@ const KINDS={
   veh: {label:"Combat vehicles",one:"Combat vehicle",pilot:"MechWarrior",tech:true,perTon:50,minT:5,maxT:100},
   aero:{label:"Aerospace fighters",one:"Aerospace fighter",pilot:"Aerospace pilot",tech:true,perTon:75,minT:10,maxT:100},
   vtol:{label:"VTOLs",one:"VTOL",crew:true,tech:true,perTon:50,minT:1,maxT:30},
-  supv:{label:"Support vehicles",one:"Support vehicle",crew:true,tech:true,perTon:50,minT:1,maxT:200},
+  supv:{label:"Support vehicles",one:"Support vehicle",pilot:"MechWarrior",tech:true,perTon:50,minT:1,maxT:200},
   ba:  {label:"Battle armor",one:"Battle armor",crew:true,tech:true,perTon:0},
   inf: {label:"Conventional infantry",one:"Infantry platoon",crew:true,tech:false,perTon:0},
   emp: {label:"Emplacements",one:"Emplacement",crew:true,tech:false,perTon:0}
@@ -873,7 +909,7 @@ const SUPPORT_GROUPS=[
     {n:"Yellow Jacket Gunship",t:30,c:700000,bv:500,crew:1200,sp:""},
     {n:"Cavalry Attack Helicopter",t:25,c:620000,bv:420,crew:1000,sp:"",y:3051},
     {n:"Hawk Moth Gunship",t:25,c:640000,bv:480,crew:1000,sp:"",y:3054}]},
-  {kind:"supv",tn:7,label:"Support vehicles",note:"Field-support Assets. MFB and medical units also help the company between battles.",items:[
+  {kind:"supv",tn:7,label:"Support vehicles",note:"Field-support Assets driven by a MechWarrior. MFB and medical units also help the company between battles.",items:[
     {n:"Savior Repair Vehicle",t:50,c:1150000,bv:260,crew:1500,sp:"MFB, APC2",fx:"mfb"},
     {n:"MASH Truck",t:30,c:650000,bv:100,crew:1800,sp:"Medical",fx:"med"},
     {n:"Mobile HQ",t:25,c:480000,bv:200,crew:1200,sp:"Commander"},
@@ -1100,12 +1136,42 @@ function roundUp500(n){return Math.ceil(n/500)*500;}
 function kindOf(m){return KINDS[m.kind]?m.kind:"mech";}
 function K(m){return KINDS[kindOf(m)];}
 function campYear(){return 3049+Math.floor((S.month-1)/12);}
-function unitTech(m){return K(m).tech?TECHCOST[m.tech]||0:0;}
+/* ---- tech teams: hired on Personnel, assigned to units on the Roster ----
+   S.techTeams=[{id,name,level}]; a unit points at its team with m.techId.
+   Older saves only stored a quality per unit (m.tech); the first render turns each of those
+   into a hired team of that level, so the company and its expenses carry over unchanged. */
+const TEAM_NAMES=["Alpha","Bravo","Charlie","Delta","Echo","Foxtrot","Golf","Hotel","India","Juliet","Kilo","Lima","Mike","November","Oscar","Papa","Quebec","Romeo","Sierra","Tango","Uniform","Victor","Whiskey","X-ray","Yankee","Zulu"];
+function nextTeamName(){
+  const used=new Set((S.techTeams||[]).map(t=>t.name));
+  for(const n of TEAM_NAMES){const nm="Team "+n;if(!used.has(nm))return nm;}
+  return "Team "+((S.techTeams||[]).length+1);
+}
+function ensureTechTeams(){
+  if(!Array.isArray(S.techTeams)){
+    S.techTeams=[];
+    S.mechs.forEach(m=>{
+      if(!K(m).tech)return;
+      const t={id:uid(),name:nextTeamName(),level:TECHCOST[m.tech]?m.tech:"Regular"};
+      S.techTeams.push(t); m.techId=t.id;
+    });
+  }
+  const ids=new Set(S.techTeams.map(t=>t.id)), seen=new Set();
+  S.mechs.forEach(m=>{
+    if(m.techId==null)return;
+    if(!K(m).tech||!ids.has(m.techId)||seen.has(m.techId))m.techId=null;   /* one team per unit */
+    else seen.add(m.techId);
+  });
+}
+function teamOf(m){return K(m).tech&&m.techId!=null?(S.techTeams||[]).find(t=>t.id===m.techId)||null:null;}
+function teamUnit(t){return S.mechs.find(m=>m.techId===t.id)||null;}
+function techMod(m){const t=teamOf(m);return t?TECHMOD[t.level]:0;}
+function needsTeam(m){return K(m).tech&&!teamOf(m);}
+function unitTech(m){const t=teamOf(m);return t?TECHCOST[t.level]||0:0;}
 function unitSpares(m){if(m.status==="Hulk")return 0;const k=K(m);return k.perTon?k.perTon*(m.ton||0):(m.upk||0);}
 function unitCrew(m){return K(m).crew?(+m.crew||0):0;}
 function unitUpkeep(m){return unitTech(m)+unitSpares(m)+unitCrew(m);}
 function unitBSP(m){return m.bv>0?Math.round(m.bv/BV_PER_BSP):0;}
-function pilotRole(p){return p.role||"MechWarrior";}
+function pilotRole(p){return PILOT_ROLES.includes(p.role)?p.role:"MechWarrior";}
 function pilotFits(p,m){const k=K(m);return !k.crew&&pilotRole(p)===k.pilot;}
 function mfbUnit(){return S.mechs.find(m=>m.fx==="mfb"&&m.status==="Operational");}
 function facMod(){const f=FACMOD[S.facility];return (S.facility==="Field"&&mfbUnit())?0:f;}
@@ -1113,7 +1179,8 @@ function specTags(m){return m.sp?String(m.sp).split(",").map(x=>x.trim()).filter
 
 function expenses(){
   const sal=S.pilots.reduce((a,p)=>a+pilotSalary(p),0);
-  const tech=S.mechs.reduce((a,m)=>a+unitTech(m),0);
+  const tech=Array.isArray(S.techTeams)?S.techTeams.reduce((a,t)=>a+(TECHCOST[t.level]||0),0)
+    :S.mechs.reduce((a,m)=>a+(K(m).tech?TECHCOST[m.tech]||0:0),0);
   const spares=S.mechs.reduce((a,m)=>a+unitSpares(m),0);
   const crew=S.mechs.reduce((a,m)=>a+unitCrew(m),0);
   const staff=S.staff.reduce((a,s)=>a+ +s.cost,0);
@@ -1127,8 +1194,10 @@ function contractPay(missionMult,employerMult){
 
 /* ============ RENDER ============ */
 function renderAll(){
+  S.pilots.forEach(p=>{if(p.role&&!PILOT_ROLES.includes(p.role))p.role="MechWarrior";});   /* retired role from a test build: back to MechWarrior */
+  ensureTechTeams(); ensureMedical();
   $("companyName").value=S.name;
-  renderTiles(); renderMechs(); renderPilots(); renderStaff();
+  renderTiles(); renderMechs(); renderPilots(); renderStaff(); renderTeams();
   renderContract(); renderFinances(); renderOverview(); renderRef(); renderRepair(); renderDebrief(); renderDM(); renderMarket(); renderTimelinePage(); renderGalaxy(); renderMissions();
   renderSaveBtn();
   renderShell(); renderSteps();
@@ -1137,13 +1206,14 @@ function renderAll(){
 /* ============ SHELL: page heads, nav badges, clock, guided month ============ */
 const PAGE_INFO={
   overview:["Command Center","Where the company stands and what to do next this month."],
-  mechs:["Roster","Every 'Mech, vehicle, fighter and support unit, with pilots, tech teams and monthly upkeep."],
-  pilots:["Pilots","MechWarriors and aerospace pilots: skills, XP, wounds and pay."],
-  personnel:["Personnel","Support staff and recruiting rolls."],
+  mechs:["Roster","Every unit with its pilot, tech team, status and upkeep."],
+  pilots:["Pilots","MechWarriors and aerospace pilots: skills, XP, pay and the hiring hall."],
+  infirmary:["Infirmary","Wounded pilots, recovery times and medical care."],
+  personnel:["Personnel","Tech teams and support staff."],
   contract:["Contract","Find work, negotiate the terms and resolve the contract when it ends."],
   missions:["Missions","This month's operations under the current contract."],
   debrief:["Debrief","Record damage, wounds, XP and salvage after each battle."],
-  repair:["Repair Bay","Queue repairs, move the clock forward and look after the wounded."],
+  repair:["Repair Bay","Queue repairs, move the clock forward and manage spare parts."],
   market:["Marketplace","Buy 'Mechs, fighters, support units, parts and one-battle Strikes."],
   finances:["Finances","The ledger, manual transactions and this month's projection."],
   galaxy:["Galaxy Map","Where the company is and where it can travel."],
@@ -1180,6 +1250,9 @@ function renderShell(){
     debrief:(typeof B!=="undefined"&&B)?["•","hot"]:null,
     repair:f.unattended.length?[f.unattended.length,"hot"]:f.open.length?[f.open.length,""]:null,
     pilots:f.adv.length?[f.adv.length,""]:null,
+    infirmary:S.pilots.some(p=>p.wounds>=6)?["✕","bad"]
+      :(()=>{const u=S.pilots.filter(p=>p.wounds>0&&p.wounds<6&&!underCare(p)).length;return u?[u,"hot"]:f.hurt?[f.hurt,""]:null;})(),
+    mechs:(()=>{const n=S.mechs.filter(m=>m.status!=="Hulk"&&needsTeam(m)).length;return n?[n,"hot"]:null;})(),
     finances:S.treasury<0?["−","bad"]:null
   };
   document.querySelectorAll("#tabs button").forEach(b=>{
@@ -1205,6 +1278,10 @@ function renderSteps(){
   if(typeof B!=="undefined"&&B)st.push({t:"Debrief",chip:"todo",d:"A debrief is open. Apply it to record damage, wounds, XP and salvage.",go:"debrief",btn:"Finish"});
   else st.push({t:"Debrief",chip:"wait",d:`Run one after every battle. ${S.battles||0} logged this month${(S.strikes||[]).length?` · ${S.strikes.length} Strike${S.strikes.length===1?"":"s"} hired for the next one`:""}.`,go:"debrief",btn:"Open"});
   /* 4 repair & refit */
+  const bare=S.mechs.filter(m=>m.status!=="Hulk"&&needsTeam(m));
+  if(bare.length)st.push({t:"Tech teams",chip:"todo",d:`${bare.slice(0,3).map(m=>esc(m.name)).join(", ")}${bare.length>3?` and ${bare.length-3} more`:""} ${bare.length===1?"has":"have"} no tech team and can't be repaired. Hire one on Personnel, then assign it on the Roster.`,go:"personnel",btn:"Hire team"});
+  const noCare=S.pilots.filter(p=>p.wounds>0&&p.wounds<6&&!underCare(p));
+  if(noCare.length)st.push({t:"Infirmary",chip:"todo",d:`${noCare.slice(0,3).map(p=>esc(p.name)).join(", ")}${noCare.length>3?` and ${noCare.length-3} more`:""} ${noCare.length===1?"has":"have"} no carer and heal${noCare.length===1?"s":""} at half speed.`,go:"infirmary",btn:"Assign care"});
   if(f.unattended.length)st.push({t:"Repair & refit",chip:"todo",d:`${f.unattended.map(m=>esc(m.name)).slice(0,3).join(", ")}${f.unattended.length>3?` and ${f.unattended.length-3} more`:""} ${f.unattended.length===1?"is":"are"} damaged with no work queued.`,go:"repair",btn:"Queue work"});
   else if(f.open.length)st.push({t:"Repair & refit",chip:"wait",d:`${f.open.length} job${f.open.length===1?"":"s"} in the bay${f.hurt?` · ${f.hurt} pilot${f.hurt===1?"":"s"} healing`:""}. Days pass with the clock.`,go:"repair",btn:"Open bay"});
   else st.push({t:"Repair & refit",chip:"done",d:`No repairs waiting${f.hulks?` (${f.hulks} hulk${f.hulks===1?"":"s"} in storage)`:""}${f.hurt?` · ${f.hurt} pilot${f.hurt===1?"":"s"} healing`:""}.`,go:"repair",btn:"Open bay"});
@@ -1248,7 +1325,9 @@ function unitRow(m){
     const k=K(m), kind=kindOf(m);
     const stCls=m.status==="Operational"?"st-op":m.status==="Damaged"?"st-dmg":"st-hulk";
     const stIcon=m.status==="Operational"?"●":m.status==="Damaged"?"▲":"✕";
-    const techOpts=Object.keys(TECHCOST).map(t=>`<option ${m.tech===t?"selected":""}>${t}</option>`).join("");
+    const techOpts=['<option value="">— no tech team —</option>',...(S.techTeams||[]).map(t=>{
+      const on=teamUnit(t);const elsewhere=on&&on.id!==m.id;
+      return `<option value="${t.id}" ${m.techId===t.id?"selected":""}>${esc(t.name)} · ${t.level}${elsewhere?" ⇄":""}</option>`;})].join("");
     const stOpts=["Operational","Damaged","Hulk"].map(s=>`<option ${m.status===s?"selected":""}>${s}</option>`).join("");
     let who;
     if(k.crew){
@@ -1260,21 +1339,20 @@ function unitRow(m){
         ...fits.map(p=>`<option value="${p.id}" ${m.pilotId===p.id?"selected":""}>${esc(p.name)}</option>`)].join("")}</select>`;
     }
     const tonCell=k.perTon
-      ?`<input type="number" value="${m.ton}" min="${k.minT}" max="${k.maxT}" step="1" style="width:62px" aria-label="Tonnage"
-        onchange="setMech(${m.id},'ton',clamp(+this.value||${k.minT},${k.minT},${k.maxT}))"> t`
-      :`<span class="muted">—</span>`;
+      ?`<input type="number" class="mini" value="${m.ton}" min="${k.minT}" max="${k.maxT}" step="1" aria-label="Tonnage of ${esc(m.name)}"
+        onchange="setMech(${m.id},'ton',clamp(+this.value||${k.minT},${k.minT},${k.maxT}))"> t · `
+      :"";
     const techCell=k.tech
-      ?`<select onchange="setMech(${m.id},'tech',this.value)" aria-label="Tech team">${techOpts}</select>
-          <span class="muted" style="font-size:12.5px">${TECHMOD[m.tech]>=0?"+":""}${TECHMOD[m.tech]}</span>`
+      ?`<select onchange="assignTech(${m.id},this.value?+this.value:null)" aria-label="Tech team for ${esc(m.name)}" ${teamOf(m)?"":'style="border-color:var(--warning);color:var(--warning)"'}>${techOpts}</select>
+`
       :`<span class="muted" style="font-size:12.5px">none needed</span>`;
     const bsp=(kind!=="mech"&&m.bv>0)?`<span class="bsp" title="Battlefield Support Points: BV ÷ 20 (Core Rulebook p. 157)">${unitBSP(m)} BSP</span>`:"";
     const upkTitle=`tech ${fmt(unitTech(m))} + spares ${fmt(unitSpares(m))}${k.crew?" + crew "+fmt(unitCrew(m)):""}`;
     return `<tr>
       <td><input value="${esc(m.name)}" onchange="setMech(${m.id},'name',this.value)" style="width:190px;font-weight:600" aria-label="Unit name">${bsp}
-        ${m.sp||m.fx?`<div>${specTags(m)}${m.fx==="mfb"?'<span class="spec" style="border-color:var(--good);color:var(--good)">field repairs at +0</span>':""}${m.fx==="med"?'<span class="spec" style="border-color:var(--good);color:var(--good)">medical care</span>':""}</div>`:""}</td>
-      <td class="num">${tonCell}</td>
-      <td class="num"><input type="number" value="${m.val}" step="10000" style="width:105px" aria-label="Book value"
-        onchange="setMech(${m.id},'val',Math.max(0,+this.value||0))"></td>
+        <div class="unitmeta">${K(m).one} · ${tonCell}<input type="number" class="mini wide" value="${m.val}" step="10000" aria-label="Book value of ${esc(m.name)}"
+          onchange="setMech(${m.id},'val',Math.max(0,+this.value||0))"> C-bills</div>
+        ${m.sp||m.fx?`<div>${specTags(m)}${m.fx==="mfb"?'<span class="spec" style="border-color:var(--good);color:var(--good)">field repairs at +0</span>':""}${m.fx==="med"?'<span class="spec" style="border-color:var(--good);color:var(--good)">cares for 4 patients</span>':""}</div>`:""}</td>
       <td>${who}</td>
       <td>${techCell}</td>
       <td><span class="${stCls}">${stIcon}</span> <select onchange="setMech(${m.id},'status',this.value)" aria-label="Status">${stOpts}</select></td>
@@ -1287,17 +1365,18 @@ function renderMechs(){
     mKindChanged();
   }
   let rows="";
+  refreshTeamSelect();
   KIND_ORDER.forEach(kind=>{
     const list=S.mechs.filter(m=>kindOf(m)===kind);
     if(!list.length)return;
     const sub=list.reduce((a,m)=>a+unitUpkeep(m),0);
-    rows+=`<tr class="sect"><td colspan="6">${KINDS[kind].label} · ${list.length}</td><td class="num">${fmt(sub)}</td><td></td></tr>`;
+    rows+=`<tr class="sect"><td colspan="4">${KINDS[kind].label} · ${list.length}</td><td class="num">${fmt(sub)}</td><td></td></tr>`;
     rows+=list.map(unitRow).join("");
   });
   const e=expenses();
-  $("mechTable").innerHTML=`<tr><th>Unit</th><th class="num">Tons</th><th class="num">Book value</th>
-    <th>Pilot / crew</th><th>Tech team</th><th>Status</th><th class="num">Upkeep/mo</th><th></th></tr>${rows||'<tr><td colspan="8" class="muted">No units on the roster.</td></tr>'}
-    <tr><td colspan="6" style="text-align:right;color:var(--ink2)">Tech teams ${fmt(e.tech)} + spares ${fmt(e.spares)}${e.crew?` + crew wages ${fmt(e.crew)}`:""} =</td>
+  $("mechTable").innerHTML=`<tr><th>Unit · tons · book value</th>
+    <th>Pilot / crew</th><th>Tech team</th><th>Status</th><th class="num">Upkeep/mo</th><th></th></tr>${rows||'<tr><td colspan="6" class="muted">No units on the roster.</td></tr>'}
+    <tr><td colspan="4" style="text-align:right;color:var(--ink2)">Tech teams ${fmt(e.tech)} + spares ${fmt(e.spares)}${e.crew?` + crew wages ${fmt(e.crew)}`:""} =</td>
     <td class="num"><strong>${fmt(e.tech+e.spares+e.crew)}</strong></td><td></td></tr>`;
   const cnt=k=>S.mechs.filter(m=>kindOf(m)===k).length;
   const supN=["vtol","supv","ba","inf","emp"].reduce((a,k)=>a+cnt(k),0);
@@ -1307,12 +1386,25 @@ function renderMechs(){
   if(supN)parts.push(`${supN} support unit${supN===1?"":"s"}`);
   $("mechCount").textContent=parts.join(" · ");
 }
+function refreshTeamSelect(){
+  const sel=$("mTech"); if(!sel)return; const prev=sel.value;
+  sel.innerHTML='<option value="">— none —</option>'+(S.techTeams||[]).map(t=>{const on=teamUnit(t);
+    return `<option value="${t.id}" ${String(t.id)===prev?"selected":""}>${esc(t.name)} · ${t.level}${on?" (on "+esc(on.name)+")":""}</option>`;}).join("");
+}
+function assignTech(mid,tid){
+  const m=S.mechs.find(x=>x.id===mid); if(!m)return;
+  if(tid!=null)S.mechs.forEach(o=>{if(o.id!==mid&&o.techId===tid){o.techId=null;rlog(`${o.name} lost its tech team to ${m.name}.`);}});
+  m.techId=tid;
+  startNext(mid);
+  renderAll();
+}
 function mKindChanged(){
   const k=KINDS[$("mKind").value]||KINDS.mech;
   $("mTonWrap").style.display=k.perTon?"":"none";
   $("mCrewWrap").style.display=k.crew?"":"none";
   $("mUpkWrap").style.display=(!k.perTon)?"":"none";
   $("mTech").disabled=!k.tech;
+  refreshTeamSelect();
   if(k.perTon){const t=$("mTon");t.min=k.minT;t.max=k.maxT;}
 }
 
@@ -1355,8 +1447,8 @@ function renderPilots(){
   }).join("");
   $("pilotTable").innerHTML=`<tr><th>Pilot & abilities</th><th>Rating</th><th class="num">Gun/Pil</th>
     <th class="num">XP</th><th>Spend XP</th><th class="num">Wounds</th><th class="num">Salary</th><th></th></tr>${rows}`;
-  const nAero=S.pilots.filter(p=>pilotRole(p)==="Aerospace pilot").length;
-  $("pilotCount").textContent=`${S.pilots.length-nAero} MechWarrior${S.pilots.length-nAero===1?"":"s"}${nAero?` · ${nAero} aerospace pilot${nAero===1?"":"s"}`:""}`;
+  const nAero=S.pilots.filter(p=>pilotRole(p)==="Aerospace pilot").length, nMw=S.pilots.length-nAero;
+  $("pilotCount").textContent=`${nMw} MechWarrior${nMw===1?"":"s"}${nAero?` · ${nAero} aerospace pilot${nAero===1?"":"s"}`:""}`;
 }
 
 function renderStaff(){
@@ -1365,7 +1457,7 @@ function renderStaff(){
     sRoleChanged();
   }
   const fx=s=>/negotiat/i.test(s.role)?'<span class="badge"><span class="dot" style="background:var(--series1)"></span>+1 negotiation</span>'
-    :/surgeon|medic|doctor/i.test(s.role)?'<span class="badge"><span class="dot" style="background:var(--good)"></span>7-day healing</span>'
+    :/surgeon|medic|doctor/i.test(s.role)?`<span class="badge"><span class="dot" style="background:var(--good)"></span>${(()=>{const p=patientsOf(s.id)[0];return p?"treating "+esc(p.name):"free — treats 1 patient";})()}</span>`
     :'<span class="muted" style="font-size:12.5px">—</span>';
   const rows=S.staff.map(s=>`<tr><td><strong>${esc(s.name)}</strong></td><td>${esc(s.role)}</td>
     <td>${fx(s)}</td>
@@ -1410,12 +1502,15 @@ function renderOverview(){
     <div style="font-size:13px;color:var(--ink2)">Burn rate ${fmt(expenses().total)}/mo · ${S.treasury>0?`~${Math.floor(S.treasury/Math.max(1,expenses().total))} months of treasury left`:'<span class="neg">in debt</span>'}</div>
   </div>`;
   const bayCard=`<div class="card" style="margin-bottom:0">
-    <h2 style="margin-bottom:6px">Bay & infirmary <span class="spacer"></span><button class="small" onclick="goTab('repair')">Repair Bay ▸</button></h2>
+    <h2 style="margin-bottom:6px">Bay & infirmary <span class="spacer"></span><button class="small" onclick="goTab('repair')">Repair Bay ▸</button><button class="small" onclick="goTab('infirmary')">Infirmary ▸</button></h2>
     <div style="font-size:13px;color:var(--ink2);line-height:1.7">
       ${openJobs?`🔧 <strong>${openJobs}</strong> repair job${openJobs>1?"s":""} in progress`:`<span class="st-op">● bay quiet — no open jobs</span>`}<br>
       ${dmg||hulks?`${dmg?`<span class="st-dmg">▲ ${dmg} damaged</span>`:""}${dmg&&hulks?" · ":""}${hulks?`<span class="st-hulk">✕ ${hulks} hulk${hulks>1?"s":""}</span>`:""}`:`<span class="st-op">● all 'Mechs operational</span>`}<br>
       ${hurt?`<span style="color:var(--warning)">♥ ${hurt} pilot${hurt>1?"s":""} recovering</span>`:`<span class="st-op">● all pilots fit</span>`}${kia?` · <span style="color:var(--critical)">✕ ${kia} KIA</span>`:""}<br>
-      ${med?`<span class="st-op">●</span> ${esc(med.name)} on staff — 7-day healing`:`<span style="color:var(--warning)">▲ no medic — 14-day healing</span>`}
+      ${(()=>{const w=S.pilots.filter(p=>p.wounds>0&&p.wounds<6),c=w.filter(underCare).length,n=carers().length;
+        return !w.length?`<span class="st-op">●</span> ${n} carer${n===1?"":"s"} on hand`
+          :c===w.length?`<span class="st-op">●</span> all ${w.length} wounded under care`
+          :`<span style="color:var(--warning)">▲ ${w.length-c} of ${w.length} wounded without a carer</span>`;})()}
     </div>
   </div>`;
   $("ovSituation").innerHTML=locCard+conCard+bayCard;
@@ -1464,7 +1559,7 @@ function renderOverview(){
     :"";
   $("readiness").innerHTML=`<table><tr><th>Unit</th><th>Status</th><th>Pilot</th><th>Rating</th><th>Condition</th></tr>${rd}</table>`
     +bench
-    +`<div class="hint">Reassign pilots here — picking a pilot marked ⇄ pulls them out of their current unit (it becomes unassigned). MechWarriors crew 'Mechs and combat vehicles; aerospace pilots fly fighters. Support units fight at their Asset card's Skill. Models and status are edited on the Roster page; pilot wounds on the Pilots tab or in the Repair Bay.</div>`;
+    +`<div class="hint">Reassign pilots here — picking a pilot marked ⇄ pulls them out of their current unit (it becomes unassigned). MechWarriors crew 'Mechs and combat vehicles; aerospace pilots fly fighters. MechWarriors also drive support vehicles. Other support units fight at their Asset card's Skill. Models and status are edited on the Roster page; pilot wounds on the Pilots tab or in the Repair Bay.</div>`;
   const rep=repInfo();
   $("repBadge").innerHTML=`<span class="badge"><span class="dot" style="background:var(--series1)"></span>${rep.name} (${S.reputation}/10)</span>`;
   const repEvents=S.ledger.filter(l=>/^Reputation/.test(l.d)).slice(0,4);
@@ -1547,7 +1642,9 @@ function setMech(id,k,v){const m=S.mechs.find(x=>x.id===id);if(!m)return;
 function addMech(){const n=$("mName").value.trim();if(!n)return;
   const kind=$("mKind").value||"mech", k=KINDS[kind];
   const u={id:uid(),kind,name:n,ton:k.perTon?clamp(+$("mTon").value||k.minT,k.minT,k.maxT):0,
-    val:+$("mVal").value||3000000,bv:0,pilotId:null,tech:$("mTech").value,status:$("mStatus").value};
+    val:+$("mVal").value||3000000,bv:0,pilotId:null,tech:"Regular",status:$("mStatus").value};
+  const tid=$("mTech").value?+$("mTech").value:null;
+  if(k.tech&&tid!=null){S.mechs.forEach(o=>{if(o.techId===tid)o.techId=null;});u.techId=tid;}
   if(k.crew)u.crew=Math.max(0,+$("mCrew").value||0);
   if(!k.perTon)u.upk=Math.max(0,+$("mUpk").value||0);
   S.mechs.push(u);
@@ -1560,7 +1657,7 @@ function addPilot(){const n=$("pName").value.trim();if(!n)return;
 function setPilot(id,k,v){const p=S.pilots.find(x=>x.id===id);if(p){p[k]=v;renderAll();}}
 function setPilotRole(id,role){const p=S.pilots.find(x=>x.id===id);if(!p)return;
   p.role=role;
-  S.mechs.forEach(m=>{if(m.pilotId===id&&!pilotFits(p,m)){m.pilotId=null;rlog(`${p.name} is now an ${role==="Aerospace pilot"?"aerospace pilot":"MechWarrior"} — unassigned from ${m.name}.`);}});
+  S.mechs.forEach(m=>{if(m.pilotId===id&&!pilotFits(p,m)){m.pilotId=null;rlog(`${p.name} is now ${role==="Aerospace pilot"?"an aerospace pilot":"a MechWarrior"} — unassigned from ${m.name}.`);}});
   renderAll();}
 function setRating(id,r){const p=S.pilots.find(x=>x.id===id);if(!p)return;
   const t={Green:[5,6],Regular:[4,5],Veteran:[3,4],Elite:[2,3]}[r];
@@ -1579,6 +1676,44 @@ function toggleAbility(id,a){const p=S.pilots.find(x=>x.id===id);if(!p)return;
 function wound(id,n){const p=S.pilots.find(x=>x.id===id);if(p){p.wounds=clamp(p.wounds+n,0,6);renderAll();}}
 const STAFF_ROLES=[["Negotiator",2500],["Surgeon",1500],["Medic",800],["Astech crew",1000],
   ["Quartermaster",1000],["Admin clerk",500],["Infantry squad",2000],["Other…",1000]];
+/* ---- medical care is per patient ----
+   Each wounded pilot needs a carer assigned (p.medicId) to heal at 7 days per wound; otherwise 14.
+   Carers: a Surgeon/Medic/Doctor on staff treats 1 patient; an operational MASH Truck treats up to 4. */
+const MASH_BEDS=4;
+function carers(){
+  return [...S.staff.filter(x=>/surgeon|medic|doctor/i.test(x.role)).map(x=>({id:x.id,name:x.name,role:x.role,cap:1,kind:"staff"})),
+          ...S.mechs.filter(m=>m.fx==="med"&&m.status==="Operational").map(m=>({id:m.id,name:m.name,role:"MASH Truck",cap:MASH_BEDS,kind:"mash"}))];
+}
+function patientsOf(cid){return S.pilots.filter(p=>p.medicId===cid&&p.wounds>0&&p.wounds<6);}
+function carerOf(p){return p.medicId!=null?carers().find(c=>c.id===p.medicId)||null:null;}
+function underCare(p){return !!carerOf(p);}
+function healDays(p){return underCare(p)?7:14;}
+function ensureMedical(){
+  const list=carers(), ids=new Set(list.map(c=>c.id));
+  /* release carers from the fit, the dead, and anyone whose carer left or broke down */
+  S.pilots.forEach(p=>{if(p.medicId!=null&&(!(p.wounds>0&&p.wounds<6)||!ids.has(p.medicId)))p.medicId=null;});
+  /* respect capacity (oldest assignments keep their bed) */
+  list.forEach(c=>{patientsOf(c.id).slice(c.cap).forEach(p=>{p.medicId=null;});});
+  /* older saves: medical care used to cover everyone, so seat the wounded once with whoever is free */
+  if(!S.medicalPerPatient){S.medicalPerPatient=true;autoAssignCare(true);}
+}
+function freeBeds(c){return c.cap-patientsOf(c.id).length;}
+function assignCare(pid,cid){
+  const p=S.pilots.find(x=>x.id===pid); if(!p)return;
+  if(cid==null){p.medicId=null;renderAll();return;}
+  const c=carers().find(x=>x.id===cid); if(!c)return;
+  if(p.medicId!==cid&&freeBeds(c)<=0){
+    const bump=patientsOf(cid)[0]; if(bump){bump.medicId=null;rlog(`${bump.name} lost their carer to ${p.name}.`);}
+  }
+  p.medicId=cid; rlog(`${c.name} is now treating ${p.name}.`);
+  renderAll();
+}
+function autoAssignCare(quiet){
+  const wounded=S.pilots.filter(p=>p.wounds>0&&p.wounds<6&&!underCare(p)).sort((a,b)=>b.wounds-a.wounds);
+  let n=0;
+  wounded.forEach(p=>{const c=carers().find(x=>freeBeds(x)>0);if(c){p.medicId=c.id;n++;}});
+  if(!quiet){if(n)rlog(`Assigned carers to ${n} wounded pilot${n===1?"":"s"}.`);renderAll();}
+}
 function medicOnStaff(){
   const st=S.staff.find(s=>/surgeon|medic|doctor/i.test(s.role));
   if(st)return st;
@@ -1590,7 +1725,7 @@ function sRoleChanged(){
   $("sRoleCustomWrap").style.display=v==="Other…"?"":"none";
   const r=STAFF_ROLES.find(x=>x[0]===v); if(r)$("sCost").value=r[1];
   $("sRoleHint").innerHTML=v==="Negotiator"?"Wired in: +1 to every contract negotiation roll the moment they join."
-    :(v==="Surgeon"||v==="Medic")?"Wired in: enables medical care — wounds heal in 7 days instead of 14."
+    :(v==="Surgeon"||v==="Medic")?"Wired in: treats one wounded pilot at a time in the Infirmary — that pilot heals in 7 days per wound instead of 14. Hire one per patient you expect."
     :v==="Other…"?"Story role — no rules effect, priced by feel.":"No rules effect — flavour and bookkeeping.";
 }
 function addStaff(){const n=$("sName").value.trim();if(!n)return;
@@ -1598,7 +1733,7 @@ function addStaff(){const n=$("sName").value.trim();if(!n)return;
   const role=v==="Other…"?($("sRoleCustom").value.trim()||"Staff"):v;
   S.staff.push({id:uid(),name:n,role,cost:+$("sCost").value||0});
   if(/negotiat/i.test(role))rlog(`${n} hired as Negotiator — +1 to contract negotiations.`);
-  if(/surgeon|medic/i.test(role))rlog(`${n} hired as ${role} — medical care active, wounds heal in 7 days.`);
+  if(/surgeon|medic/i.test(role))rlog(`${n} hired as ${role} — assign them a patient in the Infirmary.`);
   $("sName").value="";$("sRoleCustom").value="";renderAll();}
 function delStaff(id){S.staff=S.staff.filter(s=>s.id!==id);renderAll();}
 function repChange(n,why){S.reputation=clamp(S.reputation+n,0,10);
@@ -1610,16 +1745,66 @@ function logTx(sign){const d=$("txDesc").value.trim()||"Transaction";const a=Mat
 function rollRecruits(type){
   const aero=type==="aero";
   const n=aero?Math.ceil(d6()/3):Math.ceil(d6()/2);
-  let out=`<div class="rolltxt"><strong>${n} ${aero?"aerospace pilot":"MechWarrior"} candidate${n>1?"s":""}</strong> at the hiring hall this month:<br>`;
+  const label=aero?"aerospace pilot":"MechWarrior";
+  let out=`<div class="rolltxt"><strong>${n} ${label} candidate${n>1?"s":""}</strong> at the hiring hall this month:<br>`;
   for(let i=0;i<n;i++){const r=r2d6();
     const q=r<=6?"Green":r<=9?"Regular":r<=11?"Veteran":"Elite";
-    out+=`&nbsp;• 2d6 = ${r} → <strong>${q}</strong>${q==="Elite"?(aero?" (brings own fighter — wants 25% of your salvage share)":" (brings own 'Mech — wants 25% of your salvage share)"):(aero?" (grounded flyer)":" (Dispossessed)")}<br>`;}
+    const note=q==="Elite"?(aero?" (brings own fighter — wants 25% of your salvage share)":" (brings own 'Mech — wants 25% of your salvage share)")
+      :(aero?" (grounded flyer)":" (Dispossessed)");
+    out+=`&nbsp;• 2d6 = ${r} → <strong>${q}</strong>${note}<br>`;}
   out+=`<span class="muted">Signing bonus = 2 months' salary.</span></div>`;
   $("recruitLog").innerHTML=out+($("recruitLog").innerHTML||"");
 }
+function techUnits(){return S.mechs.filter(m=>K(m).tech);}
+function hireTeam(){
+  const name=$("tName").value.trim()||nextTeamName();
+  const t={id:uid(),name,level:$("tLevel").value||"Regular"};
+  S.techTeams.push(t);
+  const mid=$("tAssign").value?+$("tAssign").value:null;
+  rlog(`Hired ${name} (${t.level} tech team, ${fmt(TECHCOST[t.level])}/mo).`);
+  $("tName").value="";
+  if(mid!=null)assignTech(mid,t.id); else renderAll();
+}
+function setTeam(id,k,v){const t=(S.techTeams||[]).find(x=>x.id===id);if(!t)return;
+  if(k==="level"&&t.level!==v)rlog(`${t.name} is now ${v} (${fmt(TECHCOST[v])}/mo).`);
+  t[k]=v;renderAll();}
+function teamToUnit(tid,mid){
+  if(mid==null){S.mechs.forEach(m=>{if(m.techId===tid)m.techId=null;});renderAll();return;}
+  S.mechs.forEach(m=>{if(m.techId===tid&&m.id!==mid)m.techId=null;});
+  assignTech(mid,tid);
+}
+function fireTeam(id){const t=(S.techTeams||[]).find(x=>x.id===id);if(!t)return;
+  const on=teamUnit(t);
+  S.techTeams=S.techTeams.filter(x=>x.id!==id);
+  S.mechs.forEach(m=>{if(m.techId===id)m.techId=null;});
+  rlog(`Let ${t.name} go${on?` — ${on.name} has no tech team now`:""}.`);
+  renderAll();}
+function renderTeams(){
+  const teams=S.techTeams||[];
+  const units=techUnits();
+  const unitOpts=(sel,tid)=>['<option value="">— unassigned —</option>',...units.map(m=>{
+      const cur=teamOf(m);const other=cur&&cur.id!==tid;
+      return `<option value="${m.id}" ${sel===m.id?"selected":""}>${esc(m.name)} · ${K(m).one}${other?" ⇄":""}</option>`;})].join("");
+  $("teamTable").innerHTML=teams.length?`<tr><th>Team</th><th>Level</th><th class="num">Repair roll</th><th>Assigned to</th><th class="num">Monthly</th><th></th></tr>`+
+    teams.map(t=>{const on=teamUnit(t);
+      return `<tr>
+        <td><input value="${esc(t.name)}" onchange="setTeam(${t.id},'name',this.value||'Team')" style="width:200px;font-weight:600" aria-label="Team name"></td>
+        <td><select onchange="setTeam(${t.id},'level',this.value)" aria-label="Level of ${esc(t.name)}">${Object.keys(TECHCOST).map(l=>`<option ${t.level===l?"selected":""}>${l}</option>`).join("")}</select></td>
+        <td class="num">${TECHMOD[t.level]>=0?"+":""}${TECHMOD[t.level]}</td>
+        <td><select onchange="teamToUnit(${t.id},this.value?+this.value:null)" aria-label="Unit for ${esc(t.name)}" ${on?"":'style="color:var(--warning)"'}>${unitOpts(on?on.id:null,t.id)}</select></td>
+        <td class="num">${fmt(TECHCOST[t.level])}</td>
+        <td><button class="small ghost" onclick="fireTeam(${t.id})" title="Let this team go">✕</button></td></tr>`;}).join("")
+    :'<tr><td class="muted">No tech teams on the payroll.</td></tr>';
+  const idle=teams.filter(t=>!teamUnit(t)).length;
+  const bare=units.filter(m=>!teamOf(m));
+  $("teamCount").textContent=`${teams.length} team${teams.length===1?"":"s"} · ${fmt(teams.reduce((a,t)=>a+TECHCOST[t.level],0))}/mo`;
+  $("teamWarn").innerHTML=(bare.length?`<div class="warnbar">▲ ${bare.length} unit${bare.length===1?" has":"s have"} no tech team: ${bare.slice(0,4).map(m=>esc(m.name)).join(", ")}${bare.length>4?"…":""}. ${idle?"Assign an idle team below or hire another.":"Hire a team and assign it."}</div>`:"")
+    +(idle?`<div class="hint" style="margin:0 0 8px">${idle} team${idle===1?" is":"s are"} idle but still on the payroll.</div>`:"");
+  const ta=$("tAssign");if(ta){const prev=ta.value;ta.innerHTML='<option value="">— leave unassigned —</option>'+units.map(m=>`<option value="${m.id}" ${String(m.id)===prev?"selected":""}>${esc(m.name)}${teamOf(m)?" (has "+esc(teamOf(m).name)+")":" — needs a team"}</option>`).join("");}
+}
 function rollVetTechs(){
   const r=r2d6();
-  $("recruitLog").innerHTML=`<div class="rolltxt">2d6 = ${r} → ${r>=9?"<strong>Yes</strong> — a Veteran or Elite tech team is available for hire.":"No senior tech teams on the market this month."}</div>`+($("recruitLog").innerHTML||"");
+  $("teamRoll").innerHTML=`<div class="rolltxt">2d6 = ${r} → ${r>=9?"<strong>Yes</strong> — a Veteran or Elite tech team is available for hire this month.":"No senior tech teams on the market this month — Green or Regular only."}</div>`;
 }
 
 /* ============ MISSIONS (scenario generator) ============ */
@@ -2199,7 +2384,7 @@ function renderRef(){
   <table><tr><th class="num">#</th><th>Step</th><th>What happens</th></tr>
   <tr><td class="num">1</td><td><strong>Contracts</strong></td><td>Unemployed? Roll offers at the hiring hall, negotiate, sign. Employed? Note the month's obligations.</td></tr>
   <tr><td class="num">2</td><td><strong>Missions</strong></td><td>Fight battles per ops tempo: Low 1 (2nd on 2d6 ≥ 9) · Medium 2 · High 3. Run a Debrief after each.</td></tr>
-  <tr><td class="num">3</td><td><strong>Repair & Refit</strong></td><td>Tech teams work jobs day by day in the Repair Bay; pilots heal (7 days/wound with care, 14 without).</td></tr>
+  <tr><td class="num">3</td><td><strong>Repair & Refit</strong></td><td>Tech teams work jobs day by day in the Repair Bay; pilots heal (7 days/wound with an assigned carer, 14 without).</td></tr>
   <tr><td class="num">4</td><td><strong>Payday</strong></td><td>Collect contract pay & salvage income; pay Monthly Expenses. "End Month" does this — auto-backing up the company first.</td></tr>
   <tr><td class="num">5</td><td><strong>Advancement</strong></td><td>Spend XP (one skill step per pilot per month), recruit, shop the market, adjust Reputation.</td></tr></table>
 
@@ -2217,12 +2402,12 @@ function renderRef(){
   <table><tr><th>Special ability</th><th>Effect</th></tr>
   ${ABILITIES.map(a=>`<tr><td>${a}</td><td>${SPA_FX[a]}</td></tr>`).join("")}</table>
   <p class="hint" style="margin:6px 0">Free ability at Veteran (total ≤ 7) and Elite (total ≤ 5), or buy one for 20 XP. Max two per pilot.</p>
-  <p class="hint"><strong>Wounds:</strong> 6 = dead; heal 1 per 7 days with medical care (14 without). Wounded pilots may still deploy. <strong>Ejection (2d6):</strong> 2 captured/MIA · 3–4 hard landing +1 wound · 5+ safe.</p>
+  <p class="hint"><strong>Wounds:</strong> 6 = dead; heal 1 per 7 days with an assigned carer (14 without); each surgeon or medic treats one patient, a MASH Truck four. Wounded pilots may still deploy. <strong>Ejection (2d6):</strong> 2 captured/MIA · 3–4 hard landing +1 wound · 5+ safe.</p>
 
   <h3>③ Company finances</h3>
   <table><tr><th>Monthly expense</th><th>Cost (C-bills)</th></tr>
-  <tr><td>MechWarrior salaries</td><td>by rating, table above</td></tr>
-  <tr><td>Tech team (one per 'Mech, vehicle, fighter, VTOL, support vehicle or battle armor unit)</td><td>${Object.entries(TECHCOST).map(([k,v])=>`${k} ${fmt(v)}`).join(" · ")}</td></tr>
+  <tr><td>Pilot salaries</td><td>by rating, table above</td></tr>
+  <tr><td>Tech teams (hired on Personnel; one assigned to each 'Mech, vehicle, fighter, VTOL, support vehicle or battle armor unit; paid even when idle)</td><td>${Object.entries(TECHCOST).map(([k,v])=>`${k} ${fmt(v)}`).join(" · ")}</td></tr>
   <tr><td>Spares & maintenance</td><td>50 × tonnage per 'Mech, vehicle or VTOL · 75 × tonnage per fighter · flat rate per infantry, battle armor or emplacement (hulks exempt)</td></tr>
   <tr><td>Crew wages (support units)</td><td>per unit, from its listing (e.g. foot platoon 2,800 · battle armor squad 2,000 · VTOL 800–1,200)</td></tr>
   <tr><td>Support staff</td><td>as hired</td></tr>
@@ -2277,7 +2462,7 @@ function renderRef(){
   <h3>⑩ Support staff specialists</h3>
   <table><tr><th>Specialist</th><th class="num">Monthly</th><th>Effect</th></tr>
   <tr><td>Negotiator</td><td class="num">2,500</td><td>+1 on contract negotiation rolls (stacks with Reputation). Applied automatically while one is on the payroll.</td></tr>
-  <tr><td>Surgeon / Medic</td><td class="num">1,500 / 800</td><td>Medical care: wounds heal in 7 days instead of 14. Applied automatically in the Repair Bay while one is on staff.</td></tr></table>
+  <tr><td>Surgeon / Medic</td><td class="num">1,500 / 800</td><td>Treats one wounded pilot at a time (assign them in the Infirmary): that pilot heals 1 wound per 7 days instead of 14.</td></tr></table>
 
   <h3>⑪ Key rolls at a glance</h3>
   <table><tr><th>Roll</th><th>Dice</th><th>Result</th></tr>
@@ -2297,11 +2482,12 @@ function renderRef(){
   <p class="hint" style="margin:4px 0">The core rules field non-'Mech units through <strong>Battlefield Support</strong> (pp. 138–159) and <strong>BFS: Aerospace</strong> (pp. 160–177). Each Asset has a Battlefield Support Point (BSP) cost, and with Battle Value Integration 1 BSP = 20 BV (p. 157). This dashboard lists BV for every unit and shows BSP beside it.</p>
   <table><tr><th>Unit type</th><th>Who fights it</th><th>Monthly upkeep</th><th>Notes</th></tr>
   <tr><td>Aerospace fighters</td><td>Aerospace pilot (Pilots tab)</td><td>salary + tech team + 75 × tonnage</td><td>Light 10–45 t · Medium 50–70 t · Heavy 75–100 t. Fuel limits loiter time; Bombs 2 BSP each, extra Fuel 1 BSP per 10 BSP of fighter cost (p. 177).</td></tr>
-  <tr><td>VTOLs, support vehicles</td><td>crew (Asset card Skill)</td><td>crew wages + tech team + 50 × tonnage</td><td>VTOLs treat all hexes as clear but stay a level above them.</td></tr>
+  <tr><td>Support vehicles</td><td>MechWarrior (Pilots tab)</td><td>salary + tech team + 50 × tonnage</td><td>Savior Repair Vehicle, MASH Truck, Mobile HQ, APCs, artillery carriers.</td></tr>
+  <tr><td>VTOLs</td><td>crew (Asset card Skill)</td><td>crew wages + tech team + 50 × tonnage</td><td>VTOLs treat all hexes as clear but stay a level above them.</td></tr>
   <tr><td>Battle armor</td><td>crew (Asset card Skill)</td><td>crew wages + tech team + flat spares</td><td>Ride APCs (2 APC points each); Mechanized suits ride OmniMechs.</td></tr>
   <tr><td>Conventional infantry</td><td>crew (Asset card Skill)</td><td>crew wages + flat spares</td><td>Enter buildings freely; never trigger minefields.</td></tr>
   <tr><td>Emplacements</td><td>crew (Asset card Skill)</td><td>crew wages + flat spares</td><td>Immobile; deploy 7+ hexes outside the enemy deployment zone.</td></tr></table>
-  <p class="hint" style="margin:6px 0"><strong>Campaign effects (house rules — the core book leaves these to future sourcebooks):</strong> an operational unit with the <strong>MFB</strong> Special (Savior Repair Vehicle) cancels the −1 Field-conditions repair penalty; a <strong>MASH Truck</strong> counts as medical care (7-day healing). Infantry and battle armor losses are refitted in the Repair Bay with "Replace infantry / battle armor losses" (cost = % lost × book value, no roll).</p>
+  <p class="hint" style="margin:6px 0"><strong>Campaign effects (house rules — the core book leaves these to future sourcebooks):</strong> an operational unit with the <strong>MFB</strong> Special (Savior Repair Vehicle) cancels the −1 Field-conditions repair penalty; a <strong>MASH Truck</strong> is a carer for up to four wounded pilots at once (7-day healing). Infantry and battle armor losses are refitted in the Repair Bay with "Replace infantry / battle armor losses" (cost = % lost × book value, no roll).</p>
   <p class="hint" style="margin:6px 0"><strong>Strikes</strong> (p. 153) are hired at ${fmt(STRIKE_CBILLS_PER_BSP)} C-bills per BSP for one battle and are spent when its debrief is applied (cancel before then for a full refund). Aerospace Strikes and fighter models can't be used in the same battle. Support allotments when a mission sets none: ${BFS_ALLOT.map(a=>`${a[0]} ${a[1]}`).join(" · ")} BSP.</p>`;
 }
 
@@ -2613,9 +2799,10 @@ function startNext(mid){
   const m=S.mechs.find(x=>x.id===mid); if(!m)return;
   if(S.tasks.some(t=>t.mechId===mid&&t.status==="active"))return;
   const t=S.tasks.find(t=>t.mechId===mid&&t.status==="queued"); if(!t)return;
+  if(needsTeam(m))return;   /* waits in the queue until a tech team is assigned */
   t.status="active";
   if(t.tn==null){t.remaining=t.days;t.roll="no roll needed";return;}
-  const raw=d6()+d6(), mod=(K(m).tech?TECHMOD[m.tech]:0)+facMod(), effTN=t.tn+(m.rush?1:0);
+  const raw=d6()+d6(), mod=techMod(m)+facMod(), effTN=t.tn+(m.rush?1:0);
   const tot=raw+mod;
   if(raw===2){
     if(["crit","replace","actuator","engine","gyro","sensors","limb","custom"].includes(t.key)){
@@ -2655,6 +2842,7 @@ function advanceDayCore(){
   S.mechs.forEach(m=>{
     const t=S.tasks.find(x=>x.mechId===m.id&&x.status==="active");
     if(!t)return;
+    if(needsTeam(m))return;   /* team reassigned or let go: the job stalls */
     t.remaining-=(m.rush?2:1);
     if(t.remaining<=0){
       t.status="done";
@@ -2676,9 +2864,10 @@ function advanceDayCore(){
   S.pilots.forEach(p=>{
     if(p.wounds>0&&p.wounds<6){
       p.healProg=(p.healProg||0)+1;
-      const need=medicOnStaff()?7:14;
+      const need=healDays(p);
       if(p.healProg>=need){p.wounds--;p.healProg=0;
-        rlog(`${p.name} recovered a wound (${p.wounds} remaining).`);}
+        rlog(`${p.name} recovered a wound (${p.wounds} remaining).`);
+        if(p.wounds===0&&p.medicId!=null){const c=carerOf(p);p.medicId=null;if(c)rlog(`${c.name} is free for another patient.`);}}
     }
   });
 }
@@ -2686,13 +2875,10 @@ function advanceDays(n){for(let i=0;i<n;i++)advanceDayCore();renderAll();}
 function renderRepair(){
   $("rFacility").value=S.facility;
   const med=medicOnStaff();
-  $("rMedStatus").innerHTML=med
-    ?`<span class="st-op">●</span> Medical care: <strong>${esc(med.name)}</strong> (${esc(med.role)}) — wounds heal 1 per 7 days`
-    :`<span style="color:var(--warning)">▲</span> No surgeon, medic or MASH unit — natural healing only, 1 wound per 14 days. Hire one on the Personnel tab.`;
   const mfb=mfbUnit();
-  if(S.facility==="Field")$("rMedStatus").innerHTML+=mfb
-    ?` &nbsp;<span class="st-op">●</span> <strong>${esc(mfb.name)}</strong> (MFB) cancels the field-conditions penalty.`
-    :` &nbsp;<span class="muted">An operational Mobile Field Base (MFB) would cancel the −1 field penalty.</span>`;
+  $("rMedStatus").innerHTML=S.facility!=="Field"?""
+    :mfb?`<span class="st-op">●</span> <strong>${esc(mfb.name)}</strong> (MFB) cancels the field-conditions penalty.`
+    :`<span class="muted">An operational Mobile Field Base (MFB) would cancel the −1 field penalty.</span>`;
   const over=S.day>30;
   $("clockInfo").innerHTML=`<span class="badge"><span class="dot" style="background:${over?"var(--warning)":"var(--series1)"}"></span>Month ${S.month} · Day ${S.day}</span>`;
   $("clockHint").innerHTML=over
@@ -2727,24 +2913,52 @@ function renderRepair(){
       return `<div style="margin-bottom:12px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px;flex-wrap:wrap">
           <strong>${esc(m.name)}</strong>
-          <span class="muted" style="font-size:13px">tech ${m.tech} (${TECHMOD[m.tech]>=0?"+":""}${TECHMOD[m.tech]})</span>
+          ${K(m).tech?(teamOf(m)?`<span class="muted" style="font-size:13px">${esc(teamOf(m).name)} · ${teamOf(m).level} (${techMod(m)>=0?"+":""}${techMod(m)})</span>`
+            :`<span class="chip bad">No tech team — work is on hold</span> <button class="small" onclick="goTab('mechs')">Assign on Roster ▸</button>`):""}
           <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink2);margin:0">
             <input type="checkbox" ${m.rush?"checked":""} onchange="toggleRush(${m.id})">Rush (2 days/day, +1 TN on new rolls)</label>
         </div>
         <table><tr><th>Job</th><th class="num">TN</th><th>Tech roll</th><th class="num">Days left</th><th class="num">Cost</th><th></th></tr>${rows}</table>
       </div>`;}).join("");
   }
-  /* infirmary */
-  const hurt=S.pilots.filter(p=>p.wounds>0);
-  $("infirmary").innerHTML=hurt.length?`<table><tr><th>Pilot</th><th class="num">Wounds</th><th>Next recovery</th></tr>${
-    hurt.map(p=>{
-      if(p.wounds>=6)return `<tr><td>${esc(p.name)}</td><td class="num" style="color:var(--critical)">6</td><td style="color:var(--critical)">✕ KIA — no recovery</td></tr>`;
-      const need=(medicOnStaff()?7:14)-(p.healProg||0);
-      return `<tr><td>${esc(p.name)}</td>
-        <td class="num" style="color:${p.wounds>=4?"var(--critical)":"var(--warning)"}">${p.wounds}</td>
-        <td>${need} day${need===1?"":"s"} ${medicOnStaff()?"":'<span class="muted">(no medical care)</span>'}</td></tr>`;
-    }).join("")}</table>`
-    :'<p class="muted" style="margin:4px 0">Everyone is fit for duty.</p>';
+  /* infirmary (its own page) */
+  const hurt=S.pilots.filter(p=>p.wounds>0).sort((x,y)=>y.wounds-x.wounds);
+  const alive=hurt.filter(p=>p.wounds<6), dead=hurt.filter(p=>p.wounds>=6);
+  const cs=carers(), uncared=alive.filter(p=>!underCare(p));
+  const beds=cs.reduce((a,c)=>a+c.cap,0), freeTotal=cs.reduce((a,c)=>a+freeBeds(c),0);
+  $("infClock").innerHTML=`<span class="badge"><span class="dot" style="background:var(--series1)"></span>Month ${S.month} · Day ${S.day}</span>`;
+  const carerRows=cs.map(c=>{const pts=patientsOf(c.id);
+    return `<tr><td><strong>${esc(c.name)}</strong> <span class="muted">· ${esc(c.role)}</span></td>
+      <td>${pts.length?pts.map(p=>esc(p.name)).join(", "):'<span class="muted">free</span>'}</td>
+      <td class="num">${pts.length} / ${c.cap}</td></tr>`;}).join("");
+  $("infMed").innerHTML=(cs.length
+    ?`<table><tr><th>Carer</th><th>Treating</th><th class="num">Patients</th></tr>${carerRows}</table>`
+    :`<div style="font-size:16px"><span style="color:var(--warning)">▲</span> No surgeon, medic or MASH Truck — every wound takes <strong>14 days</strong> to heal.</div>`)
+    +(uncared.length?`<div class="warnbar" style="margin:12px 0 0">▲ ${uncared.length} wounded pilot${uncared.length===1?" has":"s have"} no carer and heal${uncared.length===1?"s":""} at 14 days per wound.
+        ${freeTotal?`<button class="small primary" onclick="autoAssignCare()">Assign free carers</button>`:""}
+        ${uncared.length>freeTotal?`<button class="small" onclick="goTab('personnel')">Hire medical staff ▸</button> <button class="small" onclick="goTab('market')">MASH Truck ▸</button>`:""}</div>`:"");
+  $("infCount").textContent=hurt.length?`${alive.length} recovering · ${alive.length-uncared.length} under care${dead.length?` · ${dead.length} killed`:""}`:"";
+  const unitOf=p=>{const m=S.mechs.find(x=>x.pilotId===p.id);return m?esc(m.name):'<span class="muted">unassigned</span>';};
+  const hearts=w=>`<span style="color:${w>=4?"var(--critical)":"var(--warning)"};letter-spacing:2px">${"♥".repeat(w)}</span><span style="color:var(--baseline);letter-spacing:2px">${"♥".repeat(Math.max(0,6-w))}</span>`;
+  const careSel=p=>{const cur=p.medicId;
+    return `<select onchange="assignCare(${p.id},this.value?+this.value:null)" aria-label="Carer for ${esc(p.name)}" ${underCare(p)?"":'style="border-color:var(--warning);color:var(--warning)"'}>
+      <option value="">— no carer (14 days) —</option>${cs.map(c=>{const full=freeBeds(c)<=0&&cur!==c.id;
+        return `<option value="${c.id}" ${cur===c.id?"selected":""}>${esc(c.name)} · ${esc(c.role)} (${patientsOf(c.id).length}/${c.cap})${full?" ⇄":""}</option>`;}).join("")}</select>`;};
+  $("infirmary").innerHTML=hurt.length?`<table><tr><th>Pilot</th><th>Unit</th><th>Wounds</th><th>Medical care</th><th class="num">Next wound</th><th class="num">Fully fit</th><th></th></tr>${
+    alive.map(p=>{
+      const per=healDays(p), next=Math.max(1,per-(p.healProg||0)), full=next+(p.wounds-1)*per;
+      return `<tr><td><strong>${esc(p.name)}</strong><div class="muted" style="font-size:13px">${esc(pilotRole(p))}</div></td>
+        <td style="white-space:nowrap">${unitOf(p)}</td>
+        <td style="white-space:nowrap">${hearts(p.wounds)} <span class="muted">${p.wounds}/6</span>${p.wounds>=4?' <span class="chip bad">Critical</span>':""}</td>
+        <td>${careSel(p)}<div class="muted" style="font-size:13px">${per} days per wound</div></td>
+        <td class="num">${next} day${next===1?"":"s"}</td>
+        <td class="num">${full} day${full===1?"":"s"}</td>
+        <td style="white-space:nowrap"><button class="small" onclick="wound(${p.id},-1)" title="Remove a wound">−</button> <button class="small" onclick="wound(${p.id},1)" title="Add a wound">+</button></td></tr>`;
+    }).join("")}${
+    dead.map(p=>`<tr><td><strong>${esc(p.name)}</strong></td><td style="white-space:nowrap">${unitOf(p)}</td>
+      <td colspan="4" style="color:var(--critical)">✕ Killed in action — remove them from the Pilots page when you're ready</td>
+      <td style="white-space:nowrap"><button class="small" onclick="goTab('pilots')">Pilots ▸</button></td></tr>`).join("")}</table>`
+    :'<p style="margin:4px 0;font-size:16px"><span class="st-op">●</span> Everyone is fit for duty.</p>';
   /* timeline */
   $("timeline").innerHTML=S.repairLog.length
     ?S.repairLog.map(e=>`<div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--grid)">
@@ -3306,9 +3520,9 @@ function buySupFromMarket(id){
   S.ledger.unshift({m:S.month,d:`${k.one} purchase — ${it.name} (${Math.round(it.pct*100)}% of book)`,a:-it.price});
   const u={id:uid(),kind:it.kind,name:it.name,ton:it.ton,val:it.val,bv:it.bv,crew:it.crew,upk:it.upk,sp:it.sp,fx:it.fx,
     pilotId:null,tech:"Regular",status:"Operational"};
-  if(it.kind==="veh"){delete u.crew;delete u.upk;}
+  if(it.kind==="veh"||it.kind==="supv"){delete u.crew;delete u.upk;}
   S.mechs.push(u);
-  rlog(it.kind==="veh"?`Purchased ${it.name} for ${fmt(it.price)} — added to the roster (needs a MechWarrior and a tech team).`
+  rlog(it.kind==="veh"||it.kind==="supv"?`Purchased ${it.name} for ${fmt(it.price)} — added to the roster (needs a MechWarrior and a tech team).`
     :`Acquired ${it.name} for ${fmt(it.price)} — on the roster with crew wages of ${fmt(it.crew)}/mo.`);
   it.sold=true;renderAll();
 }
@@ -3493,7 +3707,7 @@ function renderMarket(){
       <td><strong>${esc(it.name)}</strong>${it.clan?' <span class="spec">Clan · captured</span>':""}<div>${it.cls?`<span class="spec">${esc(it.cls)}</span>`:""}${it.sp?String(it.sp).split(",").map(x=>`<span class="spec">${esc(x.trim())}</span>`).join(""):""}${it.fx==="mfb"?'<span class="spec" style="border-color:var(--good);color:var(--good)">field repairs at +0</span>':""}${it.fx==="med"?'<span class="spec" style="border-color:var(--good);color:var(--good)">medical care</span>':""}</div></td>
       <td class="num">${it.ton?it.ton+" t":'<span class="muted">—</span>'}</td>
       <td class="num">${fmt(it.bv)}${it.kind==="veh"?"":` <span class="bsp">${Math.round(it.bv/BV_PER_BSP)} BSP</span>`}</td>
-      <td class="num">${it.kind==="veh"?'<span class="muted">pilot</span>':fmt(it.crew)}</td>
+      <td class="num">${it.kind==="veh"||it.kind==="supv"?'<span class="muted">pilot</span>':fmt(it.crew)}</td>
       <td class="num">${fmt(it.val)}</td><td class="num">${Math.round(it.pct*100)}%</td>
       <td class="num"><strong>${fmt(it.price)}</strong></td>
       <td>${it.sold?'<span class="muted">bought</span>':`<button class="small primary" onclick="buySupFromMarket(${it.id})">Buy</button>`}</td></tr>`).join("");
@@ -3503,7 +3717,7 @@ function renderMarket(){
     ${sLine?`<div class="rolltxt">2d6 + world: ${sLine}</div>`:'<div class="rolltxt">Reroll the market to add support units to this month\'s listings.</div>'}
     ${sList.length?`<table><tr><th>Unit</th><th class="num">Tons</th><th class="num">BV</th><th class="num">Crew/mo</th><th class="num">Book value</th><th class="num">Price roll</th><th class="num">Asking</th><th></th></tr>${sRows}</table>`
       :'<p class="muted" style="margin:6px 0">No support units on offer this month.</p>'}
-    <div class="hint">Ground Assets from the Battlefield Support rules (Core Rulebook pp. 140–151): infantry, battle armor, VTOLs, support vehicles and emplacements. Combat vehicles take a MechWarrior and a tech team like 'Mechs; the others fight from Asset cards at the card's Skill, so they take crew wages instead of a named pilot. ${SUPPORT_GROUPS.map(g=>esc(g.note)).join(" ")} It is ${campYear()}: newer designs appear once they enter production.</div>
+    <div class="hint">Ground Assets from the Battlefield Support rules (Core Rulebook pp. 140–151): infantry, battle armor, VTOLs, support vehicles and emplacements. Combat and support vehicles take a MechWarrior and a tech team like 'Mechs; infantry, battle armor, VTOLs and emplacements fight from Asset cards at the card's Skill, so they take crew wages instead of a named pilot. ${SUPPORT_GROUPS.map(g=>esc(g.note)).join(" ")} It is ${campYear()}: newer designs appear once they enter production.</div>
   </div>`;
   /* equipment card */
   const rrows=M.rares.map(r=>`<tr ${r.avail?"":'style="opacity:.55"'}>
