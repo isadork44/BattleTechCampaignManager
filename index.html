@@ -313,6 +313,7 @@
   table.labw td{padding:4px 8px}
   .laberrs{background:var(--crit-soft);border:1px solid rgba(225,83,83,.55);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13.5px}
   .labwarns{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin-bottom:10px;font-size:13px;color:var(--ink2)}
+  .labwhy{margin-top:12px;font-size:13.5px;color:#f08b8b;font-weight:600}
   .laberrs ul,.labwarns ul{margin:4px 0 0;padding-left:18px}
   button:disabled{opacity:.45;cursor:not-allowed}
   @media(max-width:1400px){.labtiles{grid-template-columns:repeat(3,minmax(0,1fr))}.labmain{grid-template-columns:minmax(0,1fr) 270px}}
@@ -4591,7 +4592,7 @@ function labCanGo(d,it,l){
   if(it.id==="CASE"&&!LAB_TORSO.includes(l))return "Inner Sphere CASE goes in a torso location.";
   if(e.f.includes("P")){if(!labIsArm(d,l))return `${nm}: arms only.`;const a=d[l==="LA"?"la":"ra"];if(!a[0]||!a[1])return `${nm} needs the lower arm and hand actuators in that arm.`;
     if(d.i.some(x=>x.u!==it.u&&x.loc===l&&EQ[x.id]&&EQ[x.id].f.includes("P")))return "Only one physical weapon per arm.";}
-  if((it.id==="HS"&&d.h==="D")||(it.id==="DHS"&&d.h==="S"))return `This 'Mech uses ${d.h==="D"?"double":"single"} heat sinks — change the heat sink type under Chassis first.`;
+  if((it.id==="HS"&&d.h==="D")||(it.id==="DHS"&&d.h==="S"))return `This 'Mech uses ${d.h==="D"?"double":"single"} heat sinks, and the two types can't be mixed. To fit ${it.id==="DHS"?"double":"single"} heat sinks, set Heat sinks to ${it.id==="DHS"?"Double":"Single"} under Chassis first — that converts every sink on the 'Mech (including the ones inside the engine).`;
   if(it.f==="R"&&labIsArm(d,l))return "Arm weapons can't be rear-mounted.";
   return "";
 }
@@ -4601,11 +4602,11 @@ function labPlace(p,l){
   if(p.k==="item"){it=d.i.find(x=>x.u===p.u);if(!it)return;}
   else if(p.k==="rem"){it=lab.removed.find(x=>x.u===p.u);if(!it)return;it={...it};isNew=true;}
   else if(p.k==="st"){const s=S.stores.find(z=>z.id===p.sid);if(!s)return;
-    if(labStoreUsed(s.id)>=s.qty){labMsg(`No more ${s.name} left in stores.`);return;}
+    if(labStoreUsed(s.id)>=s.qty){labMsg(`No more ${s.name} left in stores.`);renderLab();return;}
     const key=storeEq(s);const am=key.match(/^AMMO(H?):(.+)$/);
     it={u:labU(),id:am?am[2]:key,loc:l,f:am?(am[1]?"a":"A"):"",src:"st",sid:s.id};isNew=true;}
   else {it={u:labU(),id:p.id,loc:l,f:p.f||"",src:"s"};isNew=true;}
-  const why=labCanGo(d,it,l);if(why){labMsg(why);return;}
+  const why=labCanGo(d,it,l);if(why){labMsg(why);lab.sel=null;renderLab();return;}
   const need=labItemSlots(d,it);
   const ownHere=isNew?0:labSlotsIn(d,it,l);
   const free=labFree(d,l)+ownHere;
@@ -4618,7 +4619,7 @@ function labPlace(p,l){
       const freeA=labFree(d,a)+(isNew?0:labSlotsIn(d,{...it,...prev},a));
       if(free+freeA>=need){it.loc=l;it.sl=a;it.sn=need-free;done=true;break;}}
     if(!done){Object.assign(it,prev);if(prev.sl===undefined){delete it.sl;delete it.sn;}
-      labMsg(`No room: ${labItemName(it)} needs ${need} slot${need>1?"s":""}; the ${labLocName(d,l).toLowerCase()} has ${free} free.`);return;}
+      labMsg(`No room: ${labItemName(it)} needs ${need} slot${need>1?"s":""}; the ${labLocName(d,l).toLowerCase()} has ${free} free.`);renderLab();return;}
   } else it.loc=l;
   if(isNew){d.i.push(it);if(p.k==="rem")lab.removed=lab.removed.filter(x=>x.u!==p.u);}
   labMsg(it.sl?`${labItemName(it)} split between the ${labLocName(d,it.loc).toLowerCase()} and ${labLocName(d,it.sl).toLowerCase()}.`:"");
@@ -4649,11 +4650,19 @@ function labSetSlots(id,on){
 }
 function labSet(k,v){
   const d=lab.d,o=lab.orig;if(!d)return;
-  if(k==="w"){v=clamp(Math.round(+v||1),1,Math.floor(400/d.t));d.w=v;d.r=d.t*v;d.hi=Math.min(d.hi,Math.floor(d.r/25));}
-  else if(k==="hi")d.hi=clamp(Math.round(+v||0),0,Math.floor(d.r/25));
+  const notes=[];
+  const unplacedBefore=d.i.filter(x=>!x.loc).length;
+  if(k==="w"){const want=Math.round(+v||0),max=Math.floor(400/d.t);
+    v=clamp(want,1,max);
+    if(want>max)notes.push(`Walking MP capped at ${max}: engine rating = tonnage × Walking MP, and ${d.t} × ${want} = ${d.t*want} is over the 400 maximum.`);
+    if(want<1)notes.push("Walking MP can't be less than 1.");
+    d.w=v;d.r=d.t*v;
+    const cap=Math.floor(d.r/25);if(d.hi>cap){notes.push(`Engine-mounted heat sinks cut from ${d.hi} to ${cap}: a ${d.r}-rated engine only holds ${cap}. Place the rest as heat sink items or the 'Mech drops below 10 sinks.`);d.hi=cap;}}
+  else if(k==="hi"){const want=Math.round(+v||0),cap=Math.floor(d.r/25);d.hi=clamp(want,0,cap);
+    if(want>cap)notes.push(`A ${d.r}-rated engine holds at most ${cap} heat sinks (rating ÷ 25). Extra sinks have to be dragged onto the slot sheet as items.`);}
   else if(k==="s"){d.s=v;labSetSlots("ENDO",v==="ENDO");}
   else if(k==="a"){d.a=v;labSetSlots("FF",v==="FF");}
-  else if(k==="my"){d.my=v;labSetSlots("TSM",v==="TSM");}
+  else if(k==="my"){d.my=v;labSetSlots("TSM",v==="TSM");if(v==="TSM"&&d.i.some(x=>x.id==="MASC"))notes.push("MASC and triple-strength myomer can't be combined — remove the MASC or go back to standard myomer.");}
   else if(k==="h"){
     if(v===d.h)return;
     d.h=v;
@@ -4672,15 +4681,28 @@ function labSet(k,v){
     }
   }
   else if(["la0","la1","ra0","ra1"].includes(k)){
-    const a=d[k.slice(0,2)],i=+k[2];a[i]=v?1:0;if(i===0&&!v)a[1]=0;if(i===1&&v)a[0]=1;
+    const a=d[k.slice(0,2)],i=+k[2],side=k[0]==="l"?"left":"right";a[i]=v?1:0;
+    if(i===0&&!v&&a[1]){a[1]=0;notes.push(`The ${side} hand actuator came off too — a hand needs the lower arm actuator.`);}
+    if(i===1&&v&&!a[0]){a[0]=1;notes.push(`The ${side} lower arm actuator went back on too — a hand needs it.`);}
+    const l=k[0]==="l"?"LA":"RA";
+    if((!a[0]||!a[1])&&d.i.some(x=>x.loc===l&&EQ[x.id]&&EQ[x.id].f.includes("P")))notes.push(`The ${side} arm's hatchet or sword needs both the lower arm and hand actuators.`);
+    if(v&&labFree(d,l)<0)notes.push(`The ${side} arm is now over its 12 slots — move something out of it.`);
   }
   else d[k]=v;
-  labMsg("");renderLab();
+  const lost=d.i.filter(x=>!x.loc).length-unplacedBefore;
+  if(lost>0)notes.push(`${lost} slot item${lost>1?"s":""} didn't fit anywhere — they're listed under “Needs a slot” below the slot sheet. Free up room and drag them in.`);
+  if(["e","g","c"].includes(k)){const over=LAB_LOCS.filter(l=>labFree(d,l)<0);if(over.length)notes.push(`That change takes more slots in the ${over.map(l=>labLocName(d,l).toLowerCase()).join(" and ")} than are free — move items out of ${over.length>1?"them":"it"}.`);}
+  labMsg(notes.join(" "));renderLab();
 }
-function labArmor(k,v){const d=lab.d;d.A[k]=clamp(Math.round(+v||0),0,labArmorMax(d,k));
+function labArmor(k,v){const d=lab.d,want=Math.max(0,Math.round(+v||0)),l=k.replace(/R$/,""),max=labArmorMax(d,k);
+  let note="";
+  d.A[k]=Math.min(want,max);
+  if(want>max)note=l==="HD"?"Head armor is capped at 9 points.":`${labLocName(d,l)} armor is capped at ${max} (2 × its ${labIS(d)[l]} internal structure).`;
   /* torso front + rear share one cap */
-  const l=k.replace(/R$/,"");if(LAB_TORSO.includes(l)){const cap=labArmorMax(d,l),f=d.A[l]||0,r=d.A[l+"R"]||0;if(f+r>cap){if(k.endsWith("R"))d.A[k]=cap-f;else d.A[k]=cap-r;}}
-  labMsg("");renderLab();}
+  if(LAB_TORSO.includes(l)){const cap=labArmorMax(d,l),f=d.A[l]||0,r=d.A[l+"R"]||0;
+    if(f+r>cap){if(k.endsWith("R"))d.A[k]=cap-f;else d.A[k]=cap-r;
+      note=`${labLocName(d,l)}: front and rear armor share one cap of ${cap}, so this was set to ${d.A[k]}. Lower the ${k.endsWith("R")?"front":"rear"} to add more here.`;}}
+  labMsg(note);renderLab();}
 function labArmorMaxAll(){const d=lab.d,is=labIS(d);
   LAB_ARMOR_KEYS.forEach(k=>{if(k==="HD")d.A.HD=9;else if(/R$/.test(k))return;else if(LAB_TORSO.includes(k)){const cap=is[k]*2;const r=Math.round(cap*0.25);d.A[k]=cap-r;d.A[k+"R"]=r;}else d.A[k]=is[k]*2;});
   labMsg("");renderLab();}
@@ -4698,7 +4720,8 @@ function labDrop(ev,l){ev.preventDefault();ev.currentTarget.classList.remove("ov
   let p=labDragP;if(!p){try{p=JSON.parse(ev.dataTransfer.getData("text/plain"));}catch(e){}}
   labDragP=null;if(p)labPlace(p,l);}
 function labDropBin(ev){ev.preventDefault();ev.currentTarget.classList.remove("over");
-  const p=labDragP;labDragP=null;if(p&&p.k==="item")labRemove(p.u);}
+  const p=labDragP;labDragP=null;if(p&&p.k==="item")labRemove(p.u);
+  else if(p){labMsg("Drop parts onto a location on the slot sheet (left). Dropping an installed item on the Parts panel removes it.");renderLab();}}
 function labPick(el){const p=labPayload(el);
   lab.sel=lab.sel&&JSON.stringify(lab.sel)===JSON.stringify(p)?null:p;labMsg(lab.sel?"Now click “Place here” on a location (or drag the part onto it).":"");renderLab();}
 function labPlaceSel(l){if(lab.sel)labPlace(lab.sel,l);}
@@ -4789,6 +4812,10 @@ function labLocHTML(l){
     <div class="locmounts" title="Weapon types this location carried before the refit — other types cost a mount conversion">${(()=>{const w=labMounts(lab.orig)[l];return ["E","B","M"].map(t=>`<span class="mt ${w.has(t)?"on":""}">${t}</span>`).join("");})()}</div>${sel}
     ${rows}${over.length?`<div class="slot overflow">⚠ ${over.length} item${over.length>1?"s":""} don't fit</div>`:""}</div>`;
 }
+function labSinkNote(id){const d=lab.d;
+  if(id==="DHS"&&d.h==="S")return '<span class="brk" title="Single and double heat sinks can\'t be mixed">needs double sinks</span>';
+  if(id==="HS"&&d.h==="D")return '<span class="brk" title="Single and double heat sinks can\'t be mixed">needs single sinks</span>';
+  return "";}
 function labBinHTML(){
   const d=lab.d,yr=campYear();
   const tabs=`<div class="seg labseg">${[["shop","Market"],["stores","Stores"],["removed","Removed"]].map(([k,t])=>{
@@ -4802,6 +4829,7 @@ function labBinHTML(){
     const F=lab.filter;
     const chips=`<div class="pillbtns labchips">${[["E","Energy"],["B","Ballistic"],["M","Missile"],["Q","Equipment"],["A","Ammo"],["H","Sinks & jets"]].map(([k,t])=>`<button class="small ${F===k?"primary":"ghost"}" onclick="labSetFilter('${k}')">${t}</button>`).join("")}</div>`;
     const legal=EQ_DATA.map(r=>EQ[r[0]]).filter(e=>labEqLegal(e,yr));
+    const notYet=EQ_DATA.map(r=>EQ[r[0]]).filter(e=>!e.f.includes("C")&&!labEqLegal(e,yr)&&(F==="A"?!!e.ammo:F==="H"?["HS","DHS","JJ"].includes(e.id):F==="Q"?(e.type==="Q"||e.type==="P"):e.type===F));
     let list=[];
     if(F==="A")legal.filter(e=>e.ammo).forEach(e=>{list.push({e,f:"A"});if(["MG","LMG","HMG"].includes(e.id))list.push({e,f:"a"});});
     else if(F==="H")list=legal.filter(e=>["HS","DHS","JJ"].includes(e.id)).map(e=>({e,f:""}));
@@ -4815,14 +4843,15 @@ function labBinHTML(){
         const meta=f?`${f==="a"?e.ammo.shots/2:e.ammo.shots} shots · ${tons} t`:`${tons} t · ${labItemSlots(d,it)} sl${e.heat?` · ${e.heat}h`:""}${e.bv?` · BV ${e.bv}`:""}`;
         const price=e.id==="JJ"?`<span title="200 × tons × jets² for the whole set">${fmt(200*d.t*(2*labJump(d)+1))}</span>`:`${fmt(p.price)}${p.broker?' <span class="brk" title="Not in stock this month — broker price (2× list)">broker</span>':""}`;
         const pl={k:"shop",id:e.id,f};
-        return row(`data-k="shop" data-id="${e.id}" data-f="${f}"`,esc(f?labItemName(it):e.name),meta,price,isSel(pl));}).join("");
+        return row(`data-k="shop" data-id="${e.id}" data-f="${f}"`,esc(f?labItemName(it):e.name),meta+" "+labSinkNote(e.id),price,isSel(pl));}).join("")
+      +(notYet.length?`<div class="hint">Not available in ${yr}: ${notYet.map(e=>`${esc(e.name)} (${e.ext&&e.ext<=yr?"lost tech, recovered "+e.rec:e.intro})`).join(", ")}.</div>`:"");
   } else if(lab.bin==="stores"){
     const st=S.stores.map(s=>({s,key:storeEq(s)})).filter(x=>x.key);
     const placeable=st.filter(x=>EQ[x.key]||/^AMMOH?:/.test(x.key));
     const auto=st.filter(x=>!(EQ[x.key]||/^AMMOH?:/.test(x.key)));
     body=(placeable.length?placeable.map(({s,key})=>{const left=s.qty-labStoreUsed(s.id);
         const pl={k:"st",sid:s.id};
-        return left>0?row(`data-k="st" data-sid="${s.id}"`,esc(s.name),`${left} of ${s.qty} available`,'<span class="st-op">owned</span>',isSel(pl))
+        return left>0?row(`data-k="st" data-sid="${s.id}"`,esc(s.name),`${left} of ${s.qty} available ${labSinkNote(key)}`,'<span class="st-op">owned</span>',isSel(pl))
           :`<div class="binrow off"><div class="bn">${esc(s.name)}</div><div class="bm">all ${s.qty} in use on this design</div></div>`;}).join("")
         :'<p class="muted" style="margin:6px 0">No weapons or equipment in company stores. Buy parts at the Marketplace, log salvage there, or drag from the Market tab here.</p>')
       +(auto.length?`<div class="subhead">Used automatically</div>`+auto.map(({s})=>`<div class="binrow off"><div class="bn">${esc(s.name)} ×${s.qty}</div><div class="bm">picked up when the matching chassis option or armor is chosen</div></div>`).join(""):"")
@@ -4836,6 +4865,7 @@ function labBinHTML(){
   return `<div class="card labbin" ondragover="labDragOver(event)" ondragleave="labDragLeave(event)" ondrop="labDropBin(event)">
     <h2>Parts <span class="spacer"></span><span class="muted">drag onto a location</span></h2>${tabs}<div class="binlist">${body}</div></div>`;
 }
+function labLater(list,yr,suf){return list.filter(o=>!labLegal(o[2],o[3],o[4],yr)).map(o=>`${o[1]}${suf||""} (${o[3]&&o[3]<=yr&&!(o[4]&&o[4]<=yr)?`lost tech, recovered ${o[4]}`:o[2]})`);}
 function labSelect(list,key,cur,yr,disabled){
   const opts=list.filter(o=>o[0]===cur||labLegal(o[2],o[3],o[4],yr));
   return `<select onchange="labSet('${key}',this.value)" ${disabled?"disabled":""} aria-label="${key}">${opts.map(o=>{
@@ -4880,6 +4910,13 @@ function renderLab(){
   }
   const d=lab.d,o=lab.orig;
   const v=labValidate(d,{year:yr});
+  if(m.status==="Hulk")v.errs.unshift("This 'Mech is a hulk — restore it in the Repair Bay before refitting it.");
+  if(!lab.name.trim())v.errs.unshift("The designation after refit can't be blank.");
+  /* heat note (not a rules problem) */
+  {const heat=d.i.reduce((a,it)=>{const e=EQ[it.id];if(!e||it.f==="A"||it.f==="a"||!["E","B","M"].includes(e.type)||e.f.includes("D"))return a;
+      return a+e.heat*(e.f.includes("U")?2:e.f.includes("O")?6:1);},0)+Math.max(2,labJump(d)?Math.max(3,labJump(d)):0);
+    const diss=labHS(d).total*(d.h==="D"?2:1);
+    if(heat-diss>=5)v.warns.push(`Runs hot: firing everything while ${labJump(d)>2?"jumping":"running"} builds ${heat} heat against ${diss} dissipation (+${heat-diss} a turn). Legal, but expect shutdown and ammo-explosion rolls.`);}
   d.i.filter(x=>!x.loc).length&&v.errs.unshift(`${d.i.filter(x=>!x.loc).length} slot item${d.i.filter(x=>!x.loc).length>1?"s":""} need a location — see “Needs a slot” under the slot table.`);
   const w=v.w,b=labBill(),bvO=labBV(o),bvN=labBV(d),cO=labCost(o),cN=labCost(d);
   const newVal=Math.max(0,Math.round(m.val+cN-cO));
@@ -4892,11 +4929,11 @@ function renderLab(){
     <div class="tile"><div class="k">Book value</div><div class="v">${fmt(newVal)}</div><div class="s">was ${fmt(m.val)} · ${dlt(m.val,newVal)}</div></div>
     <div class="tile"><div class="k">Refit bill</div><div class="v">${fmt(b.paid+b.labour)}</div><div class="s">parts ${fmt(b.paid)} now · labour ${fmt(b.labour)}</div></div>
     <div class="tile"><div class="k">Bay time</div><div class="v">${b.changes?Math.max(1,b.days):0} day${b.changes&&Math.max(1,b.days)===1?"":"s"}</div><div class="s">${b.changes} change${b.changes===1?"":"s"}</div></div>
-    <div class="tile"><div class="k">Rules check</div><div class="v ${v.errs.length?"neg":"pos"}">${v.errs.length?v.errs.length+" problem"+(v.errs.length>1?"s":""):"✓ Legal"}</div><div class="s">${v.warns.length?v.warns.length+" note"+(v.warns.length>1?"s":""):"no notes"}</div></div>
+    <div class="tile" ${v.errs.length||v.warns.length?`style="cursor:pointer" onclick="document.getElementById('labOrder').scrollIntoView({behavior:'smooth'})" title="Show the list"`:""}><div class="k">Rules check</div><div class="v ${v.errs.length?"neg":"pos"}">${v.errs.length?v.errs.length+" problem"+(v.errs.length>1?"s":""):"✓ Legal"}</div><div class="s">${v.warns.length?v.warns.length+" note"+(v.warns.length>1?"s":""):"no notes"}</div></div>
   </div>`;
   const msg=lab.msg?`<div class="warnbar" role="status">${esc(lab.msg)}</div>`:"";
   const unplaced=d.i.filter(x=>!x.loc);
-  const sheet=`<div class="card labsheet"><h2>Critical slots <span class="spacer"></span><span class="muted">${mv.walk}/${mv.run}${mv.masc?"["+mv.walk*2+"]":""}/${mv.jump} MP · heat sinks ${hs.total}${d.h==="D"?" double":""} (${hs.total*(d.h==="D"?2:1)} dissipation)</span></h2>
+  const sheet=`<div class="card labsheet"><h2>Critical slots <span class="spacer"></span><span class="muted">${mv.walk}/${mv.run}${mv.masc?"["+mv.walk*2+"]":""}/${mv.jump} MP · heat sinks ${hs.total}${d.h==="D"?" double":""} (${hs.total*(d.h==="D"?2:1)} dissipation)</span></h2>${msg}
     <div class="labgrid5">
       <div class="c1">${labLocHTML("LA")}</div>
       <div class="c2">${labLocHTML("LT")}${labLocHTML("LL")}</div>
@@ -4923,6 +4960,8 @@ function renderLab(){
       ${opt("Myomer",labSelect(LAB_MYOMER,"my",d.my,yr))}
     </div>
     ${d.q?"":`<div class="pillbtns" style="margin-top:12px;gap:14px">${armRow("la")}${armRow("ra")}</div>`}
+    ${(()=>{const later=[...labLater(LAB_ENGINES,yr),...labLater(LAB_GYROS,yr),...labLater(LAB_COCKPITS,yr),...labLater(LAB_STRUCTS,yr," structure"),...labLater(LAB_ARMORS,yr," armor"),...labLater(LAB_SINKS,yr," heat sinks"),...labLater(LAB_MYOMER,yr," myomer")];
+      return later.length?`<div class="hint">Not available yet in ${yr}: ${later.map(esc).join(", ")}.</div>`:"";})()}
     <table class="labw"><tr><th>Component</th><th class="num">Tons</th></tr>
       ${[["Internal structure",w.structure],[`Engine (${LAB_LBL.e(d.e)} ${d.r})`,w.engine],["Gyro",w.gyro],["Cockpit",w.cockpit],[`Heat sinks (${hs.total}, 10 free)`,w.sinks],[`Jump jets (${mv.jump})`,w.jets],[`Armor (${labArmorPts(d)} pts)`,w.armor],["Weapons & equipment",w.equipment]]
         .map(([a,x])=>`<tr><td>${a}</td><td class="num">${x}</td></tr>`).join("")}
@@ -4939,7 +4978,16 @@ function renderLab(){
   const lines=b.L.map(x=>`<tr><td>${esc(x.what)}${x.broker?' <span class="brk">broker 2×</span>':""}</td><td class="num">${fmt(x.value)}</td><td class="num">${x.src==="store"?'<span class="muted">stores</span>':fmt(x.paid)}</td></tr>`).join("");
   const rem=labRemovedParts();
   const canGo=!v.errs.length&&(b.changes||lab.name.trim()!==m.name);
-  const bill=`<div class="card"><h2>Refit order <span class="spacer"></span><span class="muted">${esc(m.name)}${lab.name.trim()!==m.name?" → "+esc(lab.name.trim()):""}</span></h2>
+  const why=v.errs.length?`Can't approve yet: ${v.errs.length} problem${v.errs.length>1?"s":""} listed above.`
+    :!(b.changes||lab.name.trim()!==m.name)?"Nothing has changed yet — drag parts onto the 'Mech or change the chassis.":"";
+  const heads=[];
+  if(canGo&&b.changes){
+    if(!teamOf(m))heads.push("No tech team is assigned to this 'Mech — the job will wait in the Repair Bay queue until you assign one on the Roster.");
+    if(S.treasury-b.paid<0)heads.push(`Paying ${fmt(b.paid)} for parts takes the treasury to ${fmt(S.treasury-b.paid)} — the company goes into debt.`);
+    if(S.treasury-b.paid-b.labour<0&&S.treasury-b.paid>=0)heads.push(`The ${fmt(b.labour)} labour charge at completion will push the treasury below zero.`);
+    if(S.tasks.some(t=>t.mechId===m.id&&t.status!=="done"))heads.push("This 'Mech already has repair jobs queued — the refit starts after them.");
+  }
+  const bill=`<div class="card" id="labOrder"><h2>Refit order <span class="spacer"></span><span class="muted">${esc(m.name)}${lab.name.trim()!==m.name?" → "+esc(lab.name.trim()):""}</span></h2>
     ${v.errs.length?`<div class="laberrs"><strong>Not legal yet:</strong><ul>${v.errs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
     ${v.warns.length?`<div class="labwarns"><ul>${v.warns.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
     ${b.conv.length?`<div class="labwarns" style="border-color:rgba(232,128,58,.6)"><strong style="color:var(--serious)">Mount conversion${b.conv.length>1?"s":""}:</strong> ${b.conv.length} weapon${b.conv.length>1?"s go":" goes"} where that weapon type wasn't mounted before. Each adds labour (${Math.round(LAB_CONV.pct*100)}% of the weapon's value, min ${fmt(LAB_CONV.min)}) and ${LAB_CONV.days} days, and the job needs a tech roll of ${LAB_CONV.tn}+ (fail = double time, snake eyes = +50% cost and double time).</div>`:""}
@@ -4955,13 +5003,15 @@ function renderLab(){
       <div class="clause"><div class="k">New BV</div><div class="v">${fmt(bvN)}</div><div class="muted" style="font-size:12.5px">Gunnery 4 / Piloting 5</div></div>
       <div class="clause"><div class="k">Work</div><div class="v">${b.changes?Math.max(1,b.days):0} day${b.changes&&Math.max(1,b.days)===1?"":"s"}</div><div class="muted" style="font-size:12.5px">${teamOf(m)?esc(teamOf(m).name):"no tech team assigned yet"}${b.tn?` · roll ${b.tn}+`:" · no roll"}</div></div>
     </div>
+    ${why?`<div class="labwhy">${esc(why)}</div>`:""}
+    ${heads.length?`<div class="labwarns" style="margin-top:12px"><strong>Before you approve:</strong><ul>${heads.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
     <div class="pillbtns" style="margin-top:14px">
-      <button class="primary" ${canGo?"":"disabled"} onclick="labCommit()">${!b.changes?"Rename":lab.confirm?`Confirm — pay ${fmt(b.paid)} and queue the refit`:"Approve refit"}</button>
+      <button class="primary" ${canGo?"":"disabled"} title="${esc(why)}" onclick="labCommit()">${!b.changes?"Rename":lab.confirm?`Confirm — pay ${fmt(b.paid)} and queue the refit`:"Approve refit"}</button>
       ${lab.confirm?'<button class="ghost" onclick="lab.confirm=false;renderLab()">Cancel</button>':""}
       <button class="ghost" onclick="labReset()">Reset changes</button>
     </div>
     <div class="hint">House rule: parts are paid now; labour is 10% of the parts' value and is charged when the job completes. Each item added, removed or moved takes a day; an engine or structure swap takes a week. The E / B / M tags under each location show the weapon types it carried before the refit: fitting another type there is a mount conversion (extra labour and ${LAB_CONV.days} days each, and the job needs a ${LAB_CONV.tn}+ tech roll). Otherwise no roll is needed.</div></div>`;
-  area.innerHTML=head+tiles+msg+`<div class="labmain">${sheet}${labBinHTML()}</div><div class="cols2">${chassis}${armor}</div>`+bill;
+  area.innerHTML=head+tiles+`<div class="labmain">${sheet}${labBinHTML()}</div><div class="cols2">${chassis}${armor}</div>`+bill;
 }
 
 /* ============ DM TOOLS ============ */
