@@ -248,6 +248,76 @@
     .step .chip{justify-self:start}
   }
   @media(max-width:560px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.pagehead h1{font-size:24px}}
+
+  /* ---------- Mech Lab ---------- */
+  .labtiles{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .labtiles .v{font-size:21px}
+  .labbar{height:6px;background:var(--surface3);border-radius:3px;margin-top:6px;overflow:hidden}
+  .labbar span{display:block;height:100%;background:var(--accent)}
+  .labmain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+  .labmain>.card{margin-bottom:16px}
+  .labgrid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;align-items:start}
+  .labgrid5 .c1,.labgrid5 .c5{margin-top:46px}
+  .labgrid5>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+  .labloc{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:6px;min-width:0;transition:border-color .1s,background .1s}
+  .labloc.over{border-color:var(--accent);background:var(--accent-soft)}
+  .labloc.bad{border-color:var(--critical)}
+  .lochead{display:flex;justify-content:space-between;gap:4px;font-size:12.5px;align-items:baseline}
+  .lochead strong{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.04em;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lochead span{white-space:nowrap;font-size:12px}
+  .locsub{font-size:11.5px;color:var(--muted);margin-bottom:4px;white-space:nowrap}
+  .locmounts{display:flex;gap:3px;margin-bottom:4px}
+  .locmounts .mt{font-size:10.5px;font-weight:700;line-height:15px;padding:0 4px;border-radius:3px;border:1px dashed var(--baseline);color:var(--baseline)}
+  .locmounts .mt.on{border-style:solid;border-color:var(--series1);color:var(--series1)}
+  .slot.item.conv{border-left-color:var(--serious);box-shadow:inset 0 0 0 1px rgba(232,128,58,.45)}
+  .labplace{width:100%;margin:2px 0 4px;padding:2px 6px;font-size:12px;border-color:var(--accent);color:var(--accent)}
+  .slot{height:23px;display:flex;align-items:center;gap:3px;padding:0 5px;font-size:12px;border-radius:3px;margin-bottom:1px;
+    white-space:nowrap;overflow:hidden;min-width:0}
+  .slot.empty{color:var(--baseline)}
+  .slot.fixed{color:var(--muted);background:rgba(255,255,255,.02)}
+  .slot.item{background:var(--surface3);color:var(--ink);cursor:grab;border-left:3px solid var(--series1)}
+  .slot.item.cont{border-top-left-radius:0;border-top-right-radius:0;margin-top:-1px;height:24px}
+  .slot.item.first:has(+ .slot.item.cont){border-bottom-left-radius:0;border-bottom-right-radius:0}
+  .slot.item.new{border-left-color:var(--accent)}
+  .slot.item.ammo{border-left-color:var(--warning)}
+  .slot.item.struct{border-left-color:var(--baseline);color:var(--ink2);background:rgba(255,255,255,.035)}
+  .slot.item.picked{outline:2px solid var(--accent);outline-offset:-2px}
+  .slot.overflow{color:#f08b8b;font-weight:600}
+  .slot .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .slot.item{position:relative}
+  .slot .acts{position:absolute;right:2px;top:2px;display:flex;gap:2px;opacity:0;background:var(--surface3);padding-left:4px;transition:opacity .1s}
+  .slot:hover .acts,.slot:focus-within .acts{opacity:1}
+  .slot button.mini{padding:0 4px;font-size:11px;line-height:16px;border-radius:3px;background:transparent;border:1px solid var(--baseline);color:var(--ink2);flex:none}
+  .slot button.mini:hover{border-color:var(--accent);color:var(--ink)}
+  .slot button.mini.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .labbin{position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column;overflow:hidden}
+  .labbin.over{border-color:var(--accent)}
+  .labseg{margin-bottom:8px;width:100%}
+  .labseg{flex-wrap:nowrap}
+  .labseg button{flex:1;padding:6px 6px;font-size:13px;white-space:nowrap}
+  .labchips{margin-bottom:8px}
+  .labchips button{padding:2px 8px;font-size:12.5px}
+  .binlist{overflow:auto;min-height:120px;margin:0 -4px;padding:0 4px}
+  .binrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 8px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;margin-bottom:4px;
+    background:var(--surface2);cursor:grab;font-size:13px}
+  .binrow:hover{border-color:var(--baseline)}
+  .binrow.picked{border-color:var(--accent);background:var(--accent-soft)}
+  .binrow.off{cursor:default;opacity:.6}
+  .binrow .bn{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .binrow .bp{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .binrow .bm{grid-column:1 / -1;color:var(--muted);font-size:12px}
+  .brk{font-size:11px;color:var(--serious);border:1px solid rgba(232,128,58,.5);border-radius:3px;padding:0 4px}
+  .labopts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px 12px}
+  .labopts select{width:100%}
+  table.labw{margin-top:12px;font-size:14px}
+  table.labw td{padding:4px 8px}
+  .laberrs{background:var(--crit-soft);border:1px solid rgba(225,83,83,.55);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13.5px}
+  .labwarns{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin-bottom:10px;font-size:13px;color:var(--ink2)}
+  .laberrs ul,.labwarns ul{margin:4px 0 0;padding-left:18px}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  @media(max-width:1400px){.labtiles{grid-template-columns:repeat(3,minmax(0,1fr))}.labmain{grid-template-columns:minmax(0,1fr) 270px}}
+  @media(max-width:1180px){.labmain{grid-template-columns:1fr}.labbin{position:static;max-height:none}.binlist{max-height:420px}}
+  @media(max-width:760px){.labgrid5{grid-template-columns:repeat(2,minmax(0,1fr))}.labgrid5 .c1,.labgrid5 .c5{margin-top:0}.labtiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -287,6 +357,7 @@
       <div class="tglabel">Logistics</div>
       <div class="tgbtns">
         <button data-tab="repair">Repair Bay</button>
+        <button data-tab="lab">Mech Lab</button>
         <button data-tab="market">Marketplace</button>
         <button data-tab="finances">Finances</button>
       </div>
@@ -452,6 +523,9 @@
       <div class="hint" id="sRoleHint"></div>
     </div>
   </div>
+
+  <!-- ================= MECH LAB ================= -->
+  <div class="panel" id="panel-lab"><div id="labArea"></div></div>
 
   <!-- ================= REPAIR BAY ================= -->
   <div class="panel" id="panel-repair">
@@ -762,53 +836,53 @@ const FACMOD = {Field:-1, Bay:0, Industrial:1};
 /* 'Mech market catalog — approximate book values & BV2 (Gunnery 4 / Piloting 5) */
 const MECH_CATALOG={
   Light:[
-    ["Locust LCT-1V",20,1512000,432],["Locust LCT-1E",20,1574000,553],["Locust LCT-3V",20,1512000,436],
-    ["Stinger STG-3R",20,1602000,359],["Stinger STG-3G",20,1620000,436],["Wasp WSP-1A",20,1611000,384],
+    ["Locust LCT-1V",20,1512000,432],["Locust LCT-1E",20,1574000,553],["Locust LCT-3V",20,1512000,490],
+    ["Stinger STG-3R",20,1602000,359],["Stinger STG-3G",20,1620000,497],["Wasp WSP-1A",20,1611000,384],
     ["Wasp WSP-1D",20,1614000,401],["Flea FLE-15",20,1512000,430],["Thorn THE-N",20,1937000,549],
-    ["Mercury MCY-97",20,2118000,542],["Commando COM-2D",25,1810000,541],["Commando COM-1B",25,1795000,616],
-    ["Mongoose MON-66",25,2124000,539],["Spider SDR-5V",30,2472000,622],["Spider SDR-5K",30,2508000,503],
+    ["Mercury MCY-97",20,2118000,466],["Commando COM-2D",25,1810000,541],["Commando COM-1B",25,1795000,616],
+    ["Mongoose MON-66",25,2124000,758],["Spider SDR-5V",30,2472000,622],["Spider SDR-5K",30,2508000,503],
     ["UrbanMech UM-R60",30,1472000,504],["Valkyrie VLK-QA",30,2827000,723],["Valkyrie VLK-QD",30,2853000,819],
-    ["Hermes HER-1S",30,2385000,578],["Javelin JVN-10N",30,2245000,594],["Javelin JVN-10F",30,2278000,649],
-    ["Hussar HSR-200-D",30,2384000,536],["Jenner JR7-D",35,3115000,875],["Jenner JR7-F",35,3204000,1011],
-    ["Panther PNT-9R",35,2668000,769],["Panther PNT-8Z",35,2701000,741],["Firestarter FS9-H",35,2712000,773],
-    ["Firestarter FS9-K",35,2748000,694],["Ostscout OTT-7J",35,2698000,597],["Raven RVN-1X",35,2916000,887],
-    ["Wolfhound WLF-1",35,2949000,949],["Wolfhound WLF-2",35,3312000,967]],
+    ["Hermes HER-1S",30,2385000,716],["Javelin JVN-10N",30,2245000,594],["Javelin JVN-10F",30,2278000,835],
+    ["Hussar HSR-200-D",30,2384000,636],["Jenner JR7-D",35,3115000,875],["Jenner JR7-F",35,3204000,1011],
+    ["Panther PNT-9R",35,2668000,769],["Panther PNT-8Z",35,2701000,741],["Firestarter FS9-H",35,2712000,694],
+    ["Firestarter FS9-K",35,2748000,763],["Ostscout OTT-7J",35,2698000,597],["Raven RVN-1X",35,2916000,747],
+    ["Wolfhound WLF-1",35,2949000,949],["Wolfhound WLF-2",35,3312000,1061]],
   Medium:[
     ["Cicada CDA-2A",40,3067000,659],["Cicada CDA-3C",40,3341000,771],["Assassin ASN-21",40,3186000,749],
-    ["Clint CLNT-2-3T",40,3013000,770],["Hermes II HER-2S",40,3214000,784],["Sentinel STN-3L",40,3092000,823],
+    ["Clint CLNT-2-3T",40,3013000,770],["Hermes II HER-2S",40,3214000,784],["Sentinel STN-3L",40,3092000,717],
     ["Vulcan VL-2T",40,3179000,642],["Vulcan VL-5T",40,3297000,942],["Whitworth WTH-1",40,2988000,982],
     ["Blackjack BJ-1",45,3196000,949],["Hatchetman HCT-3F",45,3312000,854],["Vindicator VND-1R",45,3184000,1024],
     ["Vindicator VND-1AA",45,3211000,982],["Phoenix Hawk PXH-1",45,4066000,1041],["Phoenix Hawk PXH-1K",45,4113000,1043],
     ["Wyvern WVE-6N",45,3612000,981],["Centurion CN9-A",50,3472000,945],["Centurion CN9-AL",50,3594000,1057],
-    ["Crab CRB-20",50,3918000,1082],["Enforcer ENF-4R",50,3475000,1032],["Hunchback HBK-4G",50,3467000,1041],
+    ["Crab CRB-20",50,3918000,1143],["Enforcer ENF-4R",50,3475000,1032],["Hunchback HBK-4G",50,3467000,1041],
     ["Hunchback HBK-4P",50,3480000,1138],["Hunchback HBK-4SP",50,3473000,1043],["Trebuchet TBT-5N",50,3523000,1191],
     ["Trebuchet TBT-7M",50,4106000,1348],["Dervish DV-6M",55,4297000,1146],["Griffin GRF-1N",55,4365000,1272],
-    ["Griffin GRF-1S",55,4415000,1253],["Kintaro KTO-18",55,4519000,1187],["Scorpion SCP-1N",55,4197000,1076],
+    ["Griffin GRF-1S",55,4415000,1253],["Kintaro KTO-18",55,4519000,1187],["Scorpion SCP-1N",55,4197000,1019],
     ["Shadow Hawk SHD-2H",55,4590000,1064],["Shadow Hawk SHD-2D",55,4541000,899],["Wolverine WVR-6R",55,4484000,1101],
     ["Wolverine WVR-6M",55,4538000,1291],["Wolverine WVR-6K",55,4512000,1248]],
   Heavy:[
-    ["Champion CHP-1N",60,4681000,988],["Lancelot LNC25-01",60,4874000,1216],["Ostroc OSR-2C",60,4672000,1123],
-    ["Ostsol OTL-4D",60,4558000,1101],["Dragon DRG-1N",60,4771000,1125],["Grand Dragon DRG-5N",60,4936000,1223],
-    ["Quickdraw QKD-4G",60,4694000,1192],["Rifleman RFL-3N",60,4860000,1039],["Rifleman RFL-3C",60,4917000,1132],
+    ["Champion CHP-1N",60,4681000,1233],["Lancelot LNC25-01",60,4874000,1422],["Ostroc OSR-2C",60,4672000,1228],
+    ["Ostsol OTL-4D",60,4558000,1277],["Dragon DRG-1N",60,4771000,1125],["Grand Dragon DRG-5N",60,4936000,1223],
+    ["Quickdraw QKD-4G",60,4694000,1192],["Rifleman RFL-3N",60,4860000,1039],["Rifleman RFL-3C",60,4917000,1066],
     ["Catapult CPLT-C1",65,5189000,1399],["Catapult CPLT-K2",65,5316000,1319],["Crusader CRD-3R",65,5122000,1317],
-    ["Crusader CRD-3D",65,5141000,1283],["JagerMech JM6-S",65,4890000,901],["JagerMech JM6-A",65,5012000,1122],
-    ["Thunderbolt TDR-5S",65,5205000,1335],["Thunderbolt TDR-5SS",65,5231000,1337],["Axman AXM-1N",65,5448000,1268],
-    ["Bombardier BMB-12D",65,5217000,1088],["Exterminator EXT-4D",65,5719000,1495],["Warhammer WHM-6R",70,5498000,1299],
-    ["Warhammer WHM-6D",70,5512000,1213],["Archer ARC-2R",70,5434000,1477],["Archer ARC-2K",70,5451000,1423],
-    ["Guillotine GLT-4L",70,5729000,1418],["Cataphract CTF-1X",70,5637000,1316],["Grasshopper GHR-5H",70,5691000,1511],
-    ["Flashman FLS-7K",75,6017000,1614],["Black Knight BL-6-KNT",75,5911000,1443],["Marauder MAD-3R",75,5810000,1363],
-    ["Marauder MAD-3D",75,5829000,1309],["Orion ON1-K",75,5936000,1429],["Orion ON1-V",75,5948000,1298]],
+    ["Crusader CRD-3D",65,5141000,1338],["JagerMech JM6-S",65,4890000,901],["JagerMech JM6-A",65,5012000,1122],
+    ["Thunderbolt TDR-5S",65,5205000,1335],["Thunderbolt TDR-5SS",65,5231000,1337],["Axman AXM-1N",65,5448000,1374],
+    ["Bombardier BMB-12D",65,5217000,1480],["Exterminator EXT-4D",65,5719000,1385],["Warhammer WHM-6R",70,5498000,1299],
+    ["Warhammer WHM-6D",70,5512000,1471],["Archer ARC-2R",70,5434000,1477],["Archer ARC-2K",70,5451000,1356],
+    ["Guillotine GLT-4L",70,5729000,1418],["Cataphract CTF-1X",70,5637000,1316],["Grasshopper GHR-5H",70,5691000,1427],
+    ["Flashman FLS-7K",75,6017000,1480],["Black Knight BL-6-KNT",75,5911000,1551],["Marauder MAD-3R",75,5810000,1363],
+    ["Marauder MAD-3D",75,5829000,1470],["Orion ON1-K",75,5936000,1429],["Orion ON1-V",75,5948000,1298]],
   Assault:[
-    ["Awesome AWS-8Q",80,6178000,1605],["Awesome AWS-8V",80,6141000,1291],["Awesome AWS-9M",80,6512000,1812],
+    ["Awesome AWS-8Q",80,6178000,1605],["Awesome AWS-8V",80,6141000,1510],["Awesome AWS-9M",80,6512000,1812],
     ["Zeus ZEU-6S",80,6112000,1348],["Zeus ZEU-6T",80,6131000,1420],["Charger CGR-1A1",80,5455000,981],
-    ["Victor VTR-9B",80,6233000,1378],["Victor VTR-9A",80,6217000,1236],["Goliath GOL-1H",80,6034000,1148],
-    ["Thug THG-11E",80,6417000,1691],["Striker STC-2C",80,6098000,1201],["Hatamoto-Chi HTM-27T",80,6631000,1593],
-    ["Stalker STK-3F",85,6531000,1559],["Stalker STK-4N",85,6547000,1622],["BattleMaster BLR-1G",85,5901000,1519],
-    ["BattleMaster BLR-1D",85,5883000,1522],["Longbow LGB-0W",85,6589000,1272],["Crockett CRK-5003-1",85,6832000,1614],
-    ["Cyclops CP-10-Z",90,7113000,1317],["Cyclops CP-10-Q",90,7288000,1584],["Highlander HGN-733",90,7401000,1656],
-    ["Mauler MAL-1R",90,7625000,1533],["Banshee BNC-3E",95,6800000,1422],["Banshee BNC-3S",95,7204000,1751],
-    ["Atlas AS7-D",100,9626000,1897],["Atlas AS7-RS",100,9714000,1849],["King Crab KGC-0000",100,9528000,1509],
-    ["Annihilator ANH-1A",100,9312000,1866],["Marauder II MAD-4A",100,9911000,1969]]
+    ["Victor VTR-9B",80,6233000,1378],["Victor VTR-9A",80,6217000,1236],["Goliath GOL-1H",80,6034000,1449],
+    ["Thug THG-11E",80,6417000,1640],["Striker STC-2C",80,6098000,1488],["Hatamoto-Chi HTM-27T",80,6631000,1593],
+    ["Stalker STK-3F",85,6531000,1559],["Stalker STK-4N",85,6547000,1558],["BattleMaster BLR-1G",85,5901000,1519],
+    ["BattleMaster BLR-1D",85,5883000,1522],["Longbow LGB-0W",85,6589000,1337],["Crockett CRK-5003-1",85,6832000,1923],
+    ["Cyclops CP-10-Z",90,7113000,1317],["Cyclops CP-10-Q",90,7288000,1584],["Highlander HGN-733",90,7401000,1801],
+    ["Mauler MAL-1R",90,7625000,1460],["Banshee BNC-3E",95,6800000,1422],["Banshee BNC-3S",95,7204000,1751],
+    ["Atlas AS7-D",100,9626000,1897],["Atlas AS7-RS",100,9714000,1849],["King Crab KGC-0000",100,9528000,1810],
+    ["Annihilator ANH-1A",100,9312000,1434],["Marauder II MAD-4A",100,9911000,2073]]
 };
 const VEH_CATALOG={
   Light:[
@@ -953,15 +1027,6 @@ const STRIKES=[
   {g:"Minefield",n:"Heavy Density minefield",tn:"7",dmg:"6 AE",bsp:8}
 ];
 const BFS_ALLOT=[["Minor",64,"Scale 1–4"],["Moderate",96,"Scale 5–6"],["Heavy",128,"Scale 7–8"],["Maximum",192,"Scale 9–10"]];
-const COMMON_PARTS=[
-  ["Small Laser",11000],["Medium Laser",40000],["Large Laser",100000],["PPC",200000],
-  ["Flamer",7500],["Machine Gun",5000],["AC/2",75000],["AC/5",125000],["AC/10",200000],["AC/20",300000],
-  ["SRM-2",10000],["SRM-4",60000],["SRM-6",80000],["LRM-5",30000],["LRM-10",100000],["LRM-15",175000],["LRM-20",250000],
-  ["Heat Sink",2000],["Jump Jet (per 'Mech ton)",200]];
-const RARE_PARTS=[
-  ["ER Large Laser",200000],["ER PPC",300000],["Medium Pulse Laser",60000],["Large Pulse Laser",175000],
-  ["Gauss Rifle",300000],["Ultra AC/5",200000],["LB 10-X AC",400000],
-  ["Double Heat Sink",6000],["Artemis IV FCS",100000],["Streak SRM-2",15000],["CASE",50000]];
 const WORLD_MODS={Periphery:-2,Standard:0,Industrial:2};
 /* Galaxy map — approximate 3049 positions (LY from Terra; y = coreward) */
 const FACTIONS={
@@ -1197,7 +1262,7 @@ function renderAll(){
   ensureTechTeams(); ensureMedical();
   $("companyName").value=S.name;
   renderTiles(); renderMechs(); renderPilots(); renderStaff(); renderTeams();
-  renderContract(); renderFinances(); renderOverview(); renderRef(); renderRepair(); renderDebrief(); renderDM(); renderMarket(); renderTimelinePage(); renderGalaxy(); renderMissions();
+  renderContract(); renderFinances(); renderOverview(); renderRef(); renderRepair(); renderDebrief(); renderDM(); renderMarket(); renderLab(); renderTimelinePage(); renderGalaxy(); renderMissions();
   renderSaveBtn();
   renderShell(); renderSteps();
 }
@@ -1213,6 +1278,7 @@ const PAGE_INFO={
   missions:["Missions","This month's operations under the current contract."],
   debrief:["Debrief","Record damage, wounds, XP and salvage after each battle."],
   repair:["Repair Bay","Queue repairs, move the clock forward and manage spare parts."],
+  lab:["Mech Lab","Refit and customise roster 'Mechs under the TechManual construction rules."],
   market:["Marketplace","Buy 'Mechs, fighters, support units, parts and one-battle Strikes."],
   finances:["Finances","The ledger, manual transactions and this month's projection."],
   galaxy:["Galaxy Map","Where the company is and where it can travel."],
@@ -1252,7 +1318,8 @@ function renderShell(){
     infirmary:S.pilots.some(p=>p.wounds>=6)?["✕","bad"]
       :(()=>{const u=S.pilots.filter(p=>p.wounds>0&&p.wounds<6&&!underCare(p)).length;return u?[u,"hot"]:f.hurt?[f.hurt,""]:null;})(),
     mechs:(()=>{const n=S.mechs.filter(m=>m.status!=="Hulk"&&needsTeam(m)).length;return n?[n,"hot"]:null;})(),
-    finances:S.treasury<0?["−","bad"]:null
+    finances:S.treasury<0?["−","bad"]:null,
+    lab:(()=>{const n=S.tasks.filter(t=>t.key==="refit"&&t.status!=="done").length;return n?[n,""]:null;})()
   };
   document.querySelectorAll("#tabs button").forEach(b=>{
     let nb=b.querySelector(".nb"); const v=badge[b.dataset.tab];
@@ -1350,7 +1417,7 @@ function unitRow(m){
     return `<tr>
       <td><input value="${esc(m.name)}" onchange="setMech(${m.id},'name',this.value)" style="width:190px;font-weight:600" aria-label="Unit name">${bsp}
         <div class="unitmeta">${K(m).one} · ${tonCell}<input type="number" class="mini wide" value="${m.val}" step="10000" aria-label="Book value of ${esc(m.name)}"
-          onchange="setMech(${m.id},'val',Math.max(0,+this.value||0))"> C-bills</div>
+          onchange="setMech(${m.id},'val',Math.max(0,+this.value||0))"> C-bills${kind==="mech"?` · <a href="#" onclick="openLab(${m.id});return false" title="Open in the Mech Lab">${labPending(m.id)?"refit queued":"refit"}</a>`:""}</div>
         ${m.sp||m.fx?`<div>${specTags(m)}${m.fx==="mfb"?'<span class="spec" style="border-color:var(--good);color:var(--good)">field repairs at +0</span>':""}${m.fx==="med"?'<span class="spec" style="border-color:var(--good);color:var(--good)">cares for 4 patients</span>':""}</div>`:""}</td>
       <td>${who}</td>
       <td>${techCell}</td>
@@ -2454,7 +2521,7 @@ function renderRef(){
   <p class="hint">Hold the field and your Salvage clause applies. Intact enemy 'Mech (pilot lost): keep, sell (75%), or turn over. Destroyed 'Mech: 1d6 — 4+ recoverable hulk, else scrap worth 5%. Restore a hulk: (1d6+4) × 5% of book value, 2d6 weeks of one tech team. Your own destroyed 'Mech uses the same wreck roll.</p>
 
   <h3>⑨ Marketplace & travel</h3>
-  <p class="hint" style="margin:4px 0"><strong>'Mech market (monthly, per weight class):</strong> 2d6 + world modifier ≥ 8 → 1d6 ÷ 2 machines on the lot. Price 1d6: 1–2 = 110% · 3–4 = 100% · 5–6 = 90% of book. <strong>Rare equipment:</strong> 2d6 + world ≥ 8 per item, else broker at double list. Common parts always at list.
+  <p class="hint" style="margin:4px 0"><strong>'Mech market (monthly, per weight class):</strong> 2d6 + world modifier ≥ 8 → 1d6 ÷ 2 machines on the lot. Price 1d6: 1–2 = 110% · 3–4 = 100% · 5–6 = 90% of book. <strong>Parts:</strong> TechManual availability — A–C always in stock; D needs 2d6 + world ≥ 8, E 10+, F 12+, else a broker at double list. Only technology introduced (and not lost, or since recovered) by the current year is sold.
   World modifiers: ${Object.entries(WORLD_MODS).map(([k,v])=>`${k} ${v>=0?"+":""}${v}`).join(" · ")} — fighters use the 'Mech rolls; combat vehicles and other support units roll per group on the Support units list (see ⑫) — set by the company's current system on the Galaxy Map.</p>
   <p class="hint"><strong>Travel:</strong> 30 LY per jump, ~1 week per jump, 2,500 C-bills per 'Mech per jump. Months that end mid-transit run payday automatically.</p>
 
@@ -2469,13 +2536,18 @@ function renderRef(){
   <tr><td>Contract negotiation</td><td>2d6 + Rep (+1 negotiator)</td><td>8+ = improve a clause or +10% pay; every 3 over = 1 more</td></tr>
   <tr><td>Tech roll</td><td>2d6 + team + facility</td><td>Task TN (7–9); fail = double time; nat. 2 = botch</td></tr>
   <tr><td>'Mech market (per class)</td><td>2d6 + world</td><td>8+; price 1d6: 110/100/90% of book</td></tr>
-  <tr><td>Rare part</td><td>2d6 + world</td><td>8+ else broker at 2× list</td></tr>
+  <tr><td>Uncommon part (D / E / F)</td><td>2d6 + world</td><td>8+ / 10+ / 12+ else broker at 2× list</td></tr>
   <tr><td>Recruit quality</td><td>2d6</td><td>2–6 Green · 7–9 Regular · 10–11 Veteran · 12 Elite</td></tr>
   <tr><td>Ejected pilot</td><td>2d6</td><td>2 captured · 3–4 +1 wound · 5+ safe</td></tr>
   <tr><td>Destroyed 'Mech wreck</td><td>1d6</td><td>4+ recoverable hulk, else 5% scrap</td></tr>
   <tr><td>Second battle (Low tempo)</td><td>2d6</td><td>9+</td></tr>
   <tr><td>Fighter market (per class)</td><td>2d6 + world</td><td>8+; Clan captured stock 11+ at 200%</td></tr>
   <tr><td>Support units (per group)</td><td>2d6 + world</td><td>Infantry 5+ · Combat vehicles 6+ · Emplacements 6+ · VTOLs / support vehicles 7+ · Battle armor 9+</td></tr></table>
+
+  <h3>⑬ Mech Lab — refits (TechManual CAT35002)</h3>
+  <p class="hint" style="margin:4px 0">Any BattleMech on the roster can be refitted. Every change is checked against the TechManual BattleMech construction rules: total weight within the chassis tonnage; critical slots per location (head 6, others 12, less engine, gyro, cockpit and actuators); engine rating = tonnage × Walking MP (10–400, Master Engine Table weights); gyro = rating ÷ 100 rounded up (compact ×1.5, heavy-duty ×2, XL ×½); 10 heat sinks minimum, rating ÷ 25 of them inside the engine; jump jets ≤ Walking MP, torso and legs only; armor ≤ 2 × internal structure per location (head 9); endo steel and ferro-fibrous take 14 slots, TSM 6; MASC and TSM can't be combined; CASE in a torso; hatchets and swords need the arm's lower arm and hand actuators; weapons of 8+ slots may split between two adjacent locations; half-ton ammunition only for machine guns.</p>
+  <p class="hint" style="margin:4px 0"><strong>Battle Value</strong> is the TechManual BV 2 calculation (pp. 302–316): defensive rating (armor × 2.5, structure × 1.5 × engine modifier, gyro, defensive equipment, less explosive-ammo and Gauss penalties where CASE doesn't protect, × the movement defensive factor) plus offensive rating (weapons with rear-arc, Artemis and heat-efficiency adjustments, capped ammunition, tonnage — × speed factor). <strong>Cost</strong> is the TechManual formula (pp. 277–285): structural components plus weapons and equipment × (1 + tons ÷ 100), without ammunition. A refit changes the 'Mech's book value by the difference in TechManual price.</p>
+  <p class="hint" style="margin:4px 0"><strong>House rule — refit work:</strong> parts are bought now (market availability applies; parts from company stores are free), labour is 10% of the value of all parts fitted and is charged when the job completes. <strong>Mount conversions:</strong> each location keeps the weapon types (energy / ballistic / missile) it carried before the refit; putting a different type there is allowed but adds labour of 25% of that weapon's value (minimum 10,000) and 3 days, and the whole job then needs a tech roll of 8+ (2d6 + team + facility; fail = double time, snake eyes = +50% cost and double time). The job joins the Repair Bay queue for the 'Mech's tech team (no roll unless there's a mount conversion): 1 day per item added, removed or moved, 1 day for armor, gyro, cockpit, myomer, heat-sink-type or actuator changes, and 7 days for an engine or internal structure swap. The 'Mech keeps its old loadout until the job is done; removed parts then go to company stores. Cancelling the job returns the bought parts to stores. Stock loadouts: MegaMek Data © The MegaMek Team, CC BY-NC-SA 4.0.</p>
 
   <h3>⑫ Combined arms — fighters, support units & Strikes (Core Rulebook CAT37101)</h3>
   <p class="hint" style="margin:4px 0">The core rules field non-'Mech units through <strong>Battlefield Support</strong> (pp. 138–159) and <strong>BFS: Aerospace</strong> (pp. 160–177). This dashboard shows every unit, Asset and Strike in Battle Value. The book prices Assets and Strikes in Battlefield Support Points; they are converted at the book's Battle Value Integration rate of 20 BV per point (p. 157).</p>
@@ -2827,6 +2899,7 @@ function startNext(mid){
 function cancelTask(id){
   const t=S.tasks.find(x=>x.id===id); if(!t)return;
   const mid=t.mechId;
+  if(t.key==="refit"&&t.refit&&t.status!=="done")labCancelRefit(t);
   if(t.partName&&t.status!=="done"){  /* return the reserved part to stores */
     addToStores(t.partName,t.partValue,1);
     rlog(`${t.partName} returned to company stores (job cancelled).`);
@@ -2845,6 +2918,7 @@ function advanceDayCore(){
     t.remaining-=(m.rush?2:1);
     if(t.remaining<=0){
       t.status="done";
+      if(t.key==="refit"&&t.refit)labApplyRefit(m,t);
       if(t.cost>0){S.treasury-=t.cost;
         S.ledger.unshift({m:S.month,d:`Repair — ${m.name}: ${t.label}`,a:-t.cost});}
       rlog(`${m.name}: ${t.label} complete${t.cost?` (−${fmt(t.cost)})`:""}.`);
@@ -3406,7 +3480,7 @@ function renderTimelinePage(){
         ${first?`${esc(s.mission)} — ${esc(s.employer)}`:(proj?"▸ projected":"▸")}</div>`;
     }).join("")||`<div class="muted" style="font-size:12.5px;padding:2px 0">${isFuture?"":"— unemployed —"}</div>`;
     /* events */
-    const icon={found:"★",sign:"✒",resolve:"⚑",battle:"⚔",travel:"➤"};
+    const icon={found:"★",sign:"✒",resolve:"⚑",battle:"⚔",travel:"➤",refit:"⚙"};
     let lines=evts.map(e=>`<div style="font-size:13px;color:var(--ink2);padding:1px 0">
       <span style="color:${e.type==="battle"?"var(--warning)":e.type==="resolve"?"var(--good)":"var(--series1)"}">${icon[e.type]||"•"}</span>
       <span class="muted" style="font-variant-numeric:tabular-nums">D${e.d}</span> ${esc(e.text)}</div>`).join("");
@@ -3491,9 +3565,9 @@ function rollMarket(){
         pct:2,price:it.c*2,sold:false,clan:true});
     });
   });
-  const rares=RARE_PARTS.map(([name,cost])=>{const r=r2d6()+mod;return {name,cost,roll:r,avail:r>=8};});
-  S.market={month:S.month,world,mechs,rares,clsRolls,aero,aeroRolls,clanRoll,sup,supRolls,rolled:true};
-  rlog(`Market rolled on a ${world} world — ${mechs.length} 'Mech${mechs.length===1?"":"s"}, ${aero.length} fighter${aero.length===1?"":"s"}, ${sup.length} support unit${sup.length===1?"":"s"}, and ${rares.filter(x=>x.avail).length} rare item type${rares.filter(x=>x.avail).length===1?"":"s"} available.`);
+  const parts=rollParts(mod), rareIn=Object.values(parts).filter(x=>x[1]).length;
+  S.market={month:S.month,world,mechs,rares:[],parts,clsRolls,aero,aeroRolls,clanRoll,sup,supRolls,rolled:true};
+  rlog(`Market rolled on a ${world} world — ${mechs.length} 'Mech${mechs.length===1?"":"s"}, ${aero.length} fighter${aero.length===1?"":"s"}, ${sup.length} support unit${sup.length===1?"":"s"}, and ${rareIn} of ${Object.keys(parts).length} uncommon part types in stock.`);
   renderAll();
 }
 function buyMechFromMarket(id){
@@ -3555,12 +3629,63 @@ function hiredStrikesHTML(withButtons){
     <tr><td colspan="2" style="text-align:right;color:var(--ink2)">Total</td><td class="num"><strong>${fmt(bv)}</strong></td><td class="num">${fmt(list.reduce((a,x)=>a+x.price,0))}</td>${withButtons?"<td></td>":""}</tr></table>
     ${airClash?'<div class="warnbar" style="margin-top:8px">▲ Aerospace Strikes and fighter models cannot be used in the same battle (Core Rulebook pp. 153, 160). If your fighters fly this one, cancel the air Strikes or keep the fighters uncommitted.</div>':""}`;
 }
-function buyPart(name,cost,double){
-  const price=double?cost*2:cost;
-  S.treasury-=price;
-  S.ledger.unshift({m:S.month,d:`Parts — ${name}${double?" (broker, 2× list)":""}`,a:-price});
-  addToStores(name,cost,1);
+/* buy one part into company stores — key: equipment id, AMMO:/AMMOH:<weapon id>, or ARMOR:STD / ARMOR:FF (per ton) */
+function mktPartInfo(key){
+  let m;
+  if((m=key.match(/^AMMO(H?):(.+)$/))){const e=EQ[m[2]];const h=!!m[1];
+    return {name:`${e.name} ammo${h?" (½ t)":" (1 t)"}`,base:h?e.ammo.cost/2:e.ammo.cost,stock:m[2]};}
+  if(key==="ARMOR:STD")return {name:"Standard armor (1 t)",base:10000,stock:"ARMOR:STD"};
+  if(key==="ARMOR:FF")return {name:"Ferro-fibrous armor (1 t)",base:20000,stock:"FF"};
+  const e=EQ[key];return {name:e.name,base:e.cost,stock:key};
+}
+function buyEq(key){
+  const p=mktPartInfo(key), pr=labPrice(p.stock,p.base);
+  S.treasury-=pr.price;
+  S.ledger.unshift({m:S.month,d:`Parts — ${p.name}${pr.broker?" (broker, 2× list)":""}`,a:-pr.price});
+  addToStoresEq(p.name,p.base,1,key);
   renderAll();
+}
+let mktPartView="E";   /* which parts list is showing (not saved) */
+function setMktPartView(v){mktPartView=v;renderMarket();}
+function partsMarketHTML(){
+  const yr=campYear(),M=S.market,fresh=M.rolled&&M.month===S.month&&M.parts;
+  const st=key=>{const x=labStock(key);
+    return x.stock?(x.roll!=null?`<span class="st-op">● in stock</span> <span class="muted">(${x.roll})</span>`:'<span class="st-op">● common</span>')
+      :`<span class="muted">✗ scarce${x.roll!=null?` (${x.roll} vs ${AVAIL_TN[x.L]})`:""}</span>`;};
+  const price=(key,base)=>{const p=labPrice(key,base);return `${fmt(p.price)}${p.broker?' <span class="brk">broker</span>':""}`;};
+  const legal=EQ_DATA.map(r=>EQ[r[0]]).filter(e=>labEqLegal(e,yr));
+  const V=mktPartView;
+  const seg=`<div class="seg">${[["E","Energy"],["B","Ballistic"],["M","Missile"],["Q","Equipment"],["A","Ammunition"],["C","Construction"]].map(([k,t])=>
+    `<button class="${V===k?"on":""}" onclick="setMktPartView('${k}')">${t}</button>`).join("")}</div>`;
+  let rows="";
+  const buyBtn=key=>`<button class="small" onclick="buyEq('${key}')">Buy</button>`;
+  if("EBM".includes(V)||V==="Q"){
+    const list=legal.filter(e=>V==="Q"?(e.type==="Q"&&e.id!=="MASC"):e.type===V);
+    rows=`<tr><th>Item</th><th class="num">Tons</th><th class="num">Slots</th><th class="num">Heat</th><th>Damage</th><th>Range</th><th class="num">BV</th><th>Avail.</th><th>This month</th><th class="num">Price</th><th></th></tr>`
+      +list.map(e=>`<tr><td><strong>${esc(e.name)}</strong>${e.intro>=3040?` <span class="spec">${e.intro}</span>`:""}</td><td class="num">${e.tons}</td><td class="num">${e.crits}</td><td class="num">${e.heat||"—"}</td>
+        <td>${esc(e.dmg)}</td><td>${esc(e.rng)}</td><td class="num">${e.bv||"—"}</td><td>${e.avail}</td><td>${st(e.id)}</td><td class="num">${price(e.id,e.cost)}</td><td>${buyBtn(e.id)}</td></tr>`).join("");
+  } else if(V==="A"){
+    const list=legal.filter(e=>e.ammo);
+    rows=`<tr><th>Ammunition (per ton)</th><th class="num">Shots</th><th class="num">BV/t</th><th>Avail.</th><th>This month</th><th class="num">Price</th><th></th></tr>`
+      +list.map(e=>`<tr><td><strong>${esc(e.name)}</strong> ammo</td><td class="num">${e.ammo.shots}</td><td class="num">${e.ammo.bv||"—"}</td><td>${e.avail}</td><td>${st(e.id)}</td><td class="num">${price(e.id,e.ammo.cost)}</td><td>${buyBtn("AMMO:"+e.id)}</td></tr>`
+        +(["MG","LMG","HMG"].includes(e.id)?`<tr><td>${esc(e.name)} ammo — half ton</td><td class="num">${e.ammo.shots/2}</td><td class="num">${e.ammo.bv/2}</td><td>${e.avail}</td><td>${st(e.id)}</td><td class="num">${price(e.id,e.ammo.cost/2)}</td><td>${buyBtn("AMMOH:"+e.id)}</td></tr>`:"")).join("");
+  } else {
+    const opt=(list,pref,what)=>list.filter(o=>labLegal(o[2],o[3],o[4],yr)).map(o=>`<tr><td>${what} — <strong>${esc(o[1])}</strong></td><td>${o[5]}</td><td>${o[0]==="STD"||o[0]==="S"?'<span class="st-op">● common</span>':st(pref?pref+o[0]:({ENDO:"ENDO",FF:"FF",TSM:"TSM",D:"DHS"})[o[0]])}</td><td class="muted">fitted in the Mech Lab</td><td></td></tr>`).join("");
+    rows=`<tr><th>Component</th><th>Avail.</th><th>This month</th><th>Price</th><th></th></tr>`
+      +opt(LAB_ENGINES,"ENG:","Engine")+opt(LAB_GYROS,"GYRO:","Gyro")+opt(LAB_COCKPITS,"COCKPIT:","Cockpit")+opt(LAB_STRUCTS,"","Structure")+opt(LAB_MYOMER,"","Myomer")
+      +legal.filter(e=>["HS","DHS"].includes(e.id)).map(e=>`<tr><td><strong>${esc(e.name)}</strong> (each)</td><td>${e.avail}</td><td>${st(e.id)}</td><td>${price(e.id,e.cost)}</td><td>${buyBtn(e.id)}</td></tr>`).join("")
+      +`<tr><td><strong>Standard armor</strong> (per ton, 16 points)</td><td>C</td><td>${st("ARMOR:STD")}</td><td>${fmt(10000)}</td><td>${buyBtn("ARMOR:STD")}</td></tr>`
+      +(labEqLegal(EQ.FF,yr)?`<tr><td><strong>Ferro-fibrous armor</strong> (per ton, 17.92 points)</td><td>${EQ.FF.avail}</td><td>${st("FF")}</td><td>${price("FF",20000)}</td><td>${buyBtn("ARMOR:FF")}</td></tr>`:"")
+      +(labEqLegal(EQ.MASC,yr)?`<tr><td><strong>MASC</strong> (5% of the 'Mech's tonnage)</td><td>${EQ.MASC.avail}</td><td>${st("MASC")}</td><td class="muted">1,000 × rating × MASC tons — Mech Lab</td><td></td></tr>`:"")
+      +`<tr><td><strong>Jump jets</strong></td><td>C</td><td><span class="st-op">● common</span></td><td class="muted">200 × tons × jets² — Mech Lab</td><td></td></tr>`;
+  }
+  return `<div class="card">
+    <h2>Parts & equipment <span class="spacer"></span><span class="muted">Inner Sphere technology available in ${yr}</span></h2>
+    ${fresh?"":`<div class="warnbar">▲ The market hasn't been rolled for ${campDate(S.month)} — common parts (A–C) sell at list, everything rarer only through a broker at 2×. Roll the market to see what's in stock.</div>`}
+    ${seg}
+    <table>${rows}</table>
+    <div class="hint">Stats, prices, availability ratings (Clan Invasion era) and introduction / extinction / recovery dates from the TechManual. Each month the market rolls 2d6 + world modifier for every uncommon item: rating <strong>D</strong> is in stock on ${AVAIL_TN.D}+, <strong>E</strong> on ${AVAIL_TN.E}+, <strong>F</strong> on ${AVAIL_TN.F}+; A–C are always in stock. Anything else comes from a broker at double list. Lost Star League technology only appears once it has been recovered. Clan equipment is never sold here — log salvaged Clan parts in Company stores. Bought parts go to <strong>Company stores</strong>; fit them in the <strong>Mech Lab</strong> or use them for repairs.</div>
+  </div>`;
 }
 /* ---- company stores (parts inventory) ---- */
 function addToStores(name,value,qty){
@@ -3637,7 +3762,7 @@ function renderMarket(){
         <div class="muted" style="font-size:12.5px">${sys.type} world · market modifier ${mod>=0?"+":""}${mod} — relocate via the Galaxy Map</div></div>
       <button class="primary" onclick="rollMarket()">🎲 ${M.rolled?"Reroll":"Roll"} this month's market</button>
     </div>
-    <div class="hint">'Mechs and fighters, per weight class: 2d6 + world modifier ≥ 8 → 1d6÷2 machines surface for sale (price 1d6: 1–2 = 110% · 3–4 = 100% · 5–6 = 90% of book). Rare equipment: 2d6 + world modifier ≥ 8 per item, else only a broker has it — at double list. Common parts are always at list price on any inhabited world.</div>
+    <div class="hint">'Mechs and fighters, per weight class: 2d6 + world modifier ≥ 8 → 1d6÷2 machines surface for sale (price 1d6: 1–2 = 110% · 3–4 = 100% · 5–6 = 90% of book). Parts: common (A–C) items always in stock; uncommon ones roll 2d6 + world modifier (D 8+, E 10+, F 12+), else a broker sells them at double list.</div>
   </div>`;
   /* Strikes are hired from the employer's or a local contractor's assets — always on offer */
   let lastG="";
@@ -3658,7 +3783,7 @@ function renderMarket(){
   if(!M.rolled){
     const empty=`<div class="card"><p class="muted" style="margin:4px 0">No listings yet — roll the market to see what the dealers have this month.</p></div>`;
     area.innerHTML=mktTabs()+(mktView==="strikes"?strikeCard
-      :mktView==="parts"?head+empty+`<div class="card"><h2>Company stores</h2>${storesTableHTML(true)}</div>`
+      :mktView==="parts"?head+partsMarketHTML()+`<div class="card"><h2>Company stores</h2>${storesTableHTML(true)}</div>`
       :head+empty);
     return;
   }
@@ -3718,34 +3843,1125 @@ function renderMarket(){
       :'<p class="muted" style="margin:6px 0">No support units on offer this month.</p>'}
     <div class="hint">Ground Assets from the Battlefield Support rules (Core Rulebook pp. 140–151): infantry, battle armor, VTOLs, support vehicles and emplacements. Combat and support vehicles take a MechWarrior and a tech team like 'Mechs; infantry, battle armor, VTOLs and emplacements fight from Asset cards at the card's Skill, so they take crew wages instead of a named pilot. ${SUPPORT_GROUPS.map(g=>esc(g.note)).join(" ")} It is ${campYear()}: newer designs appear once they enter production.</div>
   </div>`;
-  /* equipment card */
-  const rrows=M.rares.map(r=>`<tr ${r.avail?"":'style="opacity:.55"'}>
-    <td>${esc(r.name)}</td><td class="num">${fmt(r.cost)}</td>
-    <td>${r.avail?'<span class="st-op">● in stock</span>':`<span class="muted">✗ scarce (2d6 = ${r.roll})</span>`}</td>
-    <td class="num">${r.avail?fmt(r.cost):fmt(r.cost*2)+' <span class="muted">via broker</span>'}</td>
-    <td><button class="small" onclick="buyPart('${esc(r.name).replace(/'/g,"\\'")}',${r.cost},${r.avail?"false":"true"})">Buy</button></td></tr>`).join("");
-  const crows=COMMON_PARTS.map(([n,c])=>`<tr><td>${esc(n)}</td><td class="num">${fmt(c)}</td>
-    <td><button class="small" onclick="buyPart('${esc(n).replace(/'/g,"\\'")}',${c},false)">Buy</button></td></tr>`).join("");
-  const eqCard=`<div class="cols2">
-    <div class="card">
-      <h2>Rare equipment this month</h2>
-      <table><tr><th>Item</th><th class="num">List</th><th>Availability</th><th class="num">Price</th><th></th></tr>${rrows}</table>
-      <div class="hint">Scarce items can still be bought through a broker at double list — or wait and reroll next month.</div>
-    </div>
-    <div class="card">
-      <h2>Common parts (always available)</h2>
-      <table><tr><th>Item</th><th class="num">List price</th><th></th></tr>${crows}</table>
-      <div class="hint">Purchases are charged to the ledger and land in <strong>Company stores</strong> below — replacement jobs in the Repair Bay draw from there. Ammunition is not stocked or tracked: the Repair Bay's Reload job prices and charges it directly (5,000/ton, specialty ×2).</div>
-    </div>
-  </div>`;
   const storesCard=`<div class="card">
     <h2>Company stores <span class="spacer"></span><span class="muted">${S.stores.reduce((a,s)=>a+s.qty,0)} part${S.stores.reduce((a,s)=>a+s.qty,0)===1?"":"s"} on hand</span></h2>
-    <p class="hint" style="margin-top:0">Everything the company owns but hasn't bolted on. Replacement jobs in the Repair Bay consume from here; selling recovers 50% of list. Log battlefield-salvaged parts with "Add free".</p>
+    <p class="hint" style="margin-top:0">Everything the company owns but hasn't bolted on. Replacement jobs in the Repair Bay and refits in the Mech Lab draw from here; selling recovers 50% of list. Log battlefield-salvaged parts with "Add free" — name them as the Mech Lab lists them (e.g. "ER Large Laser (Clan)") to fit them in a refit.</p>
     ${storesTableHTML(true)}
   </div>`;
   area.innerHTML=mktTabs()+(mktView==="strikes"?strikeCard
-    :mktView==="parts"?head+eqCard+storesCard
+    :mktView==="parts"?head+partsMarketHTML()+storesCard
     :head+mechCard+aeroCard+supCard);
+}
+
+
+/* ============ MECH LAB DATA — Inner Sphere equipment (TechManual CAT35002) ============
+   Stats: Inner Sphere Heavy Weapons and Equipment Table (pp. 341–342) · Cost, availability (Clan Invasion
+   era letter) and Inner Sphere introduction / extinction / recovery dates: Costs and Availability (pp. 290–295)
+   and item descriptions · BV: Inner Sphere Weapons and Equipment BV Table (p. 317) · ammo cost per ton (pp. 294–295).
+   f = flags: R rear-mount allowed · X explosive ammo · G gauss · U ultra · O rotary · K streak · A Artemis-capable
+   launcher · D defensive equipment · T torso only · M missile · P physical (arm with hand + lower arm) */
+const EQ_DATA=[
+// id, name, type, tons, crits, heat, damage, range, bv, cost, avail, intro, extinct, recovered, flags, ammo:[shots/ton, ammoBV, ammoCost/ton]
+["MG","Machine Gun","B",0.5,1,0,"2","—/1/2/3",5,5000,"B",0,0,0,"R",[200,1,1000]],
+["LMG","Light Machine Gun","B",0.5,1,0,"1","—/2/4/6",5,5000,"C",3068,0,0,"R",[200,1,500]],
+["HMG","Heavy Machine Gun","B",1,1,0,"3","—/1/2/—",6,7500,"C",3068,0,0,"R",[100,1,1000]],
+["FL","Flamer","E",1,1,3,"2","—/1/2/3",6,7500,"B",2025,0,0,"R",null],
+["SL","Small Laser","E",0.5,1,1,"3","—/1/2/3",9,11250,"B",2300,0,0,"R",null],
+["ML","Medium Laser","E",1,1,3,"5","—/3/6/9",46,40000,"B",2300,0,0,"R",null],
+["LL","Large Laser","E",5,2,8,"8","—/5/10/15",123,100000,"C",2316,0,0,"R",null],
+["ERSL","ER Small Laser","E",0.5,1,2,"3","—/2/4/5",17,11250,"D",3058,0,0,"R",null],
+["ERML","ER Medium Laser","E",1,1,5,"5","—/4/8/12",62,80000,"D",3058,0,0,"R",null],
+["ERLL","ER Large Laser","E",5,2,12,"8","—/7/14/19",163,200000,"D",2620,2950,3037,"R",null],
+["SPL","Small Pulse Laser","E",1,1,2,"3","—/1/2/3",12,16000,"D",2609,2950,3037,"R",null],
+["MPL","Medium Pulse Laser","E",2,1,4,"6","—/2/4/6",48,60000,"D",2609,2950,3037,"R",null],
+["LPL","Large Pulse Laser","E",7,2,10,"9","—/3/7/10",119,175000,"D",2609,2950,3037,"R",null],
+["LPPC","Light PPC","E",3,2,5,"5","3/6/12/18",88,150000,"E",3067,0,0,"R",null],
+["PPC","PPC","E",7,3,10,"10","3/6/12/18",176,200000,"C",2460,0,0,"R",null],
+["HPPC","Heavy PPC","E",10,4,15,"15","3/6/12/18",317,250000,"E",3067,0,0,"R",null],
+["ERPPC","ER PPC","E",7,3,15,"10","—/7/14/23",229,300000,"D",2751,2860,3037,"R",null],
+["SNPPC","Snub-Nose PPC","E",6,2,10,"10/8/5","—/9/13/15",165,300000,"F",3067,0,0,"R",null],
+["AC2","AC/2","B",6,1,1,"2","4/8/16/24",37,75000,"D",2300,0,0,"RX",[45,5,1000]],
+["AC5","AC/5","B",8,4,1,"5","3/6/12/18",70,125000,"D",2250,0,0,"RX",[20,9,4500]],
+["AC10","AC/10","B",12,7,3,"10","—/5/10/15",123,200000,"D",2460,0,0,"RX",[10,15,6000]],
+["AC20","AC/20","B",14,10,7,"20","—/3/6/9",178,300000,"D",2500,0,0,"RX",[5,22,10000]],
+["LB2","LB 2-X AC","B",6,4,1,"2","4/9/18/27",42,150000,"E",3058,0,0,"RX",[45,5,2000]],
+["LB5","LB 5-X AC","B",8,5,1,"5","3/7/14/21",83,250000,"E",3058,0,0,"RX",[20,10,9000]],
+["LB10","LB 10-X AC","B",11,6,2,"10","—/6/12/18",148,400000,"D",2595,2840,3035,"RX",[10,19,12000]],
+["LB20","LB 20-X AC","B",14,11,6,"20","—/4/8/12",237,600000,"E",3058,0,0,"RX",[5,30,20000]],
+["UAC2","Ultra AC/2","B",7,3,1,"2/shot","3/8/17/25",56,120000,"E",3057,0,0,"RXU",[45,7,1000]],
+["UAC5","Ultra AC/5","B",9,5,1,"5/shot","2/6/13/20",112,200000,"D",2640,2915,3035,"RXU",[20,14,9000]],
+["UAC10","Ultra AC/10","B",13,7,4,"10/shot","—/6/12/18",210,320000,"E",3057,0,0,"RXU",[10,26,12000]],
+["UAC20","Ultra AC/20","B",15,10,8,"20/shot","—/3/7/10",281,480000,"E",3060,0,0,"RXU",[5,35,20000]],
+["RAC2","Rotary AC/2","B",8,3,1,"2/shot","—/6/12/18",118,175000,"E",3062,0,0,"RXO",[45,15,3000]],
+["RAC5","Rotary AC/5","B",10,6,1,"5/shot","—/5/10/15",247,275000,"E",3062,0,0,"RXO",[20,31,12000]],
+["LAC2","Light AC/2","B",4,1,1,"2","—/6/12/18",30,100000,"F",3068,0,0,"RX",[45,4,1000]],
+["LAC5","Light AC/5","B",5,2,1,"5","—/5/10/15",62,150000,"F",3068,0,0,"RX",[20,8,4500]],
+["LGR","Light Gauss Rifle","B",12,5,1,"8","3/8/17/25",159,275000,"E",3056,0,0,"RG",[16,20,20000]],
+["GR","Gauss Rifle","B",15,7,1,"15","2/7/15/22",320,300000,"D",2590,2865,3040,"RG",[8,40,20000]],
+["HGR","Heavy Gauss Rifle","B",18,11,2,"25/20/10","4/6/13/20",346,500000,"E",3061,0,0,"RG",[4,43,20000]],
+["LRM5","LRM 5","M",2,1,2,"1/msl","6/7/14/21",45,30000,"C",2300,0,0,"RXMA",[24,6,30000]],
+["LRM10","LRM 10","M",5,2,4,"1/msl","6/7/14/21",90,100000,"C",2300,0,0,"RXMA",[12,11,30000]],
+["LRM15","LRM 15","M",7,3,5,"1/msl","6/7/14/21",136,175000,"C",2315,0,0,"RXMA",[8,17,30000]],
+["LRM20","LRM 20","M",10,5,6,"1/msl","6/7/14/21",181,250000,"C",2315,0,0,"RXMA",[6,23,30000]],
+["SRM2","SRM 2","M",1,1,2,"2/msl","—/3/6/9",21,10000,"C",2370,0,0,"RXMA",[50,3,27000]],
+["SRM4","SRM 4","M",2,1,3,"2/msl","—/3/6/9",39,60000,"C",2370,0,0,"RXMA",[25,5,27000]],
+["SRM6","SRM 6","M",3,2,4,"2/msl","—/3/6/9",59,80000,"C",2370,0,0,"RXMA",[15,7,27000]],
+["SSRM2","Streak SRM 2","M",1.5,1,2,"2/msl","—/3/6/9",30,15000,"D",2647,2845,3035,"RXMK",[50,4,54000]],
+["SSRM4","Streak SRM 4","M",3,1,3,"2/msl","—/3/6/9",59,90000,"E",3058,0,0,"RXMK",[25,7,54000]],
+["SSRM6","Streak SRM 6","M",4.5,2,4,"2/msl","—/3/6/9",89,120000,"E",3058,0,0,"RXMK",[15,11,54000]],
+["MRM10","MRM 10","M",3,2,4,"1/msl","—/3/8/15",56,50000,"E",3058,0,0,"RXM",[24,7,5000]],
+["MRM20","MRM 20","M",7,3,6,"1/msl","—/3/8/15",112,125000,"E",3058,0,0,"RXM",[12,14,5000]],
+["MRM30","MRM 30","M",10,5,10,"1/msl","—/3/8/15",168,225000,"E",3058,0,0,"RXM",[8,21,5000]],
+["MRM40","MRM 40","M",12,7,12,"1/msl","—/3/8/15",224,350000,"E",3058,0,0,"RXM",[6,28,5000]],
+["RL10","Rocket Launcher 10","M",0.5,1,3,"1/msl","—/5/11/18",18,15000,"B",3064,0,0,"RMS",null],
+["RL15","Rocket Launcher 15","M",1,2,4,"1/msl","—/4/9/15",23,30000,"B",3064,0,0,"RMS",null],
+["RL20","Rocket Launcher 20","M",1.5,3,5,"1/msl","—/3/7/12",24,45000,"B",3064,0,0,"RMS",null],
+["NARC","Narc Missile Beacon","M",3,2,0,"pod","—/3/6/9",30,100000,"D",2587,2795,3035,"RX",[6,0,6000]],
+["INARC","Improved Narc","M",5,3,0,"pod","—/4/9/15",75,250000,"E",3062,0,0,"RX",[4,0,7500]],
+["TAG","TAG","Q",1,1,0,"—","—/5/9/15",0,50000,"D",2600,2835,3044,"R",null],
+["AMS","Anti-Missile System","Q",0.5,1,1,"—","point def.",32,100000,"D",2617,2796,3040,"XD",[12,11,2000]],
+["BAP","Beagle Active Probe","Q",1.5,2,0,"—","4 hexes",10,200000,"D",2576,2835,3045,"D",null],
+["ECM","Guardian ECM Suite","Q",1.5,2,0,"—","6 hexes",61,200000,"D",2597,2845,3045,"D",null],
+["C3M","C3 Master Computer","Q",5,5,0,"—","—",0,1500000,"E",3050,0,0,"",null],
+["C3S","C3 Slave Unit","Q",1,1,0,"—","—",0,250000,"E",3050,0,0,"",null],
+["ART4","Artemis IV FCS","Q",1,1,0,"—","—",0,100000,"D",2598,2855,3035,"",null],
+["CASE","CASE","Q",0.5,1,0,"—","—",0,50000,"D",2476,2840,3036,"T",null],
+["HATCHET","Hatchet","P",0,0,0,"t/5","phys",0,5000,"D",3022,0,0,"P",null],
+["SWORD","Sword","P",0,0,0,"t/10+1","phys",0,10000,"D",3058,0,0,"P",null],
+["MASC","MASC","Q",0,0,0,"—","—",0,0,"E",2740,2795,3035,"",null],
+["HS","Heat Sink","H",1,1,0,"—","—",0,2000,"B",2022,0,0,"",null],
+["DHS","Double Heat Sink","H",1,3,0,"—","—",0,6000,"D",2567,2865,3040,"",null],
+["JJ","Jump Jet","J",0,1,0,"—","—",0,0,"C",2471,0,0,"",null],
+["ENDO","Endo Steel","S",0,1,0,"—","—",0,0,"E",2487,2850,3035,"",null],
+["FF","Ferro-Fibrous","S",0,1,0,"—","—",0,0,"D",2571,2810,3040,"",null],
+["TSM","Triple-Strength Myomer","S",0,1,0,"—","—",0,0,"D",3050,0,0,"",null],
+/* Clan equipment: never sold on Inner Sphere markets — only salvage logged into company stores (flag C). Clan Weapons BV table p. 318 */
+["CERSL","ER Small Laser (Clan)","E",0.5,1,2,"5","—/2/4/6",31,11250,"F",2825,0,0,"RC",null],
+["CERML","ER Medium Laser (Clan)","E",1,1,5,"7","—/5/10/15",108,80000,"F",2824,0,0,"RC",null],
+["CERLL","ER Large Laser (Clan)","E",4,1,12,"10","—/8/15/25",248,200000,"F",2830,0,0,"RC",null],
+["CSPL","Small Pulse Laser (Clan)","E",1,1,2,"3","—/2/4/6",24,16000,"F",2829,0,0,"RC",null],
+["CMPL","Medium Pulse Laser (Clan)","E",2,1,4,"7","—/4/8/12",111,60000,"F",2829,0,0,"RC",null],
+["CLPL","Large Pulse Laser (Clan)","E",6,2,10,"10","—/6/14/20",265,175000,"F",2829,0,0,"RC",null],
+["CERPPC","ER PPC (Clan)","E",6,2,15,"15","—/7/14/23",412,300000,"F",2826,0,0,"RC",null],
+["CFL","Flamer (Clan)","E",0.5,1,3,"2","—/1/2/3",6,7500,"F",2827,0,0,"RC",null],
+["CMG","Machine Gun (Clan)","B",0.25,1,0,"2","—/1/2/3",5,5000,"F",2821,0,0,"RCX",[200,1,1000]],
+["CUAC2","Ultra AC/2 (Clan)","B",5,2,1,"2/shot","2/9/18/27",62,120000,"F",2827,0,0,"RCXU",[45,8,1000]],
+["CUAC5","Ultra AC/5 (Clan)","B",7,3,1,"5/shot","—/7/14/21",122,200000,"F",2825,0,0,"RCXU",[20,15,9000]],
+["CUAC10","Ultra AC/10 (Clan)","B",10,4,3,"10/shot","—/6/12/18",210,320000,"F",2825,0,0,"RCXU",[10,26,12000]],
+["CUAC20","Ultra AC/20 (Clan)","B",12,8,7,"20/shot","—/4/8/12",335,480000,"F",2825,0,0,"RCXU",[5,42,20000]],
+["CLB2","LB 2-X AC (Clan)","B",5,3,1,"2","4/10/20/30",47,150000,"F",2826,0,0,"RCX",[45,6,2000]],
+["CLB5","LB 5-X AC (Clan)","B",7,4,1,"5","3/8/15/24",93,250000,"F",2825,0,0,"RCX",[20,12,9000]],
+["CLB10","LB 10-X AC (Clan)","B",10,5,2,"10","—/6/12/18",148,400000,"F",2595,0,0,"RCX",[10,19,12000]],
+["CLB20","LB 20-X AC (Clan)","B",12,9,6,"20","—/4/8/12",237,600000,"F",2826,0,0,"RCX",[5,30,20000]],
+["CGR","Gauss Rifle (Clan)","B",12,6,1,"15","2/7/15/22",320,300000,"F",2590,0,0,"RCG",[8,40,20000]],
+["CLRM5","LRM 5 (Clan)","M",1,1,2,"1/msl","—/7/14/21",55,30000,"F",2400,0,0,"RCXMA",[24,7,30000]],
+["CLRM10","LRM 10 (Clan)","M",2.5,1,4,"1/msl","—/7/14/21",109,100000,"F",2400,0,0,"RCXMA",[12,14,30000]],
+["CLRM15","LRM 15 (Clan)","M",3.5,2,5,"1/msl","—/7/14/21",164,175000,"F",2400,0,0,"RCXMA",[8,21,30000]],
+["CLRM20","LRM 20 (Clan)","M",5,4,6,"1/msl","—/7/14/21",220,250000,"F",2400,0,0,"RCXMA",[6,27,30000]],
+["CSRM2","SRM 2 (Clan)","M",0.5,1,2,"2/msl","—/3/6/9",21,10000,"F",2370,0,0,"RCXMA",[50,3,27000]],
+["CSRM4","SRM 4 (Clan)","M",1,1,3,"2/msl","—/3/6/9",39,60000,"F",2370,0,0,"RCXMA",[25,5,27000]],
+["CSRM6","SRM 6 (Clan)","M",1.5,1,4,"2/msl","—/3/6/9",59,80000,"F",2370,0,0,"RCXMA",[15,7,27000]],
+["CSSRM2","Streak SRM 2 (Clan)","M",1,1,2,"2/msl","—/4/8/12",40,15000,"F",2647,0,0,"RCXMK",[50,5,54000]],
+["CSSRM4","Streak SRM 4 (Clan)","M",2,1,3,"2/msl","—/4/8/12",79,90000,"F",2826,0,0,"RCXMK",[25,10,54000]],
+["CSSRM6","Streak SRM 6 (Clan)","M",3,2,4,"2/msl","—/4/8/12",118,120000,"F",2826,0,0,"RCXMK",[15,15,54000]],
+["CAMS","Anti-Missile System (Clan)","Q",0.5,1,1,"—","point def.",32,100000,"F",2824,0,0,"CXD",[24,22,2000]],
+["CBAP","Active Probe (Clan)","Q",1,1,0,"—","5 hexes",12,200000,"F",2832,0,0,"CD",null],
+["CECM","ECM Suite (Clan)","Q",1,1,0,"—","6 hexes",61,200000,"F",2832,0,0,"CD",null]
+];
+/* chassis-level options: [id, label, introduced, extinct, recovered, availability (Clan Invasion era)] */
+const LAB_ENGINES=[["STD","Standard fusion",2021,0,0,"D"],["XL","XL fusion",2579,2865,3035,"E"],["LIGHT","Light fusion",3062,0,0,"E"],["COMPACT","Compact fusion",3068,0,0,"E"]];
+const LAB_GYROS=[["STD","Standard gyro",2300,0,0,"C"],["COMPACT","Compact gyro",3068,0,0,"E"],["HD","Heavy-duty gyro",3067,0,0,"E"],["XL","XL gyro",3067,0,0,"E"]];
+const LAB_COCKPITS=[["STD","Standard cockpit",2300,0,0,"C"],["SMALL","Small cockpit",3067,0,0,"E"]];
+const LAB_STRUCTS=[["STD","Standard",2439,0,0,"C"],["ENDO","Endo steel",2487,2850,3035,"E"]];
+const LAB_ARMORS=[["STD","Standard",2470,0,0,"C"],["FF","Ferro-fibrous",2571,2810,3040,"D"]];
+const LAB_SINKS=[["S","Single",2022,0,0,"B"],["D","Double",2567,2865,3040,"D"]];
+const LAB_MYOMER=[["STD","Standard",2439,0,0,"C"],["TSM","Triple-strength",3050,0,0,"D"]];
+/* Master Engine Table (p. 49): rating → [Standard, Light, XL, Compact] tons */
+const ENGINE_WT=(()=>{const raw="10:.5,.5,.5,1|15:.5,.5,.5,1|20:.5,.5,.5,1|25:.5,.5,.5,1|30:1,1,.5,1.5|35:1,1,.5,1.5|40:1,1,.5,1.5|45:1,1,.5,1.5|50:1.5,1.5,1,2.5|55:1.5,1.5,1,2.5|60:1.5,1.5,1,2.5|65:2,1.5,1,3|70:2,1.5,1,3|75:2,1.5,1,3|80:2.5,2,1.5,4|85:2.5,2,1.5,4|90:3,2.5,1.5,4.5|95:3,2.5,1.5,4.5|100:3,2.5,1.5,4.5|105:3.5,3,2,5.5|110:3.5,3,2,5.5|115:4,3,2,6|120:4,3,2,6|125:4,3,2,6|130:4.5,3.5,2.5,7|135:4.5,3.5,2.5,7|140:5,4,2.5,7.5|145:5,4,2.5,7.5|150:5.5,4.5,3,8.5|155:5.5,4.5,3,8.5|160:6,4.5,3,9|165:6,4.5,3,9|170:6,4.5,3,9|175:7,5.5,3.5,10.5|180:7,5.5,3.5,10.5|185:7.5,6,4,11.5|190:7.5,6,4,11.5|195:8,6,4,12|200:8.5,6.5,4.5,13|205:8.5,6.5,4.5,13|210:9,7,4.5,13.5|215:9.5,7.5,5,14.5|220:10,7.5,5,15|225:10,7.5,5,15|230:10.5,8,5.5,16|235:11,8.5,5.5,16.5|240:11.5,9,6,17.5|245:12,9,6,18|250:12.5,9.5,6.5,19|255:13,10,6.5,19.5|260:13.5,10.5,7,20.5|265:14,10.5,7,21|270:14.5,11,7.5,22|275:15.5,12,8,23.5|280:16,12,8,24|285:16.5,12.5,8.5,25|290:17.5,13.5,9,26.5|295:18,13.5,9,27|300:19,14.5,9.5,28.5|305:19.5,15,10,29.5|310:20.5,15.5,10.5,31|315:21.5,16.5,11,32.5|320:22.5,17,11.5,34|325:23.5,18,12,35.5|330:24.5,18.5,12.5,37|335:25.5,19.5,13,38.5|340:27,20.5,13.5,40.5|345:28.5,21.5,14.5,43|350:29.5,22.5,15,44.5|355:31.5,24,16,47.5|360:33,25,16.5,49.5|365:34.5,26,17.5,52|370:36.5,27.5,18.5,55|375:38.5,29,19.5,58|380:41,31,20.5,61.5|385:43.5,33,22,65.5|390:46,34.5,23,69|395:49,37,24.5,73.5|400:52.5,39.5,26.5,79";
+  const o={};raw.split("|").forEach(r=>{const [k,v]=r.split(":");const a=v.split(",").map(Number);o[+k]={STD:a[0],LIGHT:a[1],XL:a[2],COMPACT:a[3]};});return o;})();
+/* BattleMech Internal Structure Table (p. 47): tonnage → [CT, side torso, arm, leg] (head is always 3) */
+const IS_TABLE={20:[6,5,3,4],25:[8,6,4,6],30:[10,7,5,7],35:[11,8,6,8],40:[12,10,6,10],45:[14,11,7,11],50:[16,12,8,12],55:[18,13,9,13],60:[20,14,10,14],65:[21,15,10,15],70:[22,15,11,15],75:[23,16,12,16],80:[25,17,13,17],85:[27,18,14,18],90:[29,19,15,19],95:[30,20,16,20],100:[31,21,17,21]};
+
+/* Stock loadouts: MegaMek Data (C) The MegaMek Team, CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
+   {t tons, e engine, r rating, w walk, g gyro, c cockpit, s structure, a armor, h sinks S/D, hi sinks in engine, my myomer,
+    A armor [HD,CT,CTR,LT,LTR,RT,RTR,LA,RA,LL,RL], la/ra [lower arm, hand], q quad, i items [id, loc, flag R/A/a, split loc, split slots]} */
+const STOCK_DESIGNS={"Locust LCT-1V":{"t":20,"e":"STD","r":160,"w":8,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":6,"my":"STD","A":[8,10,2,8,2,8,2,4,4,8,8],"i":[["MG","LA"],["MG","RA"],["ML","CT"],["MG","CT","A"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Locust LCT-1E":{"t":20,"e":"STD","r":160,"w":8,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":6,"my":"STD","A":[8,10,2,8,2,8,2,4,4,8,8],"i":[["ML","LA"],["SL","LA"],["ML","RA"],["SL","RA"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Locust LCT-3V":{"t":20,"e":"STD","r":160,"w":8,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":6,"my":"STD","A":[8,10,2,6,2,6,2,4,4,6,6],"i":[["MG","LA"],["MG","RA"],["MG","RT","a"],["ML","CT"],["ML","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Stinger STG-3R":{"t":20,"e":"STD","r":120,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":4,"my":"STD","A":[4,6,4,6,2,6,2,4,4,5,5],"i":[["MG","LA"],["ML","RA"],["MG","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["MG","CT","A"]],"la":[1,1],"ra":[1,1]},
+"Stinger STG-3G":{"t":20,"e":"STD","r":120,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":4,"my":"STD","A":[6,8,4,7,3,7,3,6,6,7,7],"i":[["ML","LA"],["ML","RA"],["HS","LT"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["HS","RT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Wasp WSP-1A":{"t":20,"e":"STD","r":120,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":4,"my":"STD","A":[4,6,4,6,2,6,2,4,4,5,5],"i":[["ML","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["JJ","LT"],["SRM2","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["JJ","RT"],["JJ","CT"],["JJ","CT"],["JJ","LL"],["SRM2","LL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Wasp WSP-1D":{"t":20,"e":"STD","r":120,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":4,"my":"STD","A":[4,6,4,6,2,6,2,4,4,5,5],"i":[["ML","RA"],["HS","LT"],["JJ","LT"],["SL","LT"],["SL","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["JJ","RT"],["JJ","CT"],["JJ","CT"],["JJ","LL"],["FL","LL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Flea FLE-15":{"t":20,"e":"STD","r":120,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":4,"my":"STD","A":[5,8,3,5,3,5,3,4,4,4,4],"i":[["ML","LA"],["MG","LA"],["ML","RA"],["MG","RA"],["HS","LT"],["HS","LT"],["SL","LT","R"],["HS","RT"],["HS","RT"],["SL","RT","R"],["FL","CT"],["MG","CT","A"],["HS","LL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Thorn THE-N":{"t":20,"e":"STD","r":120,"w":6,"g":"STD","c":"STD","s":"ENDO","a":"STD","h":"S","hi":4,"my":"STD","A":[9,8,4,6,4,6,4,6,6,8,8],"i":[["ML","LA"],["LRM5","RA"],["HS","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["HS","RT"],["LRM5","RT","A"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["CASE","RT"],["ML","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[0,0]},
+"Mercury MCY-97":{"t":20,"e":"STD","r":160,"w":8,"g":"STD","c":"STD","s":"STD","a":"FF","h":"S","hi":6,"my":"STD","A":[5,6,4,6,2,6,2,5,5,6,6],"i":[["ML","RA"],["BAP","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","RT"],["FF","RT"],["FF","RT"],["FF","RT"],["FF","RT"],["FF","RT"],["FF","RT"],["SL","CT"],["MASC","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Commando COM-2D":{"t":25,"e":"STD","r":150,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":6,"my":"STD","A":[6,8,4,6,3,6,3,6,6,8,8],"i":[["ML","LA"],["SRM4","RA"],["HS","LT"],["HS","LT"],["SRM6","LT","A"],["HS","RT"],["HS","RT"],["SRM4","RT","A"],["SRM6","CT"]],"la":[1,1],"ra":[1,1]},
+"Commando COM-1B":{"t":25,"e":"STD","r":150,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":6,"my":"STD","A":[6,8,4,6,3,6,3,6,6,8,8],"i":[["ML","LA"],["LL","RA"],["HS","LT"],["HS","LT"],["SRM2","LT","A"],["HS","RT"],["HS","RT"],["SRM2","CT"]],"la":[1,1],"ra":[1,1]},
+"Mongoose MON-66":{"t":25,"e":"STD","r":200,"w":8,"g":"STD","c":"STD","s":"ENDO","a":"FF","h":"S","hi":8,"my":"STD","A":[9,12,4,10,2,10,2,8,8,12,12],"i":[["ML","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["ML","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["BAP","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ML","CT"],["SL","HD"],["HS","LL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Spider SDR-5V":{"t":30,"e":"STD","r":240,"w":8,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[6,8,4,6,2,6,2,5,5,6,6],"i":[["JJ","LT"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["ML","CT"],["ML","CT"],["HS","HD"]],"la":[1,1],"ra":[1,1]},
+"Spider SDR-5K":{"t":30,"e":"STD","r":240,"w":8,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[6,8,4,6,2,6,2,5,5,6,6],"i":[["MG","LA"],["MG","RA"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["ML","CT"],["MG","CT","A"],["HS","HD"]],"la":[1,1],"ra":[1,1]},
+"UrbanMech UM-R60":{"t":30,"e":"STD","r":60,"w":2,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":2,"my":"STD","A":[9,11,8,8,4,8,4,10,10,12,12],"i":[["SL","LA"],["AC10","RA"],["HS","LT"],["HS","LT"],["HS","RT"],["HS","RT"],["AC10","RT","A"],["JJ","CT"],["JJ","CT"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Valkyrie VLK-QA":{"t":30,"e":"STD","r":150,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":6,"my":"STD","A":[8,14,4,12,2,12,2,9,9,12,12],"i":[["ML","RA"],["HS","LT"],["HS","LT"],["LRM10","LT"],["HS","RT"],["HS","RT"],["LRM10","RT","A"],["HS","CT"],["JJ","CT"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,0]},
+"Valkyrie VLK-QD":{"t":30,"e":"STD","r":150,"w":5,"g":"STD","c":"STD","s":"ENDO","a":"FF","h":"S","hi":6,"my":"STD","A":[9,16,4,12,2,12,2,10,10,14,14],"i":[["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["MPL","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["HS","LT"],["HS","LT"],["LRM10","LT"],["ART4","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["HS","RT"],["HS","RT"],["LRM10","RT","A"],["CASE","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["JJ","CT"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,0]},
+"Hermes HER-1S":{"t":30,"e":"STD","r":270,"w":9,"g":"STD","c":"STD","s":"ENDO","a":"FF","h":"S","hi":10,"my":"STD","A":[7,14,4,9,4,9,4,9,9,10,10],"i":[["FL","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["ML","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["ML","CT"]],"la":[1,0],"ra":[1,1]},
+"Javelin JVN-10N":{"t":30,"e":"STD","r":180,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":7,"my":"STD","A":[6,8,2,8,2,8,2,6,6,8,8],"i":[["HS","LT"],["SRM6","LT"],["SRM6","LT","A"],["HS","RT"],["HS","RT"],["SRM6","RT"],["SRM6","RT","A"],["JJ","CT"],["JJ","CT"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Hussar HSR-200-D":{"t":30,"e":"STD","r":270,"w":9,"g":"STD","c":"STD","s":"STD","a":"FF","h":"D","hi":10,"my":"STD","A":[3,3,2,3,2,3,2,2,2,2,2],"i":[["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","RT"],["FF","RT"],["FF","RT"],["FF","RT"],["FF","RT"],["FF","RT"],["FF","RT"],["ERLL","CT"],["FF","HD"]],"la":[1,1],"ra":[1,1]},
+"Jenner JR7-D":{"t":35,"e":"STD","r":245,"w":7,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[7,10,3,8,4,8,4,4,4,6,6],"i":[["ML","LA"],["ML","LA"],["ML","RA"],["ML","RA"],["JJ","LT"],["JJ","LT"],["JJ","RT"],["JJ","RT"],["SRM4","RT","A"],["JJ","CT"],["SRM4","CT"],["HS","HD"]],"la":[0,0],"ra":[0,0]},
+"Jenner JR7-F":{"t":35,"e":"STD","r":245,"w":7,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[7,15,6,11,5,11,5,11,11,15,15],"i":[["ML","LA"],["ML","LA"],["ML","RA"],["ML","RA"],["JJ","LT"],["JJ","LT"],["JJ","RT"],["JJ","RT"],["HS","CT"],["JJ","CT"]],"la":[0,0],"ra":[0,0]},
+"Panther PNT-9R":{"t":35,"e":"STD","r":140,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":5,"my":"STD","A":[9,14,7,10,5,10,5,10,10,12,12],"i":[["PPC","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["SRM4","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["SRM4","CT"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Panther PNT-8Z":{"t":35,"e":"STD","r":140,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":5,"my":"STD","A":[9,16,6,12,4,12,4,12,12,16,16],"i":[["LL","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["SRM4","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","CT"],["SRM4","CT"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Firestarter FS9-H":{"t":35,"e":"STD","r":210,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,13,6,11,5,11,5,6,6,8,8],"i":[["ML","LA"],["FL","LA"],["ML","RA"],["FL","RA"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["MG","LT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["MG","RT"],["MG","RT","A"],["FL","CT"],["FL","CT","R"],["HS","LL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Firestarter FS9-K":{"t":35,"e":"STD","r":210,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,13,6,11,5,11,5,6,6,8,8],"i":[["SL","LA"],["SL","LA"],["LL","RA"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["FL","CT"],["FL","CT","R"],["HS","LL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Ostscout OTT-7J":{"t":35,"e":"STD","r":280,"w":8,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[6,12,4,9,2,9,2,6,6,8,8],"i":[["JJ","LT"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["ML","CT"]],"la":[1,1],"ra":[1,1]},
+"Raven RVN-1X":{"t":35,"e":"STD","r":175,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":7,"my":"STD","A":[6,8,4,6,3,6,3,6,6,8,8],"i":[["ML","RA"],["ML","RA"],["ECM","LT"],["ECM","LT"],["SRM6","LT","A"],["SRM6","RT"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Wolfhound WLF-1":{"t":35,"e":"STD","r":210,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,16,6,11,5,11,5,12,12,16,16],"i":[["LL","RA"],["ML","LT"],["ML","RT"],["ML","CT"],["ML","CT","R"],["HS","LL"],["HS","RL"]],"la":[1,1],"ra":[1,0]},
+"Wolfhound WLF-2":{"t":35,"e":"STD","r":210,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"D","hi":8,"my":"STD","A":[9,16,6,11,5,11,5,12,12,16,16],"i":[["ERLL","RA"],["DHS","LT"],["ML","LT"],["DHS","RT"],["ML","RT"],["ML","CT"],["ML","CT","R"]],"la":[1,1],"ra":[1,0]},
+"Cicada CDA-2A":{"t":40,"e":"STD","r":320,"w":8,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,11,6,6,3,6,3,4,4,6,6],"i":[["ML","LT"],["ML","RT"],["SL","CT"]],"la":[0,0],"ra":[0,0]},
+"Cicada CDA-3C":{"t":40,"e":"STD","r":280,"w":7,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,11,6,6,3,6,3,4,4,6,6],"i":[["PPC","RT"],["MG","CT","A"],["MG","LL"],["MG","RL"]],"la":[0,0],"ra":[0,0]},
+"Assassin ASN-21":{"t":40,"e":"STD","r":280,"w":7,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[8,12,4,10,2,10,2,6,6,6,6],"i":[["ML","RA"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["SRM2","LT"],["SRM2","LT","A"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["LRM5","RT"],["LRM5","RT","A"],["JJ","CT"]],"la":[1,1],"ra":[1,0]},
+"Clint CLNT-2-3T":{"t":40,"e":"STD","r":240,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[9,11,4,6,4,6,4,6,6,8,8],"i":[["AC5","RA"],["JJ","LT"],["ML","LT"],["HS","RT"],["JJ","RT"],["AC5","RT","A"],["ML","CT"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,0]},
+"Hermes II HER-2S":{"t":40,"e":"STD","r":240,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[9,17,6,14,5,14,5,11,11,14,14],"i":[["FL","LA"],["ML","RA"],["HS","LT"],["AC5","LT","A"],["AC5","RT"]],"la":[1,0],"ra":[1,1]},
+"Sentinel STN-3L":{"t":40,"e":"STD","r":240,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[9,10,7,8,5,8,5,8,8,10,10],"i":[["UAC5","LA"],["HS","LT"],["UAC5","LT","A"],["SSRM2","RT"],["SL","RT"],["SSRM2","RT","A"]],"la":[0,0],"ra":[1,1]},
+"Vulcan VL-2T":{"t":40,"e":"STD","r":240,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[8,10,6,8,4,8,4,6,6,10,10],"i":[["MG","LA"],["FL","RA"],["JJ","LT"],["JJ","LT"],["ML","LT"],["MG","LT","A"],["HS","RT"],["JJ","RT"],["JJ","RT"],["AC2","RT"],["AC2","RT","A"],["JJ","CT"],["JJ","CT"]],"la":[1,0],"ra":[1,0]},
+"Vulcan VL-5T":{"t":40,"e":"STD","r":240,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[9,15,6,12,4,12,4,11,11,14,14],"i":[["MG","LA"],["FL","RA"],["HS","LT"],["JJ","LT"],["JJ","LT"],["ML","LT"],["MG","LT","A"],["JJ","RT"],["JJ","RT"],["ML","RT"],["ML","RT"],["ML","RT"],["JJ","CT"],["JJ","CT"],["HS","LL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Whitworth WTH-1":{"t":40,"e":"STD","r":160,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":6,"my":"STD","A":[9,16,7,12,6,12,6,12,12,18,18],"i":[["ML","LA"],["ML","RA"],["HS","LT"],["HS","LT"],["LRM10","LT"],["LRM10","LT","A"],["HS","RT"],["HS","RT"],["LRM10","RT"],["LRM10","RT","A"],["ML","HD"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,0],"ra":[1,0]},
+"Blackjack BJ-1":{"t":45,"e":"STD","r":180,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":7,"my":"STD","A":[9,18,9,15,6,15,6,12,12,17,17],"i":[["ML","LA"],["AC2","LA"],["ML","RA"],["AC2","RA"],["HS","LT"],["HS","LT"],["ML","LT"],["HS","RT"],["HS","RT"],["ML","RT"],["AC2","CT","A"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[0,0],"ra":[0,0]},
+"Hatchetman HCT-3F":{"t":45,"e":"STD","r":180,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":7,"my":"STD","A":[6,14,4,14,4,14,4,11,11,11,11],"i":[["ML","LA"],["HATCHET","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["HS","RT"],["HS","RT"],["AC10","RT"],["AC10","CT","A"],["AC10","CT","A"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Vindicator VND-1R":{"t":45,"e":"STD","r":180,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":7,"my":"STD","A":[9,18,9,16,6,16,6,14,14,18,18],"i":[["SL","LA"],["PPC","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["LRM5","LT"],["LRM5","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["JJ","CT"],["JJ","CT"],["ML","HD"],["JJ","LL"],["JJ","RL"]],"la":[1,1],"ra":[1,0]},
+"Phoenix Hawk PXH-1":{"t":45,"e":"STD","r":270,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[6,23,5,18,4,18,4,10,10,15,15],"i":[["ML","LA"],["MG","LA"],["LL","RA"],["ML","RA"],["MG","RA"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["MG","CT","A"]],"la":[1,1],"ra":[1,1]},
+"Phoenix Hawk PXH-1K":{"t":45,"e":"STD","r":270,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[8,23,5,18,4,18,4,14,14,22,22],"i":[["ML","LA"],["LL","RA"],["ML","RA"],["HS","CT"],["SL","CT"],["HS","LL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Wyvern WVE-6N":{"t":45,"e":"STD","r":180,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":7,"my":"STD","A":[9,18,7,14,5,14,5,12,12,20,20],"i":[["LL","RA"],["SL","RA"],["SL","RA"],["HS","LT"],["HS","LT"],["JJ","LT"],["LRM10","LT","A"],["HS","RT"],["HS","RT"],["JJ","RT"],["SRM6","RT"],["SRM6","RT","A"],["LRM10","CT"],["HS","HD"],["JJ","LL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Centurion CN9-A":{"t":50,"e":"STD","r":200,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,18,7,13,6,13,6,16,16,16,16],"i":[["AC10","RA"],["HS","LT"],["LRM10","LT"],["LRM10","LT","A"],["LRM10","LT","A"],["HS","RT"],["AC10","RT","A"],["AC10","RT","A"],["ML","CT"],["ML","CT","R"]],"la":[1,1],"ra":[1,0]},
+"Centurion CN9-AL":{"t":50,"e":"STD","r":200,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,23,9,17,7,17,7,16,16,24,24],"i":[["LL","RA"],["SL","RA"],["LRM10","LT"],["LRM10","LT","A"],["LRM10","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["ML","CT"],["ML","CT","R"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,0]},
+"Crab CRB-20":{"t":50,"e":"STD","r":250,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,18,7,14,5,14,5,14,14,22,22],"i":[["LL","LA"],["LL","RA"],["HS","LT"],["HS","RT"],["ML","CT"],["SL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Enforcer ENF-4R":{"t":50,"e":"STD","r":200,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,23,4,17,3,17,3,14,14,20,20],"i":[["LL","LA"],["AC10","RA"],["HS","LT"],["HS","LT"],["SL","LT"],["HS","RT"],["HS","RT"],["AC10","RT","A"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,0],"ra":[1,0]},
+"Hunchback HBK-4G":{"t":50,"e":"STD","r":200,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,26,5,20,4,20,4,16,16,20,20],"i":[["ML","LA"],["ML","RA"],["AC20","LT","A"],["AC20","LT","A"],["AC20","RT"],["HS","CT"],["SL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Hunchback HBK-4P":{"t":50,"e":"STD","r":200,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,26,5,20,4,20,4,16,16,20,20],"i":[["ML","LA"],["ML","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","RT"],["HS","RT"],["ML","RT"],["ML","RT"],["ML","RT"],["ML","RT"],["ML","RT"],["ML","RT"],["HS","CT"],["HS","CT"],["SL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Hunchback HBK-4SP":{"t":50,"e":"STD","r":200,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,26,5,20,4,20,4,16,16,20,20],"i":[["ML","LA"],["ML","LA"],["ML","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["SRM6","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["SRM6","RT"],["SRM6","CT","A"],["SRM6","CT","A"],["SL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Trebuchet TBT-5N":{"t":50,"e":"STD","r":250,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,22,7,11,5,11,5,10,10,15,15],"i":[["LRM15","LA"],["ML","LA"],["ML","RA"],["ML","RA"],["LRM15","LT","A"],["LRM15","RT"],["LRM15","RT","A"]],"la":[1,1],"ra":[1,0]},
+"Trebuchet TBT-7M":{"t":50,"e":"XL","r":250,"w":5,"g":"STD","c":"STD","s":"ENDO","a":"STD","h":"D","hi":10,"my":"STD","A":[9,22,7,11,5,11,5,10,10,15,15],"i":[["LRM15","LA"],["ML","LA"],["ENDO","LA"],["ENDO","LA"],["ENDO","LA"],["ENDO","LA"],["ML","RA"],["ML","RA"],["ENDO","RA"],["ENDO","RA"],["ENDO","RA"],["ENDO","RA"],["NARC","LT"],["LRM15","LT","A"],["NARC","LT","A"],["NARC","LT","A"],["CASE","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["LRM15","RT"],["LRM15","RT","A"],["CASE","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["JJ","CT"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,0]},
+"Dervish DV-6M":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[8,20,4,15,4,15,4,10,10,15,15],"i":[["ML","LA"],["SRM2","LA"],["SRM2","LA","A"],["ML","RA"],["SRM2","RA"],["SRM2","RA","A"],["LRM10","LT"],["LRM10","LT","A"],["LRM10","RT"],["LRM10","RT","A"],["JJ","CT"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,0],"ra":[1,0]},
+"Griffin GRF-1N":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,20,7,20,6,20,6,14,14,18,18],"i":[["PPC","RA"],["JJ","LT"],["JJ","LT"],["JJ","RT"],["JJ","RT"],["LRM10","RT"],["LRM10","RT","A"],["LRM10","RT","A"],["HS","CT"],["JJ","CT"]],"la":[1,1],"ra":[1,1]},
+"Griffin GRF-1S":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,20,7,20,6,20,6,14,14,18,18],"i":[["LL","RA"],["ML","RA"],["ML","RA"],["JJ","LT"],["JJ","LT"],["LRM5","LT"],["JJ","RT"],["JJ","RT"],["LRM5","RT","A"],["JJ","CT"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Kintaro KTO-18":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,26,9,18,7,18,7,18,18,23,23],"i":[["SRM6","LA"],["ML","LA"],["LRM5","LA"],["ML","RA"],["LRM5","LT","A"],["SRM6","LT","A"],["SRM6","RT"],["SRM6","RT","A"],["SRM6","RT","A"],["SRM6","CT"]],"la":[1,1],"ra":[1,1]},
+"Scorpion SCP-1N":{"t":55,"e":"STD","r":330,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[8,24,8,11,5,11,5,10,10,10,10],"i":[["SRM6","LT","A"],["PPC","RT"],["SRM6","RT"]],"q":1},
+"Shadow Hawk SHD-2H":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,23,8,18,6,18,6,16,16,16,16],"i":[["ML","RA"],["JJ","LT"],["AC5","LT"],["AC5","LT","A"],["HS","RT"],["JJ","RT"],["LRM5","RT"],["LRM5","RT","A"],["JJ","CT"],["SRM2","CT","A"],["SRM2","HD"]],"la":[1,1],"ra":[1,1]},
+"Shadow Hawk SHD-2D":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[6,12,6,9,5,9,5,5,5,5,5],"i":[["ML","LA"],["ML","RA"],["JJ","LT"],["AC5","LT"],["AC5","LT","A"],["SRM2","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["JJ","RT"],["LRM5","RT"],["LRM5","RT","A"],["SRM2","RT","A"],["JJ","CT"],["SRM2","CT"],["SRM2","HD"]],"la":[1,1],"ra":[1,1]},
+"Wolverine WVR-6R":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[8,20,8,20,6,20,6,16,16,16,16],"i":[["AC5","RA"],["AC5","RA","A"],["SRM6","LT"],["SRM6","LT","A"],["HS","RT"],["JJ","CT"],["ML","HD"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Wolverine WVR-6M":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,25,8,20,6,20,6,18,18,19,19],"i":[["LL","RA"],["ML","RA"],["JJ","LT"],["JJ","LT"],["SRM6","LT"],["HS","RT"],["JJ","RT"],["JJ","RT"],["SRM6","RT","A"],["JJ","CT"],["ML","HD"],["HS","LL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Wolverine WVR-6K":{"t":55,"e":"STD","r":275,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,25,10,20,6,20,6,18,18,26,26],"i":[["LL","RA"],["ML","RA"],["SL","RA"],["SRM6","LT"],["SRM6","RT","A"],["SRM6","RT","A"],["HS","CT"],["ML","HD"],["HS","LL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Champion CHP-1N":{"t":60,"e":"STD","r":300,"w":5,"g":"STD","c":"STD","s":"STD","a":"FF","h":"S","hi":10,"my":"STD","A":[9,24,8,18,6,18,6,12,12,15,15],"i":[["FF","LA"],["FF","LA"],["FF","LA"],["FF","RA"],["FF","RA"],["SRM6","LT"],["ART4","LT"],["ML","LT"],["ML","LT"],["SRM6","LT","A"],["FF","LT"],["FF","LT"],["LB10","RT"],["LB10","RT","A"],["LB10","RT","A"],["FF","RT"],["FF","RT"],["SL","CT"],["SL","CT"],["FF","HD"],["FF","LL"],["FF","LL"],["FF","RL"],["FF","RL"]],"la":[0,0],"ra":[0,0]},
+"Lancelot LNC25-01":{"t":60,"e":"XL","r":360,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"D","hi":13,"my":"STD","A":[7,21,16,16,10,16,10,14,14,14,14],"i":[["LL","LA"],["LL","RA"],["PPC","RT"],["ML","CT"]],"la":[0,0],"ra":[0,0]},
+"Ostroc OSR-2C":{"t":60,"e":"STD","r":300,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[8,22,6,22,4,22,4,8,8,20,20],"i":[["LL","LT"],["ML","LT"],["LL","RT"],["ML","RT"],["SRM4","RT"],["SRM4","CT","A"],["HS","HD"],["HS","LL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Ostsol OTL-4D":{"t":60,"e":"STD","r":300,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[8,22,6,22,4,22,4,8,8,20,20],"i":[["LL","LT"],["ML","LT"],["LL","RT"],["ML","RT"],["ML","CT","R"],["ML","CT","R"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Dragon DRG-1N":{"t":60,"e":"STD","r":300,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,27,12,16,8,16,8,14,14,18,18],"i":[["ML","LA"],["AC5","RA"],["ML","LT","R"],["LRM10","LT","A"],["LRM10","LT","A"],["AC5","RT","A"],["AC5","RT","A"],["LRM10","CT"]],"la":[1,1],"ra":[1,0]},
+"Quickdraw QKD-4G":{"t":60,"e":"STD","r":300,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,17,8,14,7,14,7,11,11,15,15],"i":[["ML","LA"],["ML","RA"],["JJ","LT"],["JJ","LT"],["LRM10","LT"],["LRM10","LT","A"],["JJ","RT"],["JJ","RT"],["ML","RT","R"],["ML","RT","R"],["SRM4","RT","A"],["JJ","CT"],["SRM4","CT"],["HS","HD"]],"la":[1,1],"ra":[1,1]},
+"Rifleman RFL-3N":{"t":60,"e":"STD","r":240,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[6,22,4,15,2,15,2,15,15,12,12],"i":[["LL","LA"],["AC5","LA"],["LL","RA"],["AC5","RA"],["ML","LT"],["ML","RT"],["AC5","CT","A"],["HS","LL"]],"la":[0,0],"ra":[0,0]},
+"Rifleman RFL-3C":{"t":60,"e":"STD","r":240,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[9,22,7,15,4,15,4,15,15,15,15],"i":[["AC10","LA"],["AC10","RA"],["HS","LT"],["ML","LT"],["ML","RT"],["AC10","RT","A"],["AC10","RT","A"]],"la":[0,0],"ra":[0,0]},
+"Catapult CPLT-C1":{"t":65,"e":"STD","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,24,11,19,8,19,8,13,13,18,18],"i":[["LRM15","LA"],["LRM15","RA"],["JJ","LT"],["JJ","LT"],["ML","LT"],["LRM15","LT","A"],["JJ","RT"],["JJ","RT"],["ML","RT"],["LRM15","RT","A"],["ML","CT"],["ML","CT"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Catapult CPLT-K2":{"t":65,"e":"STD","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,24,11,20,8,20,8,18,18,20,20],"i":[["PPC","LA"],["PPC","RA"],["HS","LT"],["HS","LT"],["ML","LT"],["MG","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["ML","RT"],["MG","RT"],["HS","CT"],["MG","CT","A"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Crusader CRD-3R":{"t":65,"e":"STD","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,33,8,24,6,24,6,20,20,21,21],"i":[["LRM15","LA"],["ML","LA"],["MG","LA"],["LRM15","RA"],["ML","RA"],["MG","RA"],["LRM15","LT","A"],["LRM15","RT","A"],["SRM6","CT","A"],["MG","CT","A"],["SRM6","LL"],["SRM6","RL"]],"la":[1,1],"ra":[1,1]},
+"Crusader CRD-3D":{"t":65,"e":"STD","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,33,8,24,6,24,6,20,20,21,21],"i":[["LRM15","LA"],["ML","LA"],["LRM15","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["LRM15","LT","A"],["HS","RT"],["HS","RT"],["LRM15","RT","A"],["SRM4","CT","A"],["SRM4","LL"],["SRM4","RL"]],"la":[1,1],"ra":[1,1]},
+"JagerMech JM6-S":{"t":65,"e":"STD","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,16,5,13,3,13,3,6,6,11,11],"i":[["AC5","LA"],["AC2","LA"],["AC5","RA"],["AC2","RA"],["ML","LT"],["AC5","LT","A"],["ML","RT"],["AC5","RT","A"],["AC2","CT","A"]],"la":[0,0],"ra":[0,0]},
+"JagerMech JM6-A":{"t":65,"e":"STD","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,20,5,17,3,17,3,11,11,16,16],"i":[["LRM15","LA"],["AC2","LA"],["LRM15","RA"],["AC2","RA"],["ML","LT"],["AC2","LT","A"],["LRM15","LT","A"],["ML","RT"],["LRM15","RT","A"]],"la":[0,0],"ra":[0,0]},
+"Thunderbolt TDR-5S":{"t":65,"e":"STD","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,30,11,24,6,24,6,20,20,29,29],"i":[["MG","LA"],["MG","LA"],["MG","LA","A"],["LL","RA"],["ML","LT"],["ML","LT"],["ML","LT"],["LRM15","RT"],["SRM2","RT"],["SRM2","RT","A"],["LRM15","CT","A"],["LRM15","CT","A"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Thunderbolt TDR-5SS":{"t":65,"e":"STD","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,30,11,24,6,24,6,20,20,29,29],"i":[["PPC","RA"],["HS","LT"],["SRM6","LT"],["ML","LT"],["ML","LT"],["ML","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["FL","RT"],["HS","CT"],["SRM6","CT","A"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Axman AXM-1N":{"t":65,"e":"XL","r":260,"w":4,"g":"STD","c":"STD","s":"STD","a":"FF","h":"D","hi":10,"my":"STD","A":[9,28,6,21,6,21,6,17,17,24,24],"i":[["LPL","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["HATCHET","RA"],["ML","RA"],["ML","RA"],["ML","RA"],["AC20","LT","A"],["AC20","LT","A"],["CASE","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","LT"],["FF","RT"],["FF","HD"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"],["AC20","RT","","CT",2]],"la":[1,1],"ra":[1,1]},
+"Bombardier BMB-12D":{"t":65,"e":"XL","r":325,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"D","hi":10,"my":"STD","A":[9,24,15,20,10,20,10,20,20,26,26],"i":[["SRM4","RA"],["SRM4","RA","A"],["LRM20","LT"],["LRM20","RT"],["LRM20","RT","A"],["LRM20","RT","A"],["CASE","RT"],["AMS","CT"],["AMS","CT","A"]],"la":[1,1],"ra":[1,1]},
+"Exterminator EXT-4D":{"t":65,"e":"XL","r":390,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"D","hi":10,"my":"STD","A":[9,21,8,20,8,20,8,18,18,19,19],"i":[["ML","LA"],["ML","LA"],["ML","RA"],["ML","RA"],["JJ","LT"],["JJ","LT"],["JJ","LT"],["LRM10","LT"],["JJ","RT"],["JJ","RT"],["JJ","RT"],["AMS","RT"],["AMS","RT","A"],["LRM10","CT","A"],["SL","HD"]],"la":[1,1],"ra":[1,1]},
+"Warhammer WHM-6R":{"t":70,"e":"STD","r":280,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,22,9,17,8,17,8,20,20,15,15],"i":[["HS","LA"],["PPC","LA"],["HS","RA"],["PPC","RA"],["ML","LT"],["SL","LT"],["MG","LT"],["SRM6","RT"],["ML","RT"],["SL","RT"],["MG","RT"],["SRM6","RT","A"],["MG","CT","A"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Warhammer WHM-6D":{"t":70,"e":"STD","r":280,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,34,10,22,8,22,8,22,22,30,30],"i":[["PPC","LA"],["PPC","RA"],["HS","LT"],["HS","LT"],["ML","LT"],["SL","LT"],["HS","RT"],["ML","RT"],["SL","RT"],["HS","CT"],["HS","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Archer ARC-2R":{"t":70,"e":"STD","r":280,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,33,10,24,6,24,6,22,22,26,26],"i":[["ML","LA"],["ML","RA"],["LRM20","LT"],["LRM20","LT","A"],["LRM20","LT","A"],["LRM20","RT"],["LRM20","RT","A"],["LRM20","RT","A"],["ML","CT","R"],["ML","CT","R"]],"la":[1,1],"ra":[1,1]},
+"Archer ARC-2K":{"t":70,"e":"STD","r":280,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,29,8,20,5,20,5,18,18,22,22],"i":[["LL","LA"],["LL","RA"],["LRM15","LT"],["LRM15","LT","A"],["LRM15","LT","A"],["LRM15","RT"],["LRM15","RT","A"],["LRM15","RT","A"],["HS","CT"]],"la":[1,1],"ra":[1,1]},
+"Guillotine GLT-4L":{"t":70,"e":"STD","r":280,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,27,12,22,8,22,8,20,20,22,22],"i":[["LL","LA"],["ML","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["JJ","LT"],["ML","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["JJ","RT"],["ML","RT"],["SRM6","RT","A"],["SRM6","CT"],["HS","LL"],["JJ","LL"],["HS","RL"],["JJ","RL"]],"la":[0,0],"ra":[1,0]},
+"Cataphract CTF-1X":{"t":70,"e":"STD","r":280,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,26,9,16,6,16,6,22,22,22,22],"i":[["ML","LA"],["PPC","RA"],["ML","RA"],["ML","LT","R"],["AC10","RT"],["ML","RT","R"],["AC10","RT","A"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,0]},
+"Grasshopper GHR-5H":{"t":70,"e":"STD","r":280,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,30,13,20,10,20,10,22,22,26,26],"i":[["HS","LA"],["ML","LA"],["HS","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["ML","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["ML","RT"],["LRM5","RT","A"],["LL","CT"],["LRM5","HD"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Flashman FLS-7K":{"t":75,"e":"STD","r":300,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,25,16,22,10,22,10,24,24,27,27],"i":[["LL","LA"],["ML","LA"],["LL","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["ML","LT"],["ML","LT","R"],["HS","RT"],["HS","RT"],["HS","RT"],["ML","RT"],["HS","CT"],["FL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Black Knight BL-6-KNT":{"t":75,"e":"STD","r":300,"w":4,"g":"STD","c":"STD","s":"ENDO","a":"STD","h":"S","hi":12,"my":"STD","A":[9,29,10,24,8,24,8,24,24,24,24],"i":[["ML","LA"],["ENDO","LA"],["ENDO","LA"],["ENDO","LA"],["ENDO","LA"],["PPC","RA"],["ML","RA"],["ENDO","RA"],["ENDO","RA"],["ENDO","RA"],["ENDO","RA"],["HS","LT"],["HS","LT"],["LL","LT"],["ML","LT"],["ENDO","LT"],["ENDO","LT"],["ENDO","LT"],["HS","RT"],["HS","RT"],["LL","RT"],["ML","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","RT"],["BAP","CT"],["SL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Marauder MAD-3R":{"t":75,"e":"STD","r":300,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,35,10,17,8,17,8,22,22,18,18],"i":[["PPC","LA"],["ML","LA"],["PPC","RA"],["ML","RA"],["AC5","LT","A"],["AC5","RT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Marauder MAD-3D":{"t":75,"e":"STD","r":300,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,35,10,17,8,17,8,22,22,18,18],"i":[["PPC","LA"],["ML","LA"],["PPC","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["LL","RT"],["HS","CT"],["HS","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Orion ON1-K":{"t":75,"e":"STD","r":300,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,36,10,22,10,22,10,24,24,32,32],"i":[["ML","LA"],["ML","RA"],["LRM15","LT"],["SRM4","LT"],["LRM15","LT","A"],["LRM15","LT","A"],["SRM4","LT","A"],["AC10","RT"],["AC10","RT","A"],["AC10","RT","A"]],"la":[1,0],"ra":[1,0]},
+"Orion ON1-V":{"t":75,"e":"STD","r":300,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,32,9,20,8,20,8,19,19,20,20],"i":[["SRM4","LA"],["ML","LA"],["SRM4","RA"],["ML","RA"],["LRM15","LT"],["LRM15","LT","A"],["LRM15","LT","A"],["SRM4","LT","A"],["SRM4","LT","A"],["AC10","RT"],["AC10","RT","A"],["AC10","RT","A"]],"la":[1,0],"ra":[1,0]},
+"Awesome AWS-8Q":{"t":80,"e":"STD","r":240,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[9,30,19,24,10,24,10,24,24,33,33],"i":[["HS","RA"],["HS","RA"],["HS","RA"],["HS","RA"],["HS","RA"],["PPC","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["PPC","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["PPC","RT"],["HS","CT"],["HS","CT"],["SL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,0]},
+"Awesome AWS-8V":{"t":80,"e":"STD","r":240,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[9,30,19,24,10,24,10,24,24,33,33],"i":[["HS","LA"],["HS","LA"],["PPC","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["LL","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["LRM15","RT"],["LRM15","CT","A"],["LRM15","CT","A"],["SL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,0]},
+"Awesome AWS-9M":{"t":80,"e":"XL","r":320,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"D","hi":12,"my":"STD","A":[9,30,20,24,10,24,10,26,26,34,34],"i":[["DHS","LA"],["DHS","LA"],["SSRM2","LA"],["DHS","RA"],["DHS","RA"],["ERPPC","RA"],["DHS","LT"],["DHS","LT"],["ERPPC","LT"],["DHS","RT"],["DHS","RT"],["ERPPC","RT"],["MPL","CT"],["SSRM2","CT"],["SPL","HD"],["SSRM2","LL","A"]],"la":[1,1],"ra":[1,0]},
+"Zeus ZEU-6S":{"t":80,"e":"STD","r":320,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,26,9,18,6,18,6,22,22,24,24],"i":[["AC5","LA"],["AC5","LA","A"],["LRM15","RA"],["LL","LT"],["ML","LT","R"],["LRM15","RT","A"],["HS","CT"],["ML","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Zeus ZEU-6T":{"t":80,"e":"STD","r":320,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,26,9,18,6,18,6,22,22,24,24],"i":[["PPC","LA"],["LRM15","RA"],["LL","LT"],["ML","LT","R"],["HS","RT"],["HS","RT"],["LRM15","RT","A"],["HS","CT"],["ML","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Charger CGR-1A1":{"t":80,"e":"STD","r":400,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,25,6,20,5,20,5,15,15,20,20],"i":[["SL","LA"],["SL","RA"],["SL","LT"],["SL","RT"],["SL","HD"]],"la":[1,0],"ra":[1,1]},
+"Victor VTR-9B":{"t":80,"e":"STD","r":320,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,30,15,20,10,20,10,15,15,20,20],"i":[["ML","LA"],["ML","LA"],["AC20","RA"],["SRM4","LT"],["SRM4","LT","A"],["HS","RT"],["AC20","RT","A"],["AC20","RT","A"],["AC20","RT","A"],["JJ","CT"],["JJ","CT"],["HS","LL"],["JJ","LL"],["HS","RL"],["JJ","RL"]],"la":[1,1],"ra":[0,0]},
+"Victor VTR-9A":{"t":80,"e":"STD","r":320,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,18,9,12,6,12,6,12,12,20,20],"i":[["ML","LA"],["ML","LA"],["AC20","RA"],["HS","LT"],["SRM4","LT"],["MG","LT"],["SRM4","LT","A"],["MG","LT","a"],["FL","RT"],["FL","RT"],["AC20","RT","A"],["AC20","RT","A"],["AC20","RT","A"],["JJ","CT"],["JJ","CT"],["HS","LL"],["JJ","LL"],["HS","RL"],["JJ","RL"]],"la":[1,1],"ra":[0,0]},
+"Goliath GOL-1H":{"t":80,"e":"STD","r":320,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,30,19,20,13,20,13,24,24,30,30],"i":[["HS","LA"],["HS","RA"],["LRM10","LT"],["MG","LT"],["MG","LT","A"],["PPC","RT"],["LRM10","RT"],["MG","RT"],["LRM10","CT","A"],["LRM10","CT","A"],["HS","HD"],["HS","LL"],["HS","RL"]],"q":1},
+"Thug THG-11E":{"t":80,"e":"STD","r":320,"w":4,"g":"STD","c":"STD","s":"ENDO","a":"STD","h":"D","hi":12,"my":"STD","A":[9,34,16,25,9,25,9,26,26,34,34],"i":[["DHS","LA"],["PPC","LA"],["ENDO","LA"],["ENDO","LA"],["DHS","RA"],["PPC","RA"],["ENDO","RA"],["ENDO","RA"],["DHS","LT"],["DHS","LT"],["SRM6","LT"],["SRM6","LT","A"],["CASE","LT"],["ENDO","LT"],["ENDO","LT"],["DHS","RT"],["DHS","RT"],["SRM6","RT"],["SRM6","RT","A"],["CASE","RT"],["ENDO","RT"],["ENDO","RT"],["ENDO","CT"],["ENDO","HD"],["ENDO","LL"],["ENDO","LL"],["ENDO","RL"],["ENDO","RL"]],"la":[1,1],"ra":[1,1]},
+"Striker STC-2C":{"t":80,"e":"STD","r":320,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,35,10,25,8,25,8,22,22,26,26],"i":[["AC5","LA"],["HS","LT"],["HS","LT"],["LL","LT"],["AC5","LT","A"],["HS","RT"],["PPC","RT"],["ML","CT"],["ML","CT"],["ML","HD"]],"la":[1,0],"ra":[1,1]},
+"Hatamoto-Chi HTM-27T":{"t":80,"e":"STD","r":320,"w":4,"g":"STD","c":"STD","s":"ENDO","a":"STD","h":"S","hi":12,"my":"STD","A":[9,34,16,25,9,25,9,26,26,34,34],"i":[["PPC","LA"],["ENDO","LA"],["ENDO","LA"],["ENDO","LA"],["ENDO","LA"],["ENDO","LA"],["ENDO","LA"],["PPC","RA"],["ENDO","RA"],["ENDO","RA"],["ENDO","RA"],["ENDO","RA"],["ENDO","RA"],["HS","LT"],["SRM6","LT"],["SRM6","LT","A"],["CASE","LT"],["HS","RT"],["SRM6","RT"],["SRM6","RT","A"],["CASE","RT"],["ENDO","CT"],["ENDO","CT"],["ENDO","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,1]},
+"Stalker STK-3F":{"t":85,"e":"STD","r":255,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,36,11,25,7,25,7,23,23,25,25],"i":[["HS","LA"],["LRM10","LA"],["ML","LA"],["ML","LA"],["LRM10","LA","A"],["HS","RA"],["LRM10","RA"],["ML","RA"],["ML","RA"],["LRM10","RA","A"],["HS","LT"],["LL","LT"],["SRM6","LT"],["SRM6","LT","A"],["HS","RT"],["LL","RT"],["SRM6","RT"],["SRM6","RT","A"],["HS","CT"],["HS","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"Stalker STK-4N":{"t":85,"e":"STD","r":255,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,36,9,25,5,25,5,22,22,29,29],"i":[["ML","LA"],["ML","LA"],["LRM10","RA"],["ML","RA"],["ML","RA"],["LRM10","RA","A"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["LL","LT"],["SRM6","LT"],["SRM6","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["LL","RT"],["SRM6","RT"],["SRM6","RT","A"],["HS","CT"],["HS","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[0,0],"ra":[0,0]},
+"BattleMaster BLR-1G":{"t":85,"e":"STD","r":340,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":13,"my":"STD","A":[9,40,11,28,8,28,8,24,24,26,26],"i":[["MG","LA"],["MG","LA"],["PPC","RA"],["SRM6","LT"],["ML","LT"],["ML","LT"],["ML","LT","R"],["SRM6","LT","A"],["SRM6","LT","A"],["MG","LT","A"],["HS","RT"],["ML","RT"],["ML","RT"],["ML","RT","R"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"BattleMaster BLR-1D":{"t":85,"e":"STD","r":340,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":13,"my":"STD","A":[9,40,11,28,8,28,8,27,27,31,31],"i":[["MG","LA"],["MG","LA"],["PPC","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["ML","LT"],["ML","LT"],["HS","RT"],["HS","RT"],["ML","RT"],["ML","RT"],["MG","RT","A"],["HS","CT"],["HS","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Longbow LGB-0W":{"t":85,"e":"STD","r":340,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":13,"my":"STD","A":[9,21,10,18,7,18,7,9,9,18,18],"i":[["LRM20","LA"],["LRM20","RA"],["LRM5","LT"],["LRM20","LT","A"],["LRM20","LT","A"],["LRM5","RT"],["LRM20","RT","A"],["LRM20","RT","A"],["LRM5","CT","A"],["LRM5","CT","A"],["SL","HD"]],"la":[0,0],"ra":[0,0]},
+"Crockett CRK-5003-1":{"t":85,"e":"STD","r":255,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"D","hi":10,"my":"STD","A":[9,35,19,25,11,25,11,28,28,36,36],"i":[["DHS","LA"],["ERLL","LA"],["SL","LA"],["DHS","RA"],["ERLL","RA"],["SL","RA"],["DHS","LT"],["SRM6","LT"],["LB10","LT"],["LB10","LT","A"],["DHS","RT"],["DHS","RT"],["SRM6","RT"],["SRM6","RT","A"],["SRM6","RT","A"],["LB10","RT","A"],["LB10","RT","A"],["JJ","CT"],["JJ","LL"],["JJ","RL"]],"la":[1,0],"ra":[1,0]},
+"Cyclops CP-10-Z":{"t":90,"e":"STD","r":360,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,30,11,20,8,20,8,10,10,17,17],"i":[["ML","LA"],["ML","RA"],["LRM10","LT"],["AC20","LT","A"],["AC20","LT","A"],["LRM10","LT","A"],["AC20","RT"],["AC20","RT","A"],["AC20","RT","A"],["SRM4","CT"],["SRM4","CT","A"]],"la":[1,1],"ra":[1,1]},
+"Cyclops CP-10-Q":{"t":90,"e":"STD","r":360,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":14,"my":"STD","A":[9,46,11,29,8,29,8,29,29,37,37],"i":[["ML","LA"],["ML","RA"],["LRM10","LT"],["LRM10","LT","A"],["LRM10","LT","A"],["LRM10","RT"],["ML","RT"],["LRM10","RT","A"],["LRM10","RT","A"],["SRM4","CT"],["SRM4","CT","A"]],"la":[1,1],"ra":[1,1]},
+"Highlander HGN-733":{"t":90,"e":"STD","r":270,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,41,17,28,10,28,10,30,30,38,38],"i":[["HS","LA"],["SRM6","LA"],["AC10","RA"],["JJ","LT"],["LRM20","LT"],["SRM6","LT","A"],["SRM6","LT","A"],["LRM20","LT","A"],["LRM20","LT","A"],["LRM20","LT","A"],["JJ","RT"],["ML","RT"],["ML","RT"],["AC10","RT","A"],["AC10","RT","A"],["JJ","CT"],["HS","LL"],["HS","RL"]],"la":[1,1],"ra":[1,0]},
+"Mauler MAL-1R":{"t":90,"e":"XL","r":270,"w":3,"g":"STD","c":"STD","s":"STD","a":"FF","h":"D","hi":10,"my":"STD","A":[9,27,10,26,10,26,10,22,22,22,22],"i":[["DHS","LA"],["ERLL","LA"],["FF","LA"],["FF","LA"],["FF","LA"],["ERLL","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["FF","RA"],["LRM15","LT"],["AC2","LT"],["AC2","LT"],["LRM15","LT","A"],["LRM15","LT","A"],["AC2","LT","A"],["CASE","LT"],["LRM15","RT"],["AC2","RT"],["AC2","RT"],["LRM15","RT","A"],["LRM15","RT","A"],["AC2","RT","A"],["CASE","RT"],["FF","CT"],["FF","CT"],["FF","HD"],["FF","LL"],["FF","RL"]],"la":[1,0],"ra":[1,0]},
+"Banshee BNC-3E":{"t":95,"e":"STD","r":380,"w":4,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":15,"my":"STD","A":[9,40,17,30,10,30,10,21,21,26,26],"i":[["AC5","LT"],["AC5","LT","A"],["PPC","RT"],["SL","HD"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Banshee BNC-3S":{"t":95,"e":"STD","r":285,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":11,"my":"STD","A":[9,40,17,30,10,30,10,21,21,26,26],"i":[["PPC","LA"],["HS","RA"],["HS","LT"],["HS","LT"],["AC10","LT"],["AC10","LT","A"],["AC10","LT","A"],["HS","RT"],["HS","RT"],["PPC","RT"],["SRM6","RT"],["ML","RT"],["ML","RT"],["ML","RT"],["ML","RT"],["SRM6","RT","A"],["HS","CT"],["SL","CT"],["SL","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,1]},
+"Atlas AS7-D":{"t":100,"e":"STD","r":300,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,47,14,32,10,32,10,34,34,41,41],"i":[["HS","LA"],["ML","LA"],["HS","RA"],["ML","RA"],["HS","LT"],["LRM20","LT"],["SRM6","LT"],["LRM20","LT","A"],["LRM20","LT","A"],["SRM6","LT","A"],["AC20","RT"],["AC20","RT","A"],["AC20","RT","A"],["ML","CT","R"],["ML","CT","R"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"Atlas AS7-RS":{"t":100,"e":"STD","r":300,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,47,14,32,10,32,10,34,34,41,41],"i":[["HS","LA"],["LL","LA"],["HS","RA"],["LL","RA"],["HS","LT"],["LRM15","LT"],["SRM4","LT"],["LRM15","LT","A"],["LRM15","LT","A"],["SRM4","LT","A"],["AC10","RT"],["AC10","RT","A"],["AC10","RT","A"],["HS","HD"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,1],"ra":[1,1]},
+"King Crab KGC-0000":{"t":100,"e":"STD","r":300,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,39,12,29,10,29,10,33,33,34,34],"i":[["LRM15","LT"],["AC20","LT","A"],["LRM15","LT","A"],["LL","RT"],["AC20","RT","A"],["HS","CT"],["HS","LL"],["HS","RL"],["AC20","LA","","LT",2],["AC20","RA","","RT",2]],"la":[1,1],"ra":[1,1]},
+"Annihilator ANH-1A":{"t":100,"e":"STD","r":200,"w":2,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":8,"my":"STD","A":[9,25,10,21,9,21,9,24,24,24,24],"i":[["AC10","LA"],["ML","LA"],["AC10","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["AC10","LT"],["AC10","LT","A"],["AC10","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["AC10","RT"],["AC10","RT","A"],["AC10","RT","A"],["ML","CT"],["ML","CT"],["HS","LL"],["HS","LL"],["HS","RL"],["HS","RL"]],"la":[1,0],"ra":[1,0]},
+"Marauder II MAD-4A":{"t":100,"e":"STD","r":300,"w":3,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":12,"my":"STD","A":[9,45,16,31,11,31,11,34,34,41,41],"i":[["PPC","LA"],["ML","LA"],["PPC","RA"],["ML","RA"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","LT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["LL","RT"],["JJ","CT"],["HS","LL"],["JJ","LL"],["HS","RL"],["JJ","RL"]],"la":[1,0],"ra":[1,0]},
+"Javelin JVN-10F":{"t":30,"e":"STD","r":180,"w":6,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":7,"my":"STD","A":[7,15,4,9,4,9,4,9,9,13,13],"i":[["HS","LT"],["HS","LT"],["ML","LT"],["ML","LT"],["HS","RT"],["HS","RT"],["ML","RT"],["ML","RT"],["JJ","CT"],["JJ","CT"],["HS","HD"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,1]},
+"Vindicator VND-1AA":{"t":45,"e":"STD","r":225,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":9,"my":"STD","A":[7,12,5,8,3,8,3,5,5,8,8],"i":[["SL","LA"],["PPC","RA"],["HS","LT"],["HS","LT"],["LRM5","LT"],["LRM5","LT","A"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","RT"],["HS","CT"],["JJ","CT"],["ML","HD"],["JJ","LL"],["JJ","LL"],["JJ","RL"],["JJ","RL"]],"la":[1,1],"ra":[1,0]},
+"Grand Dragon DRG-5N":{"t":60,"e":"STD","r":300,"w":5,"g":"STD","c":"STD","s":"STD","a":"STD","h":"S","hi":10,"my":"STD","A":[9,27,12,16,8,16,8,14,14,18,18],"i":[["ML","LA"],["UAC5","RA"],["LRM10","LT","A"],["LRM10","LT","A"],["CASE","LT"],["UAC5","RT","A"],["CASE","RT"],["LRM10","CT"]],"la":[1,1],"ra":[1,0]}};
+/* ============ MECH LAB RULES ENGINE — TechManual construction, cost (pp. 277–285) and BV 2 (pp. 302–316) ============ */
+const EQ=(()=>{const o={};EQ_DATA.forEach(r=>{o[r[0]]={id:r[0],name:r[1],type:r[2],tons:r[3],crits:r[4],heat:r[5],dmg:r[6],rng:r[7],bv:r[8],cost:r[9],
+  avail:r[10],intro:r[11],ext:r[12],rec:r[13],f:r[14],ammo:r[15]?{shots:r[15][0],bv:r[15][1],cost:r[15][2]}:null};});return o;})();
+const LAB_LOCS=["HD","LA","LT","CT","RT","RA","LL","RL"];
+const LAB_TORSO=["LT","CT","RT"];
+const LAB_ARMOR_KEYS=["HD","CT","CTR","LT","LTR","RT","RTR","LA","RA","LL","RL"];
+const LAB_INWARD={LA:"LT",RA:"RT",LL:"LT",RL:"RT",LT:"CT",RT:"CT"};
+function labLocName(d,l){
+  if(d.q)return {HD:"Head",CT:"Center torso",LT:"Left torso",RT:"Right torso",LA:"Front left leg",RA:"Front right leg",LL:"Rear left leg",RL:"Rear right leg"}[l];
+  return {HD:"Head",CT:"Center torso",LT:"Left torso",RT:"Right torso",LA:"Left arm",RA:"Right arm",LL:"Left leg",RL:"Right leg"}[l];
+}
+function labIsLeg(d,l){return l==="LL"||l==="RL"||(d.q&&(l==="LA"||l==="RA"));}
+function labIsArm(d,l){return !d.q&&(l==="LA"||l==="RA");}
+const half=x=>Math.ceil(x*2-1e-9)/2;
+function labOpt(list,id){return list.find(x=>x[0]===id);}
+/* year legality: introduced, and not extinct (or recovered) by that year */
+function labLegal(intro,ext,rec,yr){return intro<=yr&&(!ext||yr<ext||(rec&&rec<=yr));}
+function labEqLegal(e,yr){return !e.f.includes("C")&&labLegal(e.intro,e.ext,e.rec,yr);}
+
+/* compact stock record (designs table) → working design */
+function labExpand(c){
+  const A={};LAB_ARMOR_KEYS.forEach((k,i)=>A[k]=c.A[i]||0);
+  let u=1;
+  const d={t:c.t,q:c.q?1:0,e:c.e,r:c.r,w:c.w,g:c.g||"STD",c:c.c||"STD",s:c.s||"STD",a:c.a||"STD",h:c.h||"S",hi:c.hi,my:c.my||"STD",A,
+    la:c.la?[...c.la]:[1,1],ra:c.ra?[...c.ra]:[1,1],
+    i:c.i.map(x=>{const it={u:u++,id:x[0],loc:x[1],f:x[2]||""};if(x[3]){it.sl=x[3];it.sn=x[4];}return it;})};
+  return d;
+}
+function labClone(d){return JSON.parse(JSON.stringify(d));}
+function labNextU(d){return d.i.reduce((a,x)=>Math.max(a,x.u),0)+1;}
+
+/* ---- sizes ---- */
+function labIS(d){const r=IS_TABLE[d.t]||[0,0,0,0];
+  return {HD:3,CT:r[0],LT:r[1],RT:r[1],LA:d.q?r[3]:r[2],RA:d.q?r[3]:r[2],LL:r[3],RL:r[3]};}
+function labGyroTons(d){const b=Math.ceil(d.r/100);return d.g==="COMPACT"?half(b*1.5):d.g==="HD"?b*2:d.g==="XL"?half(b*0.5):b;}
+function labGyroSlots(d){return d.g==="COMPACT"?2:d.g==="XL"?6:4;}
+function labJJTons(d){return d.t<=55?0.5:d.t<=85?1:2;}
+function labMascTons(d){return Math.round(d.t/20);}
+function labItemSlots(d,it){
+  if(it.f==="A"||it.f==="a")return 1;
+  if(it.id==="MASC")return labMascTons(d);
+  if(it.id==="HATCHET"||it.id==="SWORD")return Math.ceil(d.t/15);
+  if(it.id==="DHS")return 3;
+  const e=EQ[it.id];return e?e.crits:1;
+}
+function labItemTons(d,it){
+  if(it.f==="A")return 1; if(it.f==="a")return 0.5;
+  if(it.id==="MASC")return labMascTons(d);
+  if(it.id==="HATCHET")return Math.ceil(d.t/15);
+  if(it.id==="SWORD")return half(d.t/20);
+  if(it.id==="JJ")return labJJTons(d);
+  if(["HS","DHS","ENDO","FF","TSM"].includes(it.id))return 0;   /* sinks are weighed as a block (10 free) */
+  const e=EQ[it.id];return e?e.tons:0;
+}
+function labItemName(it){
+  const e=EQ[it.id];const n=e?e.name:it.id;
+  if(it.f==="A")return n.replace(/ \(Clan\)$/,"")+" ammo"+(e&&e.f.includes("C")?" (Clan)":"");
+  if(it.f==="a")return n+" ammo (½ t)";
+  return n+(it.f==="R"?" (R)":"");
+}
+/* fixed components, per location, in record-sheet order */
+function labFixed(d){
+  const fx={};
+  fx.HD=d.c==="SMALL"?["Life Support","Sensors","Cockpit","Sensors"]:["Life Support","Sensors","Cockpit",null,"Sensors","Life Support"];
+  const eng=d.e==="COMPACT"?3:6, gy=labGyroSlots(d);
+  fx.CT=[...Array(Math.min(3,eng)).fill("Engine"),...Array(gy).fill("Gyro"),...Array(eng-3).fill("Engine")];
+  const side=d.e==="XL"?3:d.e==="LIGHT"?2:0;
+  fx.LT=Array(side).fill("Engine");fx.RT=Array(side).fill("Engine");
+  ["LA","RA"].forEach(l=>{
+    if(d.q){fx[l]=["Hip","Upper Leg","Lower Leg","Foot"];return;}
+    const a=d[l==="LA"?"la":"ra"];fx[l]=["Shoulder","Upper Arm"];
+    if(a[0])fx[l].push("Lower Arm");if(a[0]&&a[1])fx[l].push("Hand");});
+  fx.LL=["Hip","Upper Leg","Lower Leg","Foot"];fx.RL=["Hip","Upper Leg","Lower Leg","Foot"];
+  return fx;
+}
+function labCap(l){return l==="HD"?6:12;}
+/* slots each item takes in each location */
+function labSlotsIn(d,it,l){const n=labItemSlots(d,it);if(it.sl){return l===it.loc?n-it.sn:l===it.sl?it.sn:0;}return l===it.loc?n:0;}
+function labUsed(d,l){const fx=labFixed(d)[l];return fx.filter(x=>x).length+d.i.reduce((a,it)=>a+labSlotsIn(d,it,l),0);}
+function labFree(d,l){return labCap(l)-labUsed(d,l);}
+function labArmorMax(d,k){const is=labIS(d);if(k==="HD")return 9;const l=k.replace(/R$/,"");return is[l]*2;}
+function labArmorTons(d){const pts=LAB_ARMOR_KEYS.reduce((a,k)=>a+(d.A[k]||0),0);return half(pts/(16*(d.a==="FF"?1.12:1)));}
+function labArmorPts(d){return LAB_ARMOR_KEYS.reduce((a,k)=>a+(d.A[k]||0),0);}
+function labHS(d){const placed=d.i.filter(x=>x.id==="HS"||x.id==="DHS").length;return {total:d.hi+placed,placed,inside:d.hi,cap:Math.floor(d.r/25)};}
+function labJump(d){return d.i.filter(x=>x.id==="JJ").length;}
+function labMove(d){
+  const masc=d.i.some(x=>x.id==="MASC"), tsm=d.my==="TSM";
+  const walk=d.w, run=Math.ceil(walk*1.5), jump=labJump(d);
+  const bvWalk=tsm?walk+1:walk, bvRun=masc?walk*2:Math.ceil(bvWalk*1.5);
+  return {walk,run,jump,masc,tsm,bvRun};
+}
+function labWeights(d){
+  const w={};
+  w.structure=d.s==="ENDO"?half(d.t*0.05):half(d.t*0.1);
+  w.engine=(ENGINE_WT[d.r]||{})[d.e]; if(w.engine==null)w.engine=NaN;
+  w.gyro=labGyroTons(d);
+  w.cockpit=d.c==="SMALL"?2:3;
+  w.sinks=Math.max(0,labHS(d).total-10);
+  w.jets=labJump(d)*labJJTons(d);
+  w.armor=labArmorTons(d);
+  w.equipment=d.i.filter(x=>x.id!=="JJ").reduce((a,it)=>a+labItemTons(d,it),0);
+  w.total=Object.values(w).reduce((a,x)=>a+x,0);
+  return w;
+}
+/* Artemis links: each Artemis IV serves one compatible launcher in its location */
+function labArtemis(d){
+  const linked=new Set();
+  LAB_LOCS.forEach(l=>{
+    let n=d.i.filter(x=>x.id==="ART4"&&x.loc===l).length;
+    d.i.filter(x=>x.loc===l&&!x.f.match(/^[Aa]$/)&&EQ[x.id]&&EQ[x.id].f.includes("A")).sort((a,b)=>EQ[b.id].bv-EQ[a.id].bv)
+      .forEach(x=>{if(n>0){linked.add(x.u);n--;}});
+  });
+  return linked;
+}
+
+/* ---- legality checks ---- */
+function labValidate(d,opts){
+  opts=opts||{};const errs=[],warns=[];const E=(m)=>errs.push(m),W=(m)=>warns.push(m);
+  const w=labWeights(d);
+  if(!ENGINE_WT[d.r])E(`Engine rating ${d.r} is outside the Master Engine Table (10–400 in steps of 5). Rating = tonnage × Walking MP.`);
+  if(d.r!==d.t*d.w)E(`Engine rating must equal tonnage × Walking MP (${d.t} × ${d.w} = ${d.t*d.w}).`);
+  if(d.w<1)E("Walking MP must be at least 1.");
+  if(w.total>d.t+1e-9)E(`Overweight: ${w.total} tons on a ${d.t}-ton chassis.`);
+  LAB_LOCS.forEach(l=>{const u=labUsed(d,l);if(u>labCap(l))E(`${labLocName(d,l)} needs ${u} critical slots but has ${labCap(l)}.`);});
+  /* armor */
+  const is=labIS(d);
+  if((d.A.HD||0)>9)E(`Head armor is ${d.A.HD}; the maximum is 9.`);
+  ["CT","LT","RT"].forEach(l=>{const t=(d.A[l]||0)+(d.A[l+"R"]||0);if(t>is[l]*2)E(`${labLocName(d,l)} armor (front + rear ${t}) exceeds ${is[l]*2} (2 × internal structure).`);});
+  ["LA","RA","LL","RL"].forEach(l=>{if((d.A[l]||0)>is[l]*2)E(`${labLocName(d,l)} armor ${d.A[l]} exceeds ${is[l]*2} (2 × internal structure).`);});
+  /* actuators */
+  if(!d.q)["la","ra"].forEach((k,i)=>{if(!d[k][0]&&d[k][1])E(`${i?"Right":"Left"} arm: a hand actuator needs the lower arm actuator.`);});
+  /* heat sinks */
+  const hs=labHS(d);
+  if(hs.total<10)E(`A fusion-powered 'Mech needs at least 10 heat sinks (has ${hs.total}).`);
+  if(hs.inside>hs.cap)E(`The ${d.r}-rated engine holds at most ${hs.cap} heat sinks internally (${hs.inside} set).`);
+  if(hs.inside<0)E("Engine-mounted heat sinks cannot be negative.");
+  if(d.i.some(x=>x.id==="HS")&&d.h==="D"||d.i.some(x=>x.id==="DHS")&&d.h==="S")E(`All heat sinks must match the design's heat sink type (${d.h==="D"?"double":"single"}).`);
+  /* jump jets */
+  const jj=labJump(d);
+  if(jj>d.w)E(`Jumping MP (${jj}) cannot exceed Walking MP (${d.w}) with standard jump jets.`);
+  d.i.filter(x=>x.id==="JJ"&&!labTorsoOrLeg(d,x.loc)).forEach(()=>E("Jump jets can only be mounted in torso and leg locations."));
+  /* structure, armor, myomer slots */
+  const cnt=id=>d.i.filter(x=>x.id===id).length;
+  if(d.s==="ENDO"&&cnt("ENDO")!==14)E(`Endo steel needs exactly 14 critical slots placed (${cnt("ENDO")} placed).`);
+  if(d.s!=="ENDO"&&cnt("ENDO"))E("Endo steel slots are placed but the structure is standard.");
+  if(d.a==="FF"&&cnt("FF")!==14)E(`Ferro-fibrous armor needs exactly 14 critical slots placed (${cnt("FF")} placed).`);
+  if(d.a!=="FF"&&cnt("FF"))E("Ferro-fibrous slots are placed but the armor is standard.");
+  if(d.my==="TSM"&&cnt("TSM")!==6)E(`Triple-strength myomer needs exactly 6 critical slots placed (${cnt("TSM")} placed).`);
+  if(d.my!=="TSM"&&cnt("TSM"))E("TSM slots are placed but the myomer is standard.");
+  if(cnt("MASC")>1)E("Only one MASC system may be installed.");
+  if(cnt("MASC")&&d.my==="TSM")E("MASC and triple-strength myomer may not be combined on the same 'Mech.");
+  /* placement rules */
+  d.i.forEach(it=>{
+    const e=EQ[it.id];if(!e){E(`Unknown component ${it.id}.`);return;}
+    const nm=labItemName(it);
+    if(it.id==="CASE"&&!LAB_TORSO.includes(it.loc))E(`${nm}: Inner Sphere CASE must go in a torso location.`);
+    if(e.f.includes("P")){
+      if(!labIsArm(d,it.loc))E(`${nm}: physical weapons mount in the arms only.`);
+      else{const a=d[it.loc==="LA"?"la":"ra"];if(!a[0]||!a[1])E(`${nm} needs the lower arm and hand actuators in the ${labLocName(d,it.loc).toLowerCase()}.`);}
+    }
+    if(it.f==="R"&&!e.f.includes("R"))E(`${nm} cannot be rear-mounted.`);
+    if(it.f==="R"&&labIsArm(d,it.loc))E(`${nm}: arm-mounted weapons fire into the arm's arc and cannot be rear-mounted.`);
+    if(it.f==="a"&&!["MG","LMG","HMG","CMG"].includes(it.id))E(`Half-ton ammunition is only made for machine guns (${nm}).`);
+    if((it.f==="A"||it.f==="a")&&!e.ammo)E(`${e.name} does not use ammunition.`);
+    if(it.sl){
+      const ok=(LAB_INWARD[it.loc]===it.sl||LAB_INWARD[it.sl]===it.loc)&&!labIsLeg(d,it.loc)&&!labIsLeg(d,it.sl);
+      if(!ok||labItemSlots(d,it)<8)E(`${nm}: only weapons of 8+ slots may be split, and only between two adjacent non-leg locations.`);
+    }
+    if(opts.year&&it.src==="s"&&!labEqLegal(e,opts.year))E(`${e.name} is not available in ${opts.year}.`);
+  });
+  ["LA","RA"].forEach(l=>{if(d.i.filter(x=>x.loc===l&&EQ[x.id]&&EQ[x.id].f.includes("P")).length>1)E(`${labLocName(d,l)}: only one physical weapon per arm.`);});
+  /* Artemis: every Artemis needs a launcher in its location */
+  LAB_LOCS.forEach(l=>{
+    const a=d.i.filter(x=>x.id==="ART4"&&x.loc===l).length, n=d.i.filter(x=>x.loc===l&&!x.f.match(/^[Aa]$/)&&EQ[x.id]&&EQ[x.id].f.includes("A")).length;
+    if(a>n)E(`${labLocName(d,l)}: ${a} Artemis IV FCS but only ${n} compatible launcher${n===1?"":"s"} there.`);
+  });
+  /* ammunition without a weapon */
+  const guns=new Set(d.i.filter(x=>!x.f.match(/^[Aa]$/)).map(x=>x.id));
+  [...new Set(d.i.filter(x=>x.f.match(/^[Aa]$/)).map(x=>x.id))].forEach(id=>{if(!guns.has(id))W(`${EQ[id]?EQ[id].name:id} ammunition is carried but no matching weapon is mounted.`);});
+  guns.forEach(id=>{const e=EQ[id];if(e&&e.ammo&&!d.i.some(x=>x.id===id&&x.f.match(/^[Aa]$/)))W(`${e.name} has no ammunition aboard.`);});
+  if(w.total<d.t-1e-9)W(`${d.t-w.total} ton${d.t-w.total===1?"":"s"} unused.`);
+  return {errs,warns,w};
+}
+function labTorsoOrLeg(d,l){return LAB_TORSO.includes(l)||labIsLeg(d,l);}
+
+/* ---- C-bill cost (TechManual p. 277+): unloaded, without ammunition ---- */
+function labCostParts(d){
+  const t=d.t,c={};
+  c.cockpit=d.c==="SMALL"?175000:200000; c.lifeSupport=50000; c.sensors=2000*t;
+  c.myomer=(d.my==="TSM"?16000:2000)*t;
+  c.structure=(d.s==="ENDO"?1600:400)*t;
+  let act=0;
+  if(d.q)act=4*(150+80+120)*t;
+  else{act=2*(150+80+120)*t+2*100*t;["la","ra"].forEach(k=>{if(d[k][0])act+=50*t;if(d[k][0]&&d[k][1])act+=80*t;});}
+  c.actuators=act;
+  c.engine={STD:5000,XL:20000,LIGHT:15000,COMPACT:10000}[d.e]*d.r*t/75;
+  c.gyro={STD:300000,COMPACT:400000,HD:500000,XL:750000}[d.g]*labGyroTons(d);
+  const jj=labJump(d); c.jets=200*jj*jj*t;
+  c.masc=d.i.some(x=>x.id==="MASC")?1000*d.r*labMascTons(d):0;
+  const hs=labHS(d); c.sinks=d.h==="D"?6000*hs.total:2000*Math.max(0,hs.total-10);
+  c.armor=(d.a==="FF"?20000:10000)*labArmorTons(d);
+  c.equipment=d.i.filter(x=>!x.f.match(/^[Aa]$/)&&!["JJ","HS","DHS","ENDO","FF","TSM","MASC"].includes(x.id))
+    .reduce((a,it)=>a+(EQ[it.id]?(it.id==="HATCHET"||it.id==="SWORD"?EQ[it.id].cost*labItemTons(d,it):EQ[it.id].cost):0),0);
+  return c;
+}
+function labCost(d){const c=labCostParts(d);const sum=Object.values(c).reduce((a,x)=>a+x,0);return Math.round(sum*(1+d.t/100));}
+function labAmmoCost(id,f){const e=EQ[id];if(!e||!e.ammo)return 0;return f==="a"?e.ammo.cost/2:e.ammo.cost;}
+
+/* ---- Battle Value 2 ---- */
+function labTMM(mp){return mp<=2?0:mp<=4?1:mp<=6?2:mp<=9?3:mp<=17?4:mp<=24?5:6;}
+function labBV(d,detail){
+  const is=labIS(d), mv=labMove(d);
+  const isPts=is.HD+is.CT+is.LT+is.RT+is.LA+is.RA+is.LL+is.RL;
+  const engMod={STD:1,XL:0.5,LIGHT:0.75,COMPACT:1}[d.e];
+  let def=labArmorPts(d)*2.5*1+isPts*1.5*1*engMod+d.t*(d.g==="HD"?1:0.5);
+  /* defensive equipment (AMS ammo up to the AMS BV) */
+  let amsBV=0,amsAmmo=0,defEq=0;
+  d.i.forEach(it=>{const e=EQ[it.id];if(!e||!e.f.includes("D"))return;
+    if(it.f==="A"||it.f==="a"){amsAmmo+=e.ammo.bv*(it.f==="a"?0.5:1);}
+    else{defEq+=e.bv;if(it.id==="AMS"||it.id==="CAMS")amsBV+=e.bv;}});
+  def+=defEq+Math.min(amsAmmo,amsBV);
+  /* explosive ammunition and Gauss penalties */
+  const hasCase=l=>d.i.some(x=>x.id==="CASE"&&x.loc===l);
+  const protectedLoc=l=>{
+    if(d.e==="XL")return false;
+    if(l==="CT"||l==="HD"||labIsLeg(d,l))return false;
+    if(l==="LT"||l==="RT")return hasCase(l);
+    return hasCase(l)||hasCase(LAB_INWARD[l]);
+  };
+  let pen=0;
+  d.i.forEach(it=>{const e=EQ[it.id];if(!e)return;
+    LAB_LOCS.forEach(l=>{const n=labSlotsIn(d,it,l);if(!n)return;
+      if((it.f==="A"||it.f==="a")&&!e.f.includes("G")&&!protectedLoc(l))pen+=15*n;
+      if(!it.f.match(/^[Aa]$/)&&e.f.includes("G")&&!protectedLoc(l))pen+=1*n;});});
+  def=Math.max(1,def-pen);
+  const tmm=Math.max(labTMM(mv.bvRun),mv.jump?labTMM(mv.jump)+1:0);
+  const dbr=def*(1+tmm/10);
+  /* offensive */
+  const art=labArtemis(d);
+  const weapons=d.i.filter(it=>{const e=EQ[it.id];return e&&!it.f.match(/^[Aa]$/)&&["E","B","M"].includes(e.type)&&!e.f.includes("D");});
+  const rearOK=it=>!labIsArm(d,it.loc);
+  const fwd=weapons.filter(it=>rearOK(it)&&it.f!=="R").reduce((a,it)=>a+EQ[it.id].bv,0);
+  const rear=weapons.filter(it=>it.f==="R").reduce((a,it)=>a+EQ[it.id].bv,0);
+  const halfRear=fwd>=rear;
+  const W=weapons.map(it=>{const e=EQ[it.id];let bv=e.bv*(art.has(it.u)?1.2:1);
+    if(rearOK(it)){if(it.f==="R"&&halfRear)bv/=2;if(it.f!=="R"&&!halfRear&&rear>0)bv/=2;}
+    let h=e.heat;if(e.f.includes("U"))h*=2;if(e.f.includes("O"))h*=6;if(e.f.includes("K"))h*=0.5;if(e.f.includes("S"))h*=0.25;
+    return {it,bv,h,name:labItemName(it)};});
+  /* physical weapons count with no heat */
+  d.i.forEach(it=>{if(it.id==="HATCHET"||it.id==="SWORD"){
+    const dm=it.id==="HATCHET"?Math.ceil(d.t/5):Math.ceil(d.t/10)+1;
+    W.push({it,bv:dm*(mv.tsm?2:1)*(it.id==="HATCHET"?1.5:1.725),h:0,name:labItemName(it)});}});
+  /* ammunition, capped at the BV of the weapons that fire it */
+  let ammoBV=0;const byType={};
+  d.i.forEach(it=>{const e=EQ[it.id];if(!e||!it.f.match(/^[Aa]$/)||e.f.includes("D"))return;
+    byType[it.id]=(byType[it.id]||0)+e.ammo.bv*(it.f==="a"?0.5:1);});
+  Object.entries(byType).forEach(([id,v])=>{const cap=weapons.filter(x=>x.id===id).length*EQ[id].bv;ammoBV+=Math.min(v,cap);});
+  const hs=labHS(d), diss=hs.total*(d.h==="D"?2:1);
+  const moveHeat=Math.max(2,mv.jump?Math.max(3,mv.jump):0);
+  const eff=6+diss-moveHeat;
+  let wbr=0;
+  const cold=W.filter(x=>x.h===0), hot=W.filter(x=>x.h>0);
+  cold.forEach(x=>wbr+=x.bv);
+  wbr+=ammoBV;
+  const totHeat=hot.reduce((a,x)=>a+x.h,0);
+  if(totHeat<=eff)hot.forEach(x=>wbr+=x.bv);
+  else{
+    hot.sort((a,b)=>b.bv-a.bv||a.h-b.h);
+    let run=0,reached=false;
+    hot.forEach(x=>{if(!reached){wbr+=x.bv;run+=x.h;if(run>=eff)reached=true;}else wbr+=x.bv/2;});
+  }
+  wbr+=d.t*(mv.tsm?1.5:1);
+  const sp=mv.bvRun+Math.ceil(mv.jump/2);
+  const sf=Math.round(Math.pow(1+(sp-5)/10,1.2)*100)/100;
+  const obr=wbr*sf;
+  let bv=dbr+obr;if(d.c==="SMALL")bv*=0.95;
+  const out=Math.round(bv);
+  if(detail)return {bv:out,dbr,obr,def,pen,tmm,wbr,sf,eff,totHeat,ammoBV};
+  return out;
+}
+
+/* ============ MECH LAB: refit a roster 'Mech (TechManual construction rules) ============
+   The working copy lives in `lab` (not saved). Approving a refit pays for the parts, queues a "refit" job in the
+   Repair Bay for the 'Mech's tech team and stores the finished design on the job; the 'Mech takes its new
+   configuration (m.design, m.val, m.bv, m.name) when the job completes. Removed parts go to company stores then. */
+let lab={mid:null,d:null,orig:null,removed:[],bin:"shop",filter:"E",sel:null,msg:"",name:"",confirm:false,pick:""};
+const AVAIL_TN={D:8,E:10,F:12};          /* 2d6 + world modifier needed for a part to be in stock this month */
+function labMechs(){return S.mechs.filter(m=>kindOf(m)==="mech");}
+function labMech(){return S.mechs.find(m=>m.id===lab.mid)||null;}
+function labPending(mid){return S.tasks.find(t=>t.mechId===mid&&t.key==="refit"&&t.status!=="done")||null;}
+function labStockFor(m){if(m.design)return labClone(m.design);const c=STOCK_DESIGNS[m.name];return c?labExpand(c):null;}
+function labBare(t){
+  const walk=t<=35?6:t<=55?5:t<=75?4:3, r=t*walk;
+  return {t,q:0,e:"STD",r,w:walk,g:"STD",c:"STD",s:"STD",a:"STD",h:"S",hi:Math.min(10,Math.floor(r/25)),my:"STD",
+    A:Object.fromEntries(LAB_ARMOR_KEYS.map(k=>[k,0])),la:[1,1],ra:[1,1],i:[]};
+}
+function labOpen(mid){
+  const m=S.mechs.find(x=>x.id===mid);
+  lab.mid=mid;lab.removed=[];lab.sel=null;lab.msg="";lab.confirm=false;lab.pick="";
+  if(!m){lab.d=null;lab.orig=null;return;}
+  lab.name=m.name;
+  const base=labStockFor(m);
+  if(!base){lab.d=null;lab.orig=null;return;}
+  lab.orig=base;lab.d=labClone(base);lab.d.i.forEach(x=>{x.src="o";});
+}
+function openLab(mid){labOpen(mid);goTab("lab");}
+function labReset(){labOpen(lab.mid);renderLab();}
+/* give a roster 'Mech its design on file (stock variant or bare chassis) */
+function labIdentify(){
+  const m=labMech();if(!m)return;
+  const v=$("labPick").value;
+  m.design=v==="__bare"?labBare(m.ton):labExpand(STOCK_DESIGNS[v]);
+  rlog(`${m.name}: design on file set to ${v==="__bare"?"a bare "+m.ton+"-ton chassis":v}.`);
+  labOpen(m.id);renderAll();
+}
+function labU(){return Math.max(0,...lab.d.i.map(x=>x.u),...lab.removed.map(x=>x.u))+1;}
+
+/* ---- market availability (rolled with the monthly market; A–C always in stock) ---- */
+function labLetterOf(key){
+  if(EQ[key])return EQ[key].avail;
+  const [k,v]=key.split(":");
+  const list={ENG:LAB_ENGINES,GYRO:LAB_GYROS,COCKPIT:LAB_COCKPITS}[k];
+  const o=list&&labOpt(list,v);return o?o[5]:"C";
+}
+function labStock(key){
+  const L=labLetterOf(key);
+  if("ABC".includes(L))return {stock:true,roll:null,L};
+  const M=S.market,fresh=M.rolled&&M.month===S.month&&M.parts;
+  const r=fresh?M.parts[key]:null;
+  return {stock:!!(r&&r[1]),roll:r?r[0]:null,L,fresh:!!fresh};
+}
+function labPrice(key,base){const st=labStock(key);return {price:st.stock?base:base*2,broker:!st.stock,st};}
+function rollParts(mod){
+  const yr=campYear(),parts={};
+  const keys=EQ_DATA.filter(r=>!r[14].includes("C")&&labLegal(r[11],r[12],r[13],yr)).map(r=>r[0])
+    .concat(LAB_ENGINES.filter(o=>o[0]!=="STD"&&labLegal(o[2],o[3],o[4],yr)).map(o=>"ENG:"+o[0]))
+    .concat(LAB_GYROS.filter(o=>o[0]!=="STD"&&labLegal(o[2],o[3],o[4],yr)).map(o=>"GYRO:"+o[0]))
+    .concat(LAB_COCKPITS.filter(o=>o[0]!=="STD"&&labLegal(o[2],o[3],o[4],yr)).map(o=>"COCKPIT:"+o[0]));
+  keys.forEach(k=>{const L=labLetterOf(k);if("ABC".includes(L))return;const r=r2d6()+mod;parts[k]=[r,r>=AVAIL_TN[L]];});
+  return parts;
+}
+
+/* ---- company stores ↔ components ---- */
+const LAB_NAME_IDX=(()=>{const o={};const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,"");
+  EQ_DATA.forEach(r=>{o[norm(r[1])]=r[0];});o.lrm5=o.lrm5||"LRM5";o.artemisivfcs="ART4";o.ac2="AC2";o.ac5="AC5";o.ac10="AC10";o.ac20="AC20";
+  o.guardianecm="ECM";o.guardianecmsuite="ECM";o.beagleactiveprobe="BAP";o.antimissilesystem="AMS";o.narcmissilebeacon="NARC";
+  return {o,norm};})();
+function storeEq(s){
+  if(s.eq)return s.eq;
+  const id=LAB_NAME_IDX.o[LAB_NAME_IDX.norm(s.name)];return id||null;
+}
+function addToStoresEq(name,value,qty,eq){
+  addToStores(name,value,qty);
+  const ex=S.stores.find(s=>s.name.toLowerCase()===name.toLowerCase()&&s.value===value);if(ex&&eq)ex.eq=eq;
+}
+function labStoreUsed(sid){return lab.d?lab.d.i.filter(x=>x.sid===sid).length:0;}
+function labStoreFor(key){return S.stores.find(s=>storeEq(s)===key&&s.qty>0)||null;}
+/* what one installed component is called / worth in stores */
+function labPartKey(it){return it.f==="A"?"AMMO:"+it.id:it.f==="a"?"AMMOH:"+it.id:it.id;}
+function labPartValue(d,it){
+  const e=EQ[it.id];if(!e)return 0;
+  if(it.f==="A")return e.ammo.cost; if(it.f==="a")return e.ammo.cost/2;
+  if(it.id==="HS")return 2000; if(it.id==="DHS")return 6000;
+  if(it.id==="JJ")return 200*d.t*Math.max(1,labJump(d));
+  if(it.id==="MASC")return 1000*d.r*labMascTons(d);
+  if(it.id==="HATCHET"||it.id==="SWORD")return e.cost*labItemTons(d,it);
+  return e.cost;
+}
+/* chassis component costs (before the 'Mech's 1 + tons/100 multiplier) */
+function labEngCost(d){return {STD:5000,XL:20000,LIGHT:15000,COMPACT:10000}[d.e]*d.r*d.t/75;}
+function labGyroCost(d){return {STD:300000,COMPACT:400000,HD:500000,XL:750000}[d.g]*labGyroTons(d);}
+function labCockpitCost(d){return d.c==="SMALL"?175000:200000;}
+const LAB_LBL={e:o=>labOpt(LAB_ENGINES,o)[1],g:o=>labOpt(LAB_GYROS,o)[1],c:o=>labOpt(LAB_COCKPITS,o)[1],s:o=>labOpt(LAB_STRUCTS,o)[1],
+  a:o=>labOpt(LAB_ARMORS,o)[1],h:o=>labOpt(LAB_SINKS,o)[1],my:o=>labOpt(LAB_MYOMER,o)[1]};
+
+/* ---- the refit bill: parts (bought now or drawn from stores), 10% labour, time ---- */
+function labBill(){
+  const d=lab.d,o=lab.orig,t=d.t,L=[];   /* {what, value, paid, src:"shop"|"store", sid, key, broker} */
+  const buy=(what,key,base,stockKey,qty,unitName)=>{const p=labPrice(stockKey||key,base);L.push({what,value:base,paid:p.price,src:"shop",key,broker:p.broker,qty,unitName});};
+  const fromStoreOrBuy=(what,key,base,stockKey)=>{const s=labStoreFor(key);
+    if(s)L.push({what:what+" (from stores)",value:s.value,paid:0,src:"store",sid:s.id,key});else buy(what,key,base,stockKey);};
+  let days=0,changes=0;
+  if(d.e!==o.e||d.r!==o.r){fromStoreOrBuy(`${LAB_LBL.e(d.e)} engine ${d.r}`,`ENG:${d.e}:${d.r}`,labEngCost(d),d.e==="STD"?null:"ENG:"+d.e);days+=7;changes++;}
+  if(d.g!==o.g||labGyroTons(d)!==labGyroTons(o)){fromStoreOrBuy(`${LAB_LBL.g(d.g)} (${labGyroTons(d)} t)`,`GYRO:${d.g}:${labGyroTons(d)}`,labGyroCost(d),d.g==="STD"?null:"GYRO:"+d.g);days+=1;changes++;}
+  if(d.c!==o.c){fromStoreOrBuy(LAB_LBL.c(d.c),"COCKPIT:"+d.c,labCockpitCost(d),d.c==="STD"?null:"COCKPIT:"+d.c);days+=1;changes++;}
+  if(d.s!==o.s){fromStoreOrBuy(`${LAB_LBL.s(d.s)} internal structure`,`STRUCT:${d.s}:${t}`,(d.s==="ENDO"?1600:400)*t,d.s==="ENDO"?"ENDO":null);days+=7;changes++;}
+  if(d.my!==o.my){fromStoreOrBuy(`${LAB_LBL.my(d.my)} myomer`,`MYO:${d.my}:${t}`,(d.my==="TSM"?16000:2000)*t,d.my==="TSM"?"TSM":null);days+=1;changes++;}
+  /* armor: new type → all new plates; same type → only the added tonnage */
+  const nT=labArmorTons(d),oT=labArmorTons(o),per=d.a==="FF"?20000:10000;
+  const addT=d.a!==o.a?nT:Math.max(0,nT-oT);
+  if(addT>0){let left=addT;const s=labStoreFor("ARMOR:"+d.a);
+    if(s){const use=Math.min(s.qty,Math.floor(left));if(use>0){L.push({what:`${use} t ${LAB_LBL.a(d.a).toLowerCase()} armor (from stores)`,value:use*s.value,paid:0,src:"store",sid:s.id,qty:use,key:"ARMOR:"+d.a});left-=use;}}
+    if(left>0)buy(`${left} t ${LAB_LBL.a(d.a).toLowerCase()} armor`,"ARMOR:"+d.a,left*per,d.a==="FF"?"FF":null,Math.ceil(left),`${LAB_LBL.a(d.a)} armor (1 t)`);}
+  const armorChanged=d.a!==o.a||LAB_ARMOR_KEYS.some(k=>(d.A[k]||0)!==(o.A[k]||0));
+  if(armorChanged){days+=1;changes++;}
+  /* heat sinks of a new type: the engine-mounted ones are replaced too */
+  const sinkName=d.h==="D"?"Double Heat Sink":"Heat Sink";
+  if(d.h!==o.h&&d.hi>0)buy(`${d.hi} engine-mounted ${d.h==="D"?"double":"single"} heat sink${d.hi===1?"":"s"}`,d.h==="D"?"DHS":"HS",d.hi*(d.h==="D"?6000:2000),null,d.hi,sinkName);
+  else if(d.h===o.h&&d.hi>o.hi)buy(`${d.hi-o.hi} engine-mounted heat sink${d.hi-o.hi===1?"":"s"}`,d.h==="D"?"DHS":"HS",(d.hi-o.hi)*(d.h==="D"?6000:2000),null,d.hi-o.hi,sinkName);
+  if(d.h!==o.h){days+=1;changes++;}
+  /* actuators put back */
+  if(!d.q)["la","ra"].forEach((k,i)=>{const side=i?"right":"left";
+    if(d[k][0]&&!o[k][0])buy(`Lower arm actuator (${side})`,"ACT",50*t);
+    if(d[k][1]&&!o[k][1])buy(`Hand actuator (${side})`,"ACT",80*t);
+    if(d[k][0]!==o[k][0]||d[k][1]!==o[k][1]){days+=1;changes++;}});
+  /* placed items */
+  const jjNew=d.i.filter(x=>x.id==="JJ"&&x.src!=="o").length, jjShop=d.i.filter(x=>x.id==="JJ"&&x.src==="s").length;
+  const jjDelta=Math.max(0,200*t*(labJump(d)**2-labJump(o)**2));
+  d.i.forEach(it=>{
+    if(it.src==="x"||it.src==="o")return;
+    const nm=labItemName(it);
+    if(it.src==="st"){const s=S.stores.find(z=>z.id===it.sid);L.push({what:nm+" (from stores)",value:s?s.value:0,paid:0,src:"store",sid:it.sid,key:labPartKey(it)});return;}
+    let base=labPartValue(d,it);
+    if(it.id==="JJ")base=jjNew?jjDelta/jjNew:0;
+    buy(nm,labPartKey(it),base,(it.f==="A"||it.f==="a")?it.id:it.id);
+  });
+  if(jjShop&&!jjDelta){/* nothing to pay: fewer jets than before */}
+  /* time: 1 day per item added, removed or moved */
+  const origU=new Set(o.i.map(x=>x.u));
+  d.i.forEach(it=>{if(it.src==="x")return;
+    if(!origU.has(it.u)||it.src!=="o"){days+=1;changes++;return;}
+    const oi=o.i.find(x=>x.u===it.u);if(oi&&(oi.loc!==it.loc||oi.f!==it.f||oi.sl!==it.sl)){days+=1;changes++;}});
+  lab.removed.forEach(it=>{if(["ENDO","FF","TSM"].includes(it.id))return;days+=1;changes++;});
+  /* house rule: a weapon in a location that didn't carry that weapon type before is a mount conversion */
+  const conv=labConversions(d,o);
+  const convLabour=conv.reduce((a,c)=>a+c.cost,0);
+  days+=conv.length*LAB_CONV.days;
+  const value=L.reduce((a,x)=>a+x.value,0), paid=L.reduce((a,x)=>a+x.paid,0);
+  const labour=Math.round(value*0.10+convLabour);
+  return {L,value:Math.round(value),paid:Math.round(paid),labour,baseLabour:Math.round(value*0.10),conv,days,changes,tn:conv.length?LAB_CONV.tn:null};
+}
+/* ---- mount conversions (house rule: allowed but expensive) ----
+   Each location keeps the weapon types (energy / ballistic / missile) of the 'Mech's design before this refit.
+   Fitting a weapon type a location didn't carry costs extra labour and time and makes the job need a tech roll. */
+const LAB_CONV={pct:0.25,min:10000,days:3,tn:8};
+const LAB_WCAT={E:"energy",B:"ballistic",M:"missile"};
+function labMounts(d){
+  const o={};LAB_LOCS.forEach(l=>o[l]=new Set());
+  d.i.forEach(it=>{const e=EQ[it.id];if(!e||it.f==="A"||it.f==="a"||!LAB_WCAT[e.type]||!it.loc)return;
+    o[it.loc].add(e.type);if(it.sl)o[it.sl].add(e.type);});
+  return o;
+}
+function labConversions(d,o){
+  const was=labMounts(o),out=[];
+  d.i.forEach(it=>{const e=EQ[it.id];if(!e||it.f==="A"||it.f==="a"||!LAB_WCAT[e.type]||!it.loc)return;
+    const locs=[it.loc].concat(it.sl?[it.sl]:[]);
+    const bad=locs.filter(l=>!was[l].has(e.type));
+    if(!bad.length)return;
+    const from=[...was[bad[0]]].map(t=>LAB_WCAT[t]).join(" / ")||"no weapons";
+    out.push({u:it.u,name:labItemName(it),loc:bad[0],type:e.type,from,cost:Math.max(LAB_CONV.min,Math.round(labPartValue(d,it)*LAB_CONV.pct))});
+  });
+  return out;
+}
+/* parts that leave the 'Mech (to stores when the job completes) */
+function labRemovedParts(){
+  const d=lab.d,o=lab.orig,out=[];
+  lab.removed.forEach(it=>{if(["ENDO","FF","TSM"].includes(it.id))return;
+    out.push({name:labItemName(it).replace(/ \(R\)$/,""),value:labPartValue(o,it),eq:labPartKey(it)});});
+  if(d.e!==o.e||d.r!==o.r)out.push({name:`${LAB_LBL.e(o.e)} engine ${o.r}`,value:Math.round(labEngCost(o)),eq:`ENG:${o.e}:${o.r}`});
+  if(d.g!==o.g||labGyroTons(d)!==labGyroTons(o))out.push({name:`${LAB_LBL.g(o.g)} (${labGyroTons(o)} t)`,value:labGyroCost(o),eq:`GYRO:${o.g}:${labGyroTons(o)}`});
+  if(d.c!==o.c)out.push({name:LAB_LBL.c(o.c),value:labCockpitCost(o),eq:"COCKPIT:"+o.c});
+  if(d.my!==o.my&&o.my==="TSM")out.push({name:`Triple-strength myomer (${o.t} t)`,value:16000*o.t,eq:`MYO:TSM:${o.t}`});
+  if(d.h!==o.h)for(let i=0;i<o.hi;i++)out.push({name:o.h==="D"?"Double Heat Sink":"Heat Sink",value:o.h==="D"?6000:2000,eq:o.h==="D"?"DHS":"HS"});
+  else if(d.hi<o.hi)for(let i=0;i<o.hi-d.hi;i++)out.push({name:o.h==="D"?"Double Heat Sink":"Heat Sink",value:o.h==="D"?6000:2000,eq:o.h==="D"?"DHS":"HS"});
+  return out;
+}
+
+/* ---- editing ---- */
+function labMsg(t){lab.msg=t;lab.confirm=false;}
+const LAB_ADJ={LA:["LT"],RA:["RT"],LT:["CT","LA"],RT:["CT","RA"],CT:["LT","RT"]};
+function labCanGo(d,it,l){
+  const e=EQ[it.id],nm=labItemName(it);
+  if(!e)return "Unknown part.";
+  if(it.id==="JJ"&&!labTorsoOrLeg(d,l))return "Jump jets mount in the torso or legs only.";
+  if(it.id==="CASE"&&!LAB_TORSO.includes(l))return "Inner Sphere CASE goes in a torso location.";
+  if(e.f.includes("P")){if(!labIsArm(d,l))return `${nm}: arms only.`;const a=d[l==="LA"?"la":"ra"];if(!a[0]||!a[1])return `${nm} needs the lower arm and hand actuators in that arm.`;
+    if(d.i.some(x=>x.u!==it.u&&x.loc===l&&EQ[x.id]&&EQ[x.id].f.includes("P")))return "Only one physical weapon per arm.";}
+  if((it.id==="HS"&&d.h==="D")||(it.id==="DHS"&&d.h==="S"))return `This 'Mech uses ${d.h==="D"?"double":"single"} heat sinks — change the heat sink type under Chassis first.`;
+  if(it.f==="R"&&labIsArm(d,l))return "Arm weapons can't be rear-mounted.";
+  return "";
+}
+function labPlace(p,l){
+  const d=lab.d;if(!d)return;
+  let it,isNew=false;
+  if(p.k==="item"){it=d.i.find(x=>x.u===p.u);if(!it)return;}
+  else if(p.k==="rem"){it=lab.removed.find(x=>x.u===p.u);if(!it)return;it={...it};isNew=true;}
+  else if(p.k==="st"){const s=S.stores.find(z=>z.id===p.sid);if(!s)return;
+    if(labStoreUsed(s.id)>=s.qty){labMsg(`No more ${s.name} left in stores.`);return;}
+    const key=storeEq(s);const am=key.match(/^AMMO(H?):(.+)$/);
+    it={u:labU(),id:am?am[2]:key,loc:l,f:am?(am[1]?"a":"A"):"",src:"st",sid:s.id};isNew=true;}
+  else {it={u:labU(),id:p.id,loc:l,f:p.f||"",src:"s"};isNew=true;}
+  const why=labCanGo(d,it,l);if(why){labMsg(why);return;}
+  const need=labItemSlots(d,it);
+  const ownHere=isNew?0:labSlotsIn(d,it,l);
+  const free=labFree(d,l)+ownHere;
+  const prev={loc:it.loc,sl:it.sl,sn:it.sn};
+  delete it.sl;delete it.sn;
+  if(need>free){
+    let done=false;
+    if(need>=8&&!labIsLeg(d,l)&&free>0)for(const a of (LAB_ADJ[l]||[])){
+      if(labIsLeg(d,a))continue;
+      const freeA=labFree(d,a)+(isNew?0:labSlotsIn(d,{...it,...prev},a));
+      if(free+freeA>=need){it.loc=l;it.sl=a;it.sn=need-free;done=true;break;}}
+    if(!done){Object.assign(it,prev);if(prev.sl===undefined){delete it.sl;delete it.sn;}
+      labMsg(`No room: ${labItemName(it)} needs ${need} slot${need>1?"s":""}; the ${labLocName(d,l).toLowerCase()} has ${free} free.`);return;}
+  } else it.loc=l;
+  if(isNew){d.i.push(it);if(p.k==="rem")lab.removed=lab.removed.filter(x=>x.u!==p.u);}
+  labMsg(it.sl?`${labItemName(it)} split between the ${labLocName(d,it.loc).toLowerCase()} and ${labLocName(d,it.sl).toLowerCase()}.`:"");
+  lab.sel=null;renderLab();
+}
+function labRemove(u){
+  const d=lab.d,it=d.i.find(x=>x.u===u);if(!it)return;
+  if(["ENDO","FF","TSM"].includes(it.id)){labMsg(`${labItemName(it)} slots come with the structure, armor or myomer type — change it under Chassis.`);renderLab();return;}
+  d.i=d.i.filter(x=>x.u!==u);
+  if(it.src==="o"){const c={...it};delete c.sl;delete c.sn;lab.removed.push(c);}
+  if(lab.sel&&lab.sel.u===u)lab.sel=null;
+  labMsg("");renderLab();
+}
+function labToggleRear(u){const it=lab.d.i.find(x=>x.u===u);if(!it)return;
+  const e=EQ[it.id];if(!e||!e.f.includes("R")||labIsArm(lab.d,it.loc))return;
+  it.f=it.f==="R"?"":"R";labMsg("");renderLab();}
+/* structure / armor / myomer slots are placed automatically and can then be dragged around */
+function labAutoPlace(id,n){
+  const d=lab.d;
+  for(const l of ["LT","RT","LA","RA","LL","RL","CT","HD"]){while(n>0&&labFree(d,l)>0){d.i.push({u:labU(),id,loc:l,f:"",src:"x"});n--;}}
+  while(n-->0)d.i.push({u:labU(),id,loc:"",f:"",src:"x"});
+}
+function labSetSlots(id,on){
+  const d=lab.d,n={ENDO:14,FF:14,TSM:6}[id];
+  d.i=d.i.filter(x=>x.id!==id);
+  if(on){const o=lab.orig.i.filter(x=>x.id===id);
+    if(o.length===n)o.forEach(x=>d.i.push({...x,src:"o"}));else labAutoPlace(id,n);}
+}
+function labSet(k,v){
+  const d=lab.d,o=lab.orig;if(!d)return;
+  if(k==="w"){v=clamp(Math.round(+v||1),1,Math.floor(400/d.t));d.w=v;d.r=d.t*v;d.hi=Math.min(d.hi,Math.floor(d.r/25));}
+  else if(k==="hi")d.hi=clamp(Math.round(+v||0),0,Math.floor(d.r/25));
+  else if(k==="s"){d.s=v;labSetSlots("ENDO",v==="ENDO");}
+  else if(k==="a"){d.a=v;labSetSlots("FF",v==="FF");}
+  else if(k==="my"){d.my=v;labSetSlots("TSM",v==="TSM");}
+  else if(k==="h"){
+    if(v===d.h)return;
+    d.h=v;
+    const sinks=d.i.filter(x=>x.id==="HS"||x.id==="DHS");
+    d.i=d.i.filter(x=>!(x.id==="HS"||x.id==="DHS"));
+    sinks.forEach(x=>{if(x.src==="o"){const c={...x};lab.removed.push(c);}});
+    if(v===o.h){
+      /* back to the original type: put the original sinks back */
+      const back=o.i.filter(x=>x.id==="HS"||x.id==="DHS");
+      lab.removed=lab.removed.filter(x=>!back.some(b=>b.u===x.u));
+      back.forEach(x=>d.i.push({...x,src:"o"}));
+    } else {
+      const id=v==="D"?"DHS":"HS";
+      sinks.forEach(x=>{const n={u:labU(),id,loc:x.loc,f:"",src:"s"};
+        d.i.push(n);if(labFree(d,x.loc)<0)n.loc="";});
+    }
+  }
+  else if(["la0","la1","ra0","ra1"].includes(k)){
+    const a=d[k.slice(0,2)],i=+k[2];a[i]=v?1:0;if(i===0&&!v)a[1]=0;if(i===1&&v)a[0]=1;
+  }
+  else d[k]=v;
+  labMsg("");renderLab();
+}
+function labArmor(k,v){const d=lab.d;d.A[k]=clamp(Math.round(+v||0),0,labArmorMax(d,k));
+  /* torso front + rear share one cap */
+  const l=k.replace(/R$/,"");if(LAB_TORSO.includes(l)){const cap=labArmorMax(d,l),f=d.A[l]||0,r=d.A[l+"R"]||0;if(f+r>cap){if(k.endsWith("R"))d.A[k]=cap-f;else d.A[k]=cap-r;}}
+  labMsg("");renderLab();}
+function labArmorMaxAll(){const d=lab.d,is=labIS(d);
+  LAB_ARMOR_KEYS.forEach(k=>{if(k==="HD")d.A.HD=9;else if(/R$/.test(k))return;else if(LAB_TORSO.includes(k)){const cap=is[k]*2;const r=Math.round(cap*0.25);d.A[k]=cap-r;d.A[k+"R"]=r;}else d.A[k]=is[k]*2;});
+  labMsg("");renderLab();}
+function labArmorOrig(){lab.d.A={...lab.orig.A};labMsg("");renderLab();}
+
+/* ---- drag and drop (with click-to-place as the keyboard/touch alternative) ---- */
+let labDragP=null;
+function labPayload(el){const k=el.dataset.k;
+  return k==="item"||k==="rem"?{k,u:+el.dataset.u}:k==="st"?{k,sid:+el.dataset.sid}:{k:"shop",id:el.dataset.id,f:el.dataset.f||""};}
+function labDragStart(ev){const el=ev.target.closest("[data-k]");if(!el)return;labDragP=labPayload(el);
+  try{ev.dataTransfer.setData("text/plain",JSON.stringify(labDragP));ev.dataTransfer.effectAllowed="move";}catch(e){}}
+function labDragOver(ev){ev.preventDefault();const c=ev.currentTarget;c.classList.add("over");}
+function labDragLeave(ev){ev.currentTarget.classList.remove("over");}
+function labDrop(ev,l){ev.preventDefault();ev.currentTarget.classList.remove("over");
+  let p=labDragP;if(!p){try{p=JSON.parse(ev.dataTransfer.getData("text/plain"));}catch(e){}}
+  labDragP=null;if(p)labPlace(p,l);}
+function labDropBin(ev){ev.preventDefault();ev.currentTarget.classList.remove("over");
+  const p=labDragP;labDragP=null;if(p&&p.k==="item")labRemove(p.u);}
+function labPick(el){const p=labPayload(el);
+  lab.sel=lab.sel&&JSON.stringify(lab.sel)===JSON.stringify(p)?null:p;labMsg(lab.sel?"Now click “Place here” on a location (or drag the part onto it).":"");renderLab();}
+function labPlaceSel(l){if(lab.sel)labPlace(lab.sel,l);}
+function labSetBin(b){lab.bin=b;renderLab();}
+function labSetFilter(f){lab.filter=f;renderLab();}
+
+/* ---- commit ---- */
+function labCommit(){
+  const m=labMech(),d=lab.d;if(!m||!d)return;
+  const v=labValidate(d,{year:campYear()});if(v.errs.length){labMsg("Fix the problems listed first.");renderLab();return;}
+  const b=labBill();
+  if(!b.changes&&lab.name.trim()===m.name){labMsg("Nothing has changed yet.");renderLab();return;}
+  if(!b.changes){const nm=lab.name.trim();rlog(`${m.name} renamed ${nm}.`);m.name=nm;labOpen(m.id);labMsg("Renamed — no refit work needed.");renderAll();return;}
+  if(!lab.confirm){lab.confirm=true;renderLab();return;}
+  lab.confirm=false;
+  const name=lab.name.trim()||m.name;
+  if(b.paid>0){S.treasury-=b.paid;S.ledger.unshift({m:S.month,d:`Refit parts — ${m.name}`,a:-b.paid});}
+  /* draw from stores */
+  const acquired=[];
+  b.L.forEach(x=>{
+    if(x.src==="store"){const s=S.stores.find(z=>z.id===x.sid);if(s){const q=x.qty||1;s.qty-=q;acquired.push({name:s.name,value:s.value,eq:storeEq(s),qty:q});}}
+    else if(x.qty)acquired.push({name:x.unitName,value:Math.round(x.value/x.qty),eq:x.key,qty:x.qty});
+    else acquired.push({name:x.what,value:Math.round(x.value),eq:x.key,qty:1});
+  });
+  S.stores=S.stores.filter(s=>s.qty>0);
+  const clean=labClone(d);clean.i=clean.i.filter(x=>x.loc).map(x=>{const c={u:x.u,id:x.id,loc:x.loc,f:x.f};if(x.sl){c.sl=x.sl;c.sn=x.sn;}return c;});
+  const newVal=Math.max(0,Math.round(m.val+labCost(d)-labCost(lab.orig)));
+  const newBV=labBV(d);
+  const days=Math.max(1,b.days);
+  S.tasks.push({id:uid(),mechId:m.id,key:"refit",label:`Refit to ${name}`,tn:b.tn,days,cost:b.labour,
+    status:"queued",remaining:0,roll:"",note:`${b.changes} change${b.changes===1?"":"s"}${b.conv.length?`, ${b.conv.length} mount conversion${b.conv.length===1?"":"s"} (tech roll ${b.tn}+)`:""}; parts ${fmt(b.paid)} paid up front, labour ${fmt(b.labour)} on completion`,
+    partName:null,partValue:0,
+    refit:{design:clean,name,val:newVal,bv:newBV,acquired,removed:labRemovedParts()}});
+  rlog(`${m.name}: refit queued — ${b.changes} change${b.changes===1?"":"s"}, ${days} day${days===1?"":"s"}. Parts ${fmt(b.paid)} paid; labour ${fmt(b.labour)} due on completion.`);
+  startNext(m.id);
+  labOpen(m.id);
+  labMsg("Refit queued in the Repair Bay. The 'Mech keeps its current loadout until the job finishes.");
+  renderAll();
+}
+/* called by the Repair Bay when a refit job completes */
+function labApplyRefit(m,t){
+  const r=t.refit;
+  m.design=r.design;m.val=r.val;m.bv=r.bv;
+  const old=m.name;m.name=r.name;
+  (r.removed||[]).forEach(p=>addToStoresEq(p.name,p.value,1,p.eq));
+  rlog(`${old}: refit complete${r.name!==old?` — now ${r.name}`:""} (BV ${fmt(r.bv)}, book value ${fmt(r.val)}).${(r.removed||[]).length?` ${r.removed.length} removed part${r.removed.length===1?"":"s"} moved to stores.`:""}`);
+  tlEvent("refit",`${old} refitted${r.name!==old?" as "+r.name:""}`);
+  if(lab.mid===m.id)labOpen(m.id);
+}
+/* cancelling a refit before it finishes: the bought parts go to stores */
+function labCancelRefit(t){
+  (t.refit.acquired||[]).forEach(p=>{const q=p.qty||1;addToStoresEq(p.name,p.value,q,p.eq);});
+  rlog(`Refit cancelled — ${t.refit.acquired.length} part line${t.refit.acquired.length===1?"":"s"} returned to company stores.`);
+}
+
+/* ---- render ---- */
+function labItemTitle(d,it){const e=EQ[it.id];if(!e)return "";
+  if(it.f==="A"||it.f==="a")return `${e.name} ammunition: ${it.f==="a"?e.ammo.shots/2:e.ammo.shots} shots, ${labItemTons(d,it)} t`;
+  return `${e.name} · ${labItemTons(d,it)} t · ${labItemSlots(d,it)} slot${labItemSlots(d,it)>1?"s":""}${e.heat?` · heat ${e.heat}`:""}${e.dmg!=="—"?` · dmg ${e.dmg}`:""}${e.rng!=="—"?` · range ${e.rng}`:""}${e.bv?` · BV ${e.bv}`:""}`;}
+function labLocHTML(l){
+  const d=lab.d,fx=labFixed(d)[l],cap=labCap(l);
+  const slots=Array(cap).fill(null);
+  fx.forEach((x,i)=>{if(x)slots[i]={fixed:x};});
+  const freeIdx=()=>slots.map((s,i)=>s?null:i).filter(i=>i!==null);
+  const over=[];
+  d.i.forEach(it=>{const n=labSlotsIn(d,it,l);if(!n)return;const fr=freeIdx();
+    if(fr.length<n){over.push(it);return;}
+    fr.slice(0,n).forEach((ix,j)=>slots[ix]={it,first:j===0,n});});
+  const free=cap-labUsed(d,l);
+  const arm=l==="HD"?`${d.A.HD||0}/9`:LAB_TORSO.includes(l)?`${d.A[l]||0}+${d.A[l+"R"]||0}r`:`${d.A[l]||0}`;
+  const sel=lab.sel?`<button class="small labplace" onclick="labPlaceSel('${l}')">Place here</button>`:"";
+  const rows=slots.map(s=>{
+    if(!s)return `<div class="slot empty">—</div>`;
+    if(s.fixed)return `<div class="slot fixed">${esc(s.fixed)}</div>`;
+    const it=s.it,e=EQ[it.id],nw=it.src!=="o"&&it.src!=="x";
+    const cv=labConversions(d,lab.orig).some(c=>c.u===it.u);
+    const cls=`slot item ${s.first?"first":"cont"} ${nw?"new":""} ${cv?"conv":""} ${["ENDO","FF","TSM"].includes(it.id)?"struct":""} ${(it.f==="A"||it.f==="a")?"ammo":""} ${lab.sel&&lab.sel.k==="item"&&lab.sel.u===it.u?"picked":""}`;
+    const canR=e&&e.f.includes("R")&&!labIsArm(d,l)&&!(it.f==="A"||it.f==="a");
+    if(!s.first)return `<div class="${cls}" draggable="true" data-k="item" data-u="${it.u}" ondragstart="labDragStart(event)" title="${esc(labItemTitle(d,it))}"></div>`;
+    return `<div class="${cls}" draggable="true" data-k="item" data-u="${it.u}" ondragstart="labDragStart(event)" onclick="if(event.target===this||event.target.classList.contains('nm'))labPick(this)" title="${esc(labItemTitle(d,it))}">
+      <span class="nm">${esc(labItemName(it))}${it.sl?` <span class="muted">(${it.loc===l?"+"+it.sn+" "+it.sl:""})</span>`:""}</span>
+      <span class="acts">${canR?`<button class="mini ${it.f==="R"?"on":""}" onclick="labToggleRear(${it.u})" title="Rear-firing" aria-label="Toggle rear mount for ${esc(labItemName(it))}">R</button>`:""}
+      <button class="mini" onclick="labRemove(${it.u})" title="Remove" aria-label="Remove ${esc(labItemName(it))}">✕</button></span></div>`;
+  }).join("");
+  return `<div class="labloc ${free<0?"bad":""}" ondragover="labDragOver(event)" ondragleave="labDragLeave(event)" ondrop="labDrop(event,'${l}')" data-loc="${l}">
+    <div class="lochead"><strong>${labLocName(d,l)}</strong><span class="${free<0?"neg":free===0?"muted":""}">${free} free</span></div>
+    <div class="locsub">Armor ${arm} · IS ${labIS(d)[l]}</div>
+    <div class="locmounts" title="Weapon types this location carried before the refit — other types cost a mount conversion">${(()=>{const w=labMounts(lab.orig)[l];return ["E","B","M"].map(t=>`<span class="mt ${w.has(t)?"on":""}">${t}</span>`).join("");})()}</div>${sel}
+    ${rows}${over.length?`<div class="slot overflow">⚠ ${over.length} item${over.length>1?"s":""} don't fit</div>`:""}</div>`;
+}
+function labBinHTML(){
+  const d=lab.d,yr=campYear();
+  const tabs=`<div class="seg labseg">${[["shop","Market"],["stores","Stores"],["removed","Removed"]].map(([k,t])=>{
+    const c=k==="stores"?S.stores.filter(s=>storeEq(s)).reduce((a,s)=>a+s.qty,0):k==="removed"?lab.removed.filter(x=>!["ENDO","FF","TSM"].includes(x.id)).length:"";
+    return `<button class="${lab.bin===k?"on":""}" onclick="labSetBin('${k}')">${t}${c!==""?`<span class="cnt">${c}</span>`:""}</button>`;}).join("")}</div>`;
+  const row=(attrs,name,meta,price,pick)=>`<div class="binrow ${pick?"picked":""}" draggable="true" ${attrs} ondragstart="labDragStart(event)" onclick="labPick(this)" tabindex="0" onkeydown="if(event.key==='Enter')labPick(this)">
+      <div class="bn">${name}</div><div class="bm">${meta}</div><div class="bp">${price}</div></div>`;
+  const isSel=p=>lab.sel&&JSON.stringify(lab.sel)===JSON.stringify(p);
+  let body="";
+  if(lab.bin==="shop"){
+    const F=lab.filter;
+    const chips=`<div class="pillbtns labchips">${[["E","Energy"],["B","Ballistic"],["M","Missile"],["Q","Equipment"],["A","Ammo"],["H","Sinks & jets"]].map(([k,t])=>`<button class="small ${F===k?"primary":"ghost"}" onclick="labSetFilter('${k}')">${t}</button>`).join("")}</div>`;
+    const legal=EQ_DATA.map(r=>EQ[r[0]]).filter(e=>labEqLegal(e,yr));
+    let list=[];
+    if(F==="A")legal.filter(e=>e.ammo).forEach(e=>{list.push({e,f:"A"});if(["MG","LMG","HMG"].includes(e.id))list.push({e,f:"a"});});
+    else if(F==="H")list=legal.filter(e=>["HS","DHS","JJ"].includes(e.id)).map(e=>({e,f:""}));
+    else if(F==="Q")list=legal.filter(e=>(e.type==="Q"||e.type==="P")).map(e=>({e,f:""}));
+    else list=legal.filter(e=>e.type===F).map(e=>({e,f:""}));
+    const M=S.market,fresh=M.rolled&&M.month===S.month&&M.parts;
+    body=chips+(fresh?"":`<div class="hint" style="margin:4px 0 8px">Market not rolled this month: common (A–C) parts are at list; rarer parts only through a broker at 2× until you roll the market.</div>`)
+      +list.map(({e,f})=>{
+        const it={id:e.id,f};const p=labPrice(e.id,labPartValue(d,it));
+        const tons=f==="A"?1:f==="a"?0.5:labItemTons(d,it)||(["HS","DHS"].includes(e.id)?1:0);
+        const meta=f?`${f==="a"?e.ammo.shots/2:e.ammo.shots} shots · ${tons} t`:`${tons} t · ${labItemSlots(d,it)} sl${e.heat?` · ${e.heat}h`:""}${e.bv?` · BV ${e.bv}`:""}`;
+        const price=e.id==="JJ"?`<span title="200 × tons × jets² for the whole set">${fmt(200*d.t*(2*labJump(d)+1))}</span>`:`${fmt(p.price)}${p.broker?' <span class="brk" title="Not in stock this month — broker price (2× list)">broker</span>':""}`;
+        const pl={k:"shop",id:e.id,f};
+        return row(`data-k="shop" data-id="${e.id}" data-f="${f}"`,esc(f?labItemName(it):e.name),meta,price,isSel(pl));}).join("");
+  } else if(lab.bin==="stores"){
+    const st=S.stores.map(s=>({s,key:storeEq(s)})).filter(x=>x.key);
+    const placeable=st.filter(x=>EQ[x.key]||/^AMMOH?:/.test(x.key));
+    const auto=st.filter(x=>!(EQ[x.key]||/^AMMOH?:/.test(x.key)));
+    body=(placeable.length?placeable.map(({s,key})=>{const left=s.qty-labStoreUsed(s.id);
+        const pl={k:"st",sid:s.id};
+        return left>0?row(`data-k="st" data-sid="${s.id}"`,esc(s.name),`${left} of ${s.qty} available`,'<span class="st-op">owned</span>',isSel(pl))
+          :`<div class="binrow off"><div class="bn">${esc(s.name)}</div><div class="bm">all ${s.qty} in use on this design</div></div>`;}).join("")
+        :'<p class="muted" style="margin:6px 0">No weapons or equipment in company stores. Buy parts at the Marketplace, log salvage there, or drag from the Market tab here.</p>')
+      +(auto.length?`<div class="subhead">Used automatically</div>`+auto.map(({s})=>`<div class="binrow off"><div class="bn">${esc(s.name)} ×${s.qty}</div><div class="bm">picked up when the matching chassis option or armor is chosen</div></div>`).join(""):"")
+      +`<div class="hint">Stored parts cost nothing to fit (labour still applies). Parts in stores that aren't 'Mech components (or are listed under a name the Lab doesn't recognise) don't appear here.</div>`;
+  } else {
+    const rem=lab.removed.filter(x=>!["ENDO","FF","TSM"].includes(x.id));
+    body=rem.length?rem.map(it=>row(`data-k="rem" data-u="${it.u}"`,esc(labItemName(it)),`from the ${labLocName(d,it.loc||"CT").toLowerCase()}`,"<span class=\"muted\">refit back</span>",isSel({k:"rem",u:it.u}))).join("")
+      +`<div class="hint">Removed parts go to company stores when the refit completes. Drag one back onto the 'Mech to keep it.</div>`
+      :'<p class="muted" style="margin:6px 0">Nothing removed yet. Drag an installed item here (or click its ✕) to take it off.</p>';
+  }
+  return `<div class="card labbin" ondragover="labDragOver(event)" ondragleave="labDragLeave(event)" ondrop="labDropBin(event)">
+    <h2>Parts <span class="spacer"></span><span class="muted">drag onto a location</span></h2>${tabs}<div class="binlist">${body}</div></div>`;
+}
+function labSelect(list,key,cur,yr,disabled){
+  const opts=list.filter(o=>o[0]===cur||labLegal(o[2],o[3],o[4],yr));
+  return `<select onchange="labSet('${key}',this.value)" ${disabled?"disabled":""} aria-label="${key}">${opts.map(o=>{
+    const st=o[0]===cur?null:labStock(({e:"ENG:",g:"GYRO:",c:"COCKPIT:"}[key]||"")+o[0]);
+    return `<option value="${o[0]}" ${o[0]===cur?"selected":""}>${o[1]}${st&&!st.stock&&o[0]!=="STD"&&o[0]!=="S"?" (broker)":""}</option>`;}).join("")}</select>`;
+}
+function renderLab(){
+  const area=$("labArea");if(!area)return;
+  const mechs=labMechs();
+  if(lab.mid&&!S.mechs.some(m=>m.id===lab.mid)){lab.mid=null;lab.d=null;}
+  if(!lab.mid&&mechs.length)labOpen(mechs[0].id);
+  const m=labMech();
+  const pick=`<select onchange="labOpen(+this.value);renderLab()" aria-label="'Mech to refit" style="min-width:240px">${mechs.map(x=>`<option value="${x.id}" ${x.id===lab.mid?"selected":""}>${esc(x.name)} — ${x.ton} t${labPending(x.id)?" · refit queued":""}</option>`).join("")}</select>`;
+  if(!m){area.innerHTML=`<div class="card"><h2>Mech Lab</h2><p class="muted">No BattleMechs on the roster. Buy one at the Marketplace to start refitting.</p></div>`;return;}
+  const yr=campYear();
+  let head=`<div class="card"><h2>Refit a 'Mech <span class="spacer"></span><span class="badge"><span class="dot" style="background:var(--series1)"></span>Technology as of ${yr}</span></h2>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+      <div class="field"><label>'Mech</label>${pick}</div>
+      ${lab.d&&!labPending(m.id)?`<div class="field"><label>Designation after refit</label><input value="${esc(lab.name)}" style="width:260px" oninput="lab.name=this.value" onchange="lab.name=this.value;renderLab()"></div>
+      <button class="ghost" onclick="labReset()">Reset changes</button>`:""}
+    </div>
+    <div class="hint">Drag parts from the Market, company stores or the Removed tray onto a location — or click a part, then “Place here”. Every change is checked against the TechManual construction rules; BV and cost update as you go. Stock loadouts from MegaMek data (CC BY-NC-SA 4.0).</div>
+  </div>`;
+  const pend=labPending(m.id);
+  if(pend){
+    area.innerHTML=head+`<div class="card"><h2>Refit in progress</h2>
+      <p style="margin:4px 0">${esc(pend.label)} — ${pend.status==="active"?`${pend.remaining} day${pend.remaining===1?"":"s"} of work left`:needsTeam(m)?"waiting for a tech team to be assigned on the Roster":"queued behind other work"}.</p>
+      <p class="muted" style="margin:4px 0">${esc(pend.note)}. The 'Mech keeps its current loadout until the job finishes; cancel the job in the Repair Bay to start over (bought parts go to stores).</p>
+      <div class="pillbtns" style="margin-top:10px"><button onclick="goTab('repair')">Open the Repair Bay</button></div></div>`;
+    return;
+  }
+  if(!lab.d){
+    const same=Object.keys(STOCK_DESIGNS).filter(k=>STOCK_DESIGNS[k].t===m.ton);
+    const base=m.name.split(" ")[0].toLowerCase();
+    same.sort((a,b)=>(b.toLowerCase().startsWith(base)?1:0)-(a.toLowerCase().startsWith(base)?1:0)||a.localeCompare(b));
+    area.innerHTML=head+`<div class="card"><h2>No design on file</h2>
+      <p style="margin:4px 0">${esc(m.name)} isn't one of the stock designs the Lab knows, so it doesn't know what's bolted on. Pick the stock design it matches (${m.ton} t) or start from a bare chassis.</p>
+      <div class="formrow"><div class="field"><label>Matches</label><select id="labPick">${same.map(k=>`<option>${esc(k)}</option>`).join("")}<option value="__bare">Bare ${m.ton}-ton chassis (no weapons or armor)</option></select></div>
+      <button class="primary" onclick="labIdentify()">Use this design</button></div>
+      <div class="hint">This only records the 'Mech's configuration — it costs nothing and doesn't change BV or book value.</div></div>`;
+    return;
+  }
+  const d=lab.d,o=lab.orig;
+  const v=labValidate(d,{year:yr});
+  d.i.filter(x=>!x.loc).length&&v.errs.unshift(`${d.i.filter(x=>!x.loc).length} slot item${d.i.filter(x=>!x.loc).length>1?"s":""} need a location — see “Needs a slot” under the slot table.`);
+  const w=v.w,b=labBill(),bvO=labBV(o),bvN=labBV(d),cO=labCost(o),cN=labCost(d);
+  const newVal=Math.max(0,Math.round(m.val+cN-cO));
+  const hs=labHS(d),mv=labMove(d);
+  const dlt=(a,b2)=>{const x=b2-a;return x?`<span class="${x>0?"pos":"neg"}">${x>0?"+":""}${fmt(x)}</span>`:'<span class="muted">±0</span>';};
+  const tiles=`<div class="tiles labtiles">
+    <div class="tile"><div class="k">Tonnage</div><div class="v ${w.total>d.t?"neg":""}">${w.total} / ${d.t}</div>
+      <div class="labbar"><span style="width:${Math.min(100,w.total/d.t*100)}%;${w.total>d.t?"background:var(--critical)":""}"></span></div><div class="s">${w.total<=d.t?fmt((d.t-w.total)*10)/10+" t free":"overweight"}</div></div>
+    <div class="tile"><div class="k">Battle Value</div><div class="v">${fmt(bvN)}</div><div class="s">was ${fmt(bvO)} · ${dlt(bvO,bvN)}${m.bv&&m.bv!==bvO?` <span class="muted" title="BV recorded on the roster">(roster ${fmt(m.bv)})</span>`:""}</div></div>
+    <div class="tile"><div class="k">Book value</div><div class="v">${fmt(newVal)}</div><div class="s">was ${fmt(m.val)} · ${dlt(m.val,newVal)}</div></div>
+    <div class="tile"><div class="k">Refit bill</div><div class="v">${fmt(b.paid+b.labour)}</div><div class="s">parts ${fmt(b.paid)} now · labour ${fmt(b.labour)}</div></div>
+    <div class="tile"><div class="k">Bay time</div><div class="v">${b.changes?Math.max(1,b.days):0} day${b.changes&&Math.max(1,b.days)===1?"":"s"}</div><div class="s">${b.changes} change${b.changes===1?"":"s"}</div></div>
+    <div class="tile"><div class="k">Rules check</div><div class="v ${v.errs.length?"neg":"pos"}">${v.errs.length?v.errs.length+" problem"+(v.errs.length>1?"s":""):"✓ Legal"}</div><div class="s">${v.warns.length?v.warns.length+" note"+(v.warns.length>1?"s":""):"no notes"}</div></div>
+  </div>`;
+  const msg=lab.msg?`<div class="warnbar" role="status">${esc(lab.msg)}</div>`:"";
+  const unplaced=d.i.filter(x=>!x.loc);
+  const sheet=`<div class="card labsheet"><h2>Critical slots <span class="spacer"></span><span class="muted">${mv.walk}/${mv.run}${mv.masc?"["+mv.walk*2+"]":""}/${mv.jump} MP · heat sinks ${hs.total}${d.h==="D"?" double":""} (${hs.total*(d.h==="D"?2:1)} dissipation)</span></h2>
+    <div class="labgrid5">
+      <div class="c1">${labLocHTML("LA")}</div>
+      <div class="c2">${labLocHTML("LT")}${labLocHTML("LL")}</div>
+      <div class="c3">${labLocHTML("HD")}${labLocHTML("CT")}</div>
+      <div class="c4">${labLocHTML("RT")}${labLocHTML("RL")}</div>
+      <div class="c5">${labLocHTML("RA")}</div>
+    </div>
+    ${unplaced.length?`<div class="subhead">Needs a slot</div><div class="pillbtns">${unplaced.map(it=>`<span class="spec" draggable="true" data-k="item" data-u="${it.u}" ondragstart="labDragStart(event)" onclick="labPick(this)" style="cursor:grab">${esc(labItemName(it))}</span>`).join("")}</div>`:""}
+    <div class="hint">Amber-edged items are new on this refit. Hover an item for its buttons: <strong>R</strong> makes a torso, head or leg weapon rear-firing, <strong>✕</strong> removes it. Weapons of 8+ slots split into the neighbouring location automatically when they don't fit.</div></div>`;
+  const opt=(lbl,html)=>`<div class="field"><label>${lbl}</label>${html}</div>`;
+  const armRow=k=>{const a=d[k],nm=k==="la"?"Left":"Right";
+    return `<label><input type="checkbox" ${a[0]?"checked":""} onchange="labSet('${k}0',this.checked)"> ${nm} lower arm</label>
+      <label><input type="checkbox" ${a[1]?"checked":""} onchange="labSet('${k}1',this.checked)"> ${nm} hand</label>`;};
+  const chassis=`<div class="card"><h2>Chassis <span class="spacer"></span><span class="muted">${d.t} tons${d.q?" · quad":""}</span></h2>
+    <div class="labopts">
+      ${opt("Walking MP",`<input type="number" min="1" max="${Math.floor(400/d.t)}" value="${d.w}" style="width:80px" onchange="labSet('w',this.value)">`)}
+      ${opt(`Engine (rating ${d.r})`,labSelect(LAB_ENGINES,"e",d.e,yr))}
+      ${opt("Gyro",labSelect(LAB_GYROS,"g",d.g,yr))}
+      ${opt("Cockpit",labSelect(LAB_COCKPITS,"c",d.c,yr))}
+      ${opt("Internal structure",labSelect(LAB_STRUCTS,"s",d.s,yr))}
+      ${opt("Armor type",labSelect(LAB_ARMORS,"a",d.a,yr))}
+      ${opt("Heat sinks",labSelect(LAB_SINKS,"h",d.h,yr))}
+      ${opt(`Sinks in engine (max ${hs.cap})`,`<input type="number" min="0" max="${hs.cap}" value="${d.hi}" style="width:80px" onchange="labSet('hi',this.value)">`)}
+      ${opt("Myomer",labSelect(LAB_MYOMER,"my",d.my,yr))}
+    </div>
+    ${d.q?"":`<div class="pillbtns" style="margin-top:12px;gap:14px">${armRow("la")}${armRow("ra")}</div>`}
+    <table class="labw"><tr><th>Component</th><th class="num">Tons</th></tr>
+      ${[["Internal structure",w.structure],[`Engine (${LAB_LBL.e(d.e)} ${d.r})`,w.engine],["Gyro",w.gyro],["Cockpit",w.cockpit],[`Heat sinks (${hs.total}, 10 free)`,w.sinks],[`Jump jets (${mv.jump})`,w.jets],[`Armor (${labArmorPts(d)} pts)`,w.armor],["Weapons & equipment",w.equipment]]
+        .map(([a,x])=>`<tr><td>${a}</td><td class="num">${x}</td></tr>`).join("")}
+      <tr><td><strong>Total</strong></td><td class="num"><strong>${w.total} / ${d.t}</strong></td></tr></table>
+    <div class="hint">Engine rating = tonnage × Walking MP (max 400). Running MP = Walking × 1.5, rounded up. An engine holds rating ÷ 25 heat sinks without using slots; 10 sinks weigh nothing. Endo steel, ferro-fibrous and TSM place their slots automatically — drag them to rearrange.</div></div>`;
+  const is=labIS(d);
+  const armCell=k=>`<input type="number" min="0" max="${labArmorMax(d,k)}" value="${d.A[k]||0}" style="width:64px" onchange="labArmor('${k}',this.value)" aria-label="Armor ${k}">`;
+  const armor=`<div class="card"><h2>Armor <span class="spacer"></span><span class="muted">${labArmorPts(d)} pts · ${w.armor} t ${LAB_LBL.a(d.a).toLowerCase()}</span></h2>
+    <table><tr><th>Location</th><th class="num">Front</th><th class="num">Rear</th><th class="num">Max</th></tr>
+    ${LAB_LOCS.map(l=>`<tr><td>${labLocName(d,l)}</td><td class="num">${armCell(l)}</td><td class="num">${LAB_TORSO.includes(l)?armCell(l+"R"):""}</td><td class="num muted">${l==="HD"?9:is[l]*2}</td></tr>`).join("")}
+    </table>
+    <div class="pillbtns" style="margin-top:10px"><button class="small" onclick="labArmorMaxAll()">Max armor</button><button class="small ghost" onclick="labArmorOrig()">Back to original</button></div>
+    <div class="hint">Max = 2 × internal structure (head 9); a torso's front and rear share that cap. ${d.a==="FF"?"Ferro-fibrous gives 17.92 points per ton (14 slots).":"Standard armor gives 16 points per ton."} Armor tonnage rounds up to the half ton.</div></div>`;
+  const lines=b.L.map(x=>`<tr><td>${esc(x.what)}${x.broker?' <span class="brk">broker 2×</span>':""}</td><td class="num">${fmt(x.value)}</td><td class="num">${x.src==="store"?'<span class="muted">stores</span>':fmt(x.paid)}</td></tr>`).join("");
+  const rem=labRemovedParts();
+  const canGo=!v.errs.length&&(b.changes||lab.name.trim()!==m.name);
+  const bill=`<div class="card"><h2>Refit order <span class="spacer"></span><span class="muted">${esc(m.name)}${lab.name.trim()!==m.name?" → "+esc(lab.name.trim()):""}</span></h2>
+    ${v.errs.length?`<div class="laberrs"><strong>Not legal yet:</strong><ul>${v.errs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+    ${v.warns.length?`<div class="labwarns"><ul>${v.warns.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+    ${b.conv.length?`<div class="labwarns" style="border-color:rgba(232,128,58,.6)"><strong style="color:var(--serious)">Mount conversion${b.conv.length>1?"s":""}:</strong> ${b.conv.length} weapon${b.conv.length>1?"s go":" goes"} where that weapon type wasn't mounted before. Each adds labour (${Math.round(LAB_CONV.pct*100)}% of the weapon's value, min ${fmt(LAB_CONV.min)}) and ${LAB_CONV.days} days, and the job needs a tech roll of ${LAB_CONV.tn}+ (fail = double time, snake eyes = +50% cost and double time).</div>`:""}
+    ${b.L.length||b.conv.length?`<table><tr><th>Part</th><th class="num">Value</th><th class="num">Paid now</th></tr>${lines}
+      <tr><td>Labour (10% of parts value, due when the job completes)</td><td class="num">${fmt(b.baseLabour)}</td><td class="num muted">later</td></tr>
+      ${b.conv.map(c=>`<tr><td>Mount conversion — ${esc(c.name)} in the ${esc(labLocName(d,c.loc).toLowerCase())} (was ${esc(c.from)}) · +${LAB_CONV.days} days</td><td class="num">${fmt(c.cost)}</td><td class="num muted">later</td></tr>`).join("")}
+      <tr><td><strong>Total</strong></td><td class="num"><strong>${fmt(b.value+b.labour)}</strong></td><td class="num"><strong>${fmt(b.paid)}</strong></td></tr></table>`
+      :'<p class="muted" style="margin:4px 0">No parts to buy.</p>'}
+    ${rem.length?`<div class="subhead">To company stores when the job completes</div><div>${rem.map(x=>`<span class="spec">${esc(x.name)}</span>`).join("")}</div>`:""}
+    <div class="clausegrid">
+      <div class="clause"><div class="k">TechManual price</div><div class="v">${fmt(cN)}</div><div class="muted" style="font-size:12.5px">was ${fmt(cO)} (unloaded, no ammo)</div></div>
+      <div class="clause"><div class="k">New book value</div><div class="v">${fmt(newVal)}</div><div class="muted" style="font-size:12.5px">roster value + price change</div></div>
+      <div class="clause"><div class="k">New BV</div><div class="v">${fmt(bvN)}</div><div class="muted" style="font-size:12.5px">Gunnery 4 / Piloting 5</div></div>
+      <div class="clause"><div class="k">Work</div><div class="v">${b.changes?Math.max(1,b.days):0} day${b.changes&&Math.max(1,b.days)===1?"":"s"}</div><div class="muted" style="font-size:12.5px">${teamOf(m)?esc(teamOf(m).name):"no tech team assigned yet"}${b.tn?` · roll ${b.tn}+`:" · no roll"}</div></div>
+    </div>
+    <div class="pillbtns" style="margin-top:14px">
+      <button class="primary" ${canGo?"":"disabled"} onclick="labCommit()">${!b.changes?"Rename":lab.confirm?`Confirm — pay ${fmt(b.paid)} and queue the refit`:"Approve refit"}</button>
+      ${lab.confirm?'<button class="ghost" onclick="lab.confirm=false;renderLab()">Cancel</button>':""}
+      <button class="ghost" onclick="labReset()">Reset changes</button>
+    </div>
+    <div class="hint">House rule: parts are paid now; labour is 10% of the parts' value and is charged when the job completes. Each item added, removed or moved takes a day; an engine or structure swap takes a week. The E / B / M tags under each location show the weapon types it carried before the refit: fitting another type there is a mount conversion (extra labour and ${LAB_CONV.days} days each, and the job needs a ${LAB_CONV.tn}+ tech roll). Otherwise no roll is needed.</div></div>`;
+  area.innerHTML=head+tiles+msg+`<div class="labmain">${sheet}${labBinHTML()}</div><div class="cols2">${chassis}${armor}</div>`+bill;
 }
 
 /* ============ DM TOOLS ============ */
